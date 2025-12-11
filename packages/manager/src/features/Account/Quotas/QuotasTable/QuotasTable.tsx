@@ -14,15 +14,13 @@ import { TableRowEmpty } from 'src/components/TableRowEmpty/TableRowEmpty';
 import { TableRowLoading } from 'src/components/TableRowLoading/TableRowLoading';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
-import { QuotasIncreaseForm } from './QuotasIncreaseForm';
+import { QuotasIncreaseForm } from '../QuotasIncreaseForm';
+import { getQuotasFilters, QUOTA_ROW_MIN_HEIGHT } from '../utils';
 import { QuotasTableRow } from './QuotasTableRow';
-import { getQuotasFilters } from './utils';
 
 import type { Filter, Quota, QuotaType } from '@linode/api-v4';
 import type { SelectOption } from '@linode/ui';
 import type { AttachmentError } from 'src/features/Support/SupportTicketDetail/SupportTicketDetail';
-
-const quotaRowMinHeight = 58;
 
 interface QuotasTableProps {
   selectedLocation: null | SelectOption<Quota['region_applied']>;
@@ -127,19 +125,19 @@ export const QuotasTable = (props: QuotasTableProps) => {
             <TableRowLoading
               columns={4}
               rows={3}
-              sx={{ height: quotaRowMinHeight }}
+              sx={{ height: QUOTA_ROW_MIN_HEIGHT }}
             />
           ) : !selectedLocation ? (
             <TableRowEmpty
               colSpan={4}
               message="Apply filters above to see quotas and current usage."
-              sx={{ height: quotaRowMinHeight }}
+              sx={{ height: QUOTA_ROW_MIN_HEIGHT }}
             />
           ) : quotasWithUsage.length === 0 ? (
             <TableRowEmpty
               colSpan={4}
               message="There is no data available for this service and region."
-              sx={{ height: quotaRowMinHeight }}
+              sx={{ height: QUOTA_ROW_MIN_HEIGHT }}
             />
           ) : (
             quotasWithUsage.map((quota, index) => {
