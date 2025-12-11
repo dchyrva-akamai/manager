@@ -100,10 +100,12 @@ describe('Quota workflow tests', () => {
         usage: Math.round(mockQuotas[2].quota_limit * 0.1),
       }),
     ];
+
     cy.wrap(selectedDomain).as('selectedDomain');
     cy.wrap(mockEndpoints).as('mockEndpoints');
     cy.wrap(mockQuotas).as('mockQuotas');
     cy.wrap(mockQuotaUsages).as('mockQuotaUsages');
+
     mockGetObjectStorageQuotaUsages(
       selectedDomain,
       'bytes',
@@ -134,6 +136,7 @@ describe('Quota workflow tests', () => {
         },
       }).as('getFeatureFlags');
     });
+
     it('Quotas and quota usages display properly', function () {
       cy.visitWithLogin('/account/quotas');
       cy.wait(['@getFeatureFlags', '@getObjectStorageEndpoints']);
@@ -332,9 +335,11 @@ describe('Quota workflow tests', () => {
         .should('be.visible')
         .click();
       cy.wait('@getQuotasError');
-      cy.get('[data-qa-error-msg="true"]')
-        .should('be.visible')
-        .should('have.text', errorMsg);
+      cy.get('[data-testid="endpoint-quotas-table-container"]').within(() => {
+        cy.get('[data-qa-error-msg="true"]')
+          .should('be.visible')
+          .should('have.text', errorMsg);
+      });
     });
   });
 
@@ -508,9 +513,12 @@ describe('Quota workflow tests', () => {
         .should('be.visible')
         .click();
       cy.wait('@getQuotasError');
-      cy.get('[data-qa-error-msg="true"]')
-        .should('be.visible')
-        .should('have.text', errorMsg);
+
+      cy.get('[data-testid="endpoint-quotas-table-container"]').within(() => {
+        cy.get('[data-qa-error-msg="true"]')
+          .should('be.visible')
+          .should('have.text', errorMsg);
+      });
     });
 
     // this test executed in context of internal user, using mockApiInternalUser()

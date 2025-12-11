@@ -17,6 +17,8 @@ import type {
 import type { SelectOption } from '@linode/ui';
 import type { UseQueryResult } from '@tanstack/react-query';
 
+export const QUOTA_ROW_MIN_HEIGHT = 58;
+
 type UseGetLocationsForQuotaService =
   | {
       isFetchingRegions: boolean;
