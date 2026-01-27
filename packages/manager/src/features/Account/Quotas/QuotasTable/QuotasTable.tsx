@@ -1,6 +1,4 @@
-import { quotaQueries, useQuotasQuery } from '@linode/queries';
 import { Dialog, ErrorState } from '@linode/ui';
-import { useQueries } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
 
@@ -12,30 +10,29 @@ import { TableHead } from 'src/components/TableHead';
 import { TableRow } from 'src/components/TableRow/TableRow';
 import { TableRowEmpty } from 'src/components/TableRowEmpty/TableRowEmpty';
 import { TableRowLoading } from 'src/components/TableRowLoading/TableRowLoading';
-import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
+import { useGetQuotasWithUsage } from '../hooks/useGetQuotasWithUsage';
 import { QuotasIncreaseForm } from '../QuotasIncreaseForm';
-import { getQuotasFilters, QUOTA_ROW_MIN_HEIGHT } from '../utils';
+import { QUOTA_ROW_MIN_HEIGHT } from '../utils';
 import { QuotasTableRow } from './QuotasTableRow';
 
-import type { Filter, Quota, QuotaType } from '@linode/api-v4';
+import type { Quota, QuotaType } from '@linode/api-v4';
 import type { SelectOption } from '@linode/ui';
 import type { AttachmentError } from 'src/features/Support/SupportTicketDetail/SupportTicketDetail';
 
 interface QuotasTableProps {
+  collectionName: string;
   selectedLocation: null | SelectOption<Quota['region_applied']>;
   selectedService: SelectOption<QuotaType>;
 }
 
 export const QuotasTable = (props: QuotasTableProps) => {
-  const { selectedLocation, selectedService } = props;
+  const { selectedLocation, selectedService, collectionName } = props;
   const navigate = useNavigate();
-  const pagination = usePaginationV2({
-    currentRoute: '/quotas',
-    initialPage: 1,
-    preferenceKey: 'quotas-table',
-  });
+
   const hasSelectedLocation = Boolean(selectedLocation);
+  const isLocalQuotaScope = collectionName !== 'global-quotas';
+
   const [supportModalOpen, setSupportModalOpen] = React.useState(false);
   const [selectedQuota, setSelectedQuota] = React.useState<Quota | undefined>();
   const [convertedResourceMetrics, setConvertedResourceMetrics] =
@@ -46,47 +43,25 @@ export const QuotasTable = (props: QuotasTableProps) => {
       limit: 0,
       metric: '',
     });
-  const filters: Filter = getQuotasFilters({
-    location: selectedLocation,
-    service: selectedService,
-  });
 
   const {
-    data: quotas,
-    error: quotasError,
+    data: quotasWithUsage,
+    quotas,
+    errorMessage: quotasErrorMessage,
+    queries: quotaUsageQueries,
     isFetching: isFetchingQuotas,
-  } = useQuotasQuery(
+    pagination,
+  } = useGetQuotasWithUsage(
+    selectedLocation?.value,
     selectedService.value,
-    {
-      page: pagination.page,
-      page_size: pagination.pageSize,
-    },
-    filters,
-    Boolean(selectedLocation?.value)
+    '/quotas',
+    'quotas-table',
+    collectionName,
+    isLocalQuotaScope ? Boolean(selectedLocation?.value) : true
   );
 
-  // Quota Usage Queries
-  // For each quota, fetch the usage in parallel
-  // This will only fetch for the paginated set
-  const quotaIds = quotas?.data.map((quota) => quota.quota_id) ?? [];
-  const quotaUsageQueries = useQueries({
-    queries: quotaIds.map((quotaId) =>
-      quotaQueries.service(selectedService.value)._ctx.usage(quotaId)
-    ),
-  });
-
-  // Combine the quotas with their usage
-  const quotasWithUsage = React.useMemo(
-    () =>
-      quotas?.data.map((quota, index) => ({
-        ...quota,
-        usage: quotaUsageQueries?.[index]?.data,
-      })) ?? [],
-    [quotas, quotaUsageQueries]
-  );
-
-  if (quotasError) {
-    return <ErrorState errorText={quotasError[0].reason} />;
+  if (quotasErrorMessage) {
+    return <ErrorState errorText={quotasErrorMessage} />;
   }
 
   const onIncreaseQuotaTicketCreated = (
@@ -127,7 +102,7 @@ export const QuotasTable = (props: QuotasTableProps) => {
               rows={3}
               sx={{ height: QUOTA_ROW_MIN_HEIGHT }}
             />
-          ) : !selectedLocation ? (
+          ) : isLocalQuotaScope && !selectedLocation ? (
             <TableRowEmpty
               colSpan={4}
               message="Apply filters above to see quotas and current usage."
@@ -159,6 +134,7 @@ export const QuotasTable = (props: QuotasTableProps) => {
           )}
         </TableBody>
       </Table>
+
       {selectedLocation && !isFetchingQuotas && (
         <PaginationFooter
           count={quotas?.results ?? 0}

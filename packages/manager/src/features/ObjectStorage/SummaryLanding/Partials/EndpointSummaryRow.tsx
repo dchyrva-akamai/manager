@@ -6,8 +6,7 @@ import { TableCell } from 'src/components/TableCell';
 import { TableRow } from 'src/components/TableRow';
 import { TableRowError } from 'src/components/TableRowError/TableRowError';
 import { TableRowLoading } from 'src/components/TableRowLoading/TableRowLoading';
-
-import { useGetObjUsagePerEndpoint } from '../hooks/useGetObjUsagePerEndpoint';
+import { useGetQuotasWithUsage } from 'src/features/Account/Quotas/hooks/useGetQuotasWithUsage';
 
 interface Props {
   endpoint: string;
@@ -20,7 +19,14 @@ export const EndpointSummaryRow = ({ endpoint }: Props) => {
     data: quotaWithUsage,
     isFetching,
     isError,
-  } = useGetObjUsagePerEndpoint(endpoint);
+  } = useGetQuotasWithUsage(
+    endpoint,
+    'object-storage',
+    '/object-storage/summary',
+    'object-storage-summary-table',
+    'quotas',
+    Boolean(endpoint)
+  );
 
   if (isFetching) {
     return <TableRowLoading columns={3} />;

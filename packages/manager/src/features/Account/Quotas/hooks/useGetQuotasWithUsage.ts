@@ -4,34 +4,42 @@ import * as React from 'react';
 import { getQuotasFilters } from 'src/features/Account/Quotas/utils';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
-import type { Filter } from '@linode/api-v4';
+import type { Filter, QuotaType } from '@linode/api-v4';
+import type { ToSubOptions } from '@tanstack/react-router';
 
-const SERVICE = 'object-storage';
-
-export const useGetObjUsagePerEndpoint = (selectedLocation: string) => {
+export const useGetQuotasWithUsage = (
+  selectedLocation: string,
+  selectedService: QuotaType,
+  currentRoute: ToSubOptions['to'],
+  paginationPreferenceKey: string,
+  collectionName: string,
+  enabled = true
+) => {
   const pagination = usePaginationV2({
-    currentRoute: '/quotas',
+    currentRoute,
     initialPage: 1,
-    preferenceKey: 'quotas-table',
+    preferenceKey: paginationPreferenceKey,
   });
 
   const filters: Filter = getQuotasFilters({
     location: { label: '', value: selectedLocation },
-    service: { label: '', value: SERVICE },
+    service: { label: '', value: selectedService },
   });
 
   const {
     data: quotas,
+    error: quotasError,
     isError: isQuotasError,
     isFetching: isFetchingQuotas,
   } = useQuotasQuery(
-    SERVICE,
+    selectedService,
+    collectionName,
     {
       page: pagination.page,
       page_size: pagination.pageSize,
     },
     filters,
-    Boolean(selectedLocation)
+    enabled
   );
 
   // Quota Usage Queries
@@ -40,7 +48,7 @@ export const useGetObjUsagePerEndpoint = (selectedLocation: string) => {
   const quotaIds = quotas?.data.map((quota) => quota.quota_id) ?? [];
   const quotaUsageQueries = useQueries({
     queries: quotaIds.map((quotaId) =>
-      quotaQueries.service(SERVICE)._ctx.usage(quotaId)
+      quotaQueries.service(selectedService, collectionName)._ctx.usage(quotaId)
     ),
   });
 
@@ -56,8 +64,14 @@ export const useGetObjUsagePerEndpoint = (selectedLocation: string) => {
 
   return {
     data: quotaWithUsage,
+    quotas,
+    queries: quotaUsageQueries,
+    errorMessage:
+      (quotasError && quotasError[0]?.reason) ||
+      quotaUsageQueries.find((query) => query.isError)?.error.message,
     isError: isQuotasError || quotaUsageQueries.some((query) => query.isError),
     isFetching:
       isFetchingQuotas || quotaUsageQueries.some((query) => query.isFetching),
+    pagination,
   };
 };

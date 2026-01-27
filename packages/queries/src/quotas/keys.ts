@@ -1,10 +1,4 @@
-import {
-  getGlobalQuotas,
-  getGlobalQuotaUsage,
-  getQuota,
-  getQuotas,
-  getQuotaUsage,
-} from '@linode/api-v4';
+import { getQuota, getQuotas, getQuotaUsage } from '@linode/api-v4';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 
 import { getAllQuotas } from './requests';
@@ -12,38 +6,22 @@ import { getAllQuotas } from './requests';
 import type { Filter, Params, QuotaType } from '@linode/api-v4';
 
 export const quotaQueries = createQueryKeys('quotas', {
-  service: (type: QuotaType) => ({
+  service: (type: QuotaType, collection: string) => ({
     contextQueries: {
       all: (params: Params = {}, filter: Filter = {}) => ({
-        queryFn: () => getAllQuotas(type, params, filter),
+        queryFn: () => getAllQuotas(type, collection, params, filter),
         queryKey: [params, filter],
       }),
       paginated: (params: Params = {}, filter: Filter = {}) => ({
-        queryFn: () => getQuotas(type, params, filter),
+        queryFn: () => getQuotas(type, collection, params, filter),
         queryKey: [params, filter],
       }),
       quota: (id: number) => ({
-        queryFn: () => getQuota(type, id),
+        queryFn: () => getQuota(type, collection, id),
         queryKey: [id],
       }),
       usage: (id: string) => ({
-        queryFn: () => getQuotaUsage(type, id),
-        queryKey: [id],
-      }),
-    },
-    queryKey: [type],
-  }),
-});
-
-export const globalQuotaQueries = createQueryKeys('global-quotas', {
-  service: (type: QuotaType) => ({
-    contextQueries: {
-      paginated: (params: Params = {}, filter: Filter = {}) => ({
-        queryFn: () => getGlobalQuotas(type, params, filter),
-        queryKey: [params, filter],
-      }),
-      usage: (id: string) => ({
-        queryFn: () => getGlobalQuotaUsage(type, id),
+        queryFn: () => getQuotaUsage(type, collection, id),
         queryKey: [id],
       }),
     },
