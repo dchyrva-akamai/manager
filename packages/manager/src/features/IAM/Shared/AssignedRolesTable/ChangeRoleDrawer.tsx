@@ -1,3 +1,4 @@
+import { Select } from '@akamai/cds-components/react';
 import {
   useAccountRoles,
   useGetDefaultDelegationAccessQuery,
@@ -5,13 +6,7 @@ import {
   useUserRoles,
   useUserRolesMutation,
 } from '@linode/queries';
-import {
-  ActionsPanel,
-  Autocomplete,
-  Drawer,
-  Notice,
-  Typography,
-} from '@linode/ui';
+import { ActionsPanel, Drawer, Notice, Typography } from '@linode/ui';
 import { useTheme } from '@mui/material/styles';
 import { useParams } from '@tanstack/react-router';
 import { enqueueSnackbar } from 'notistack';
@@ -190,16 +185,22 @@ export const ChangeRoleDrawer = ({ mode, onClose, open, role }: Props) => {
           control={control}
           name="roleName"
           render={({ field, fieldState }) => (
-            <Autocomplete
-              errorText={fieldState.error?.message}
-              label="Assign New Roles"
-              loading={accountPermissionsLoading}
-              onChange={(_, value) => field.onChange(value)}
-              options={allRoles}
+            <Select
+              autocomplete
+              clearable
+              error={Boolean(fieldState.error?.message)}
+              errorMessage={fieldState.error?.message ?? ''}
+              isLoading={accountPermissionsLoading}
+              items={allRoles}
+              noItemsLabel="You have no options to choose from"
+              onChange={(event) => {
+                const newValue = event.detail as unknown as null | RolesType;
+                field.onChange(newValue);
+              }}
               placeholder="Select a Role"
-              sx={{ marginBottom: theme.spacingFunction(16) }}
-              textFieldProps={{ hideLabel: true, noMarginTop: true }}
-              value={field.value || null}
+              selected={field.value || null}
+              style={{ marginBottom: theme.tokens.spacing.S16 }}
+              valueFn={(item) => (item as RolesType).label}
             />
           )}
           rules={{ required: 'Role is required.' }}
