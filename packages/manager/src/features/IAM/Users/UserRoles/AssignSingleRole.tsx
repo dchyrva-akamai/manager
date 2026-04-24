@@ -1,4 +1,5 @@
-import { Autocomplete, Button, DeleteIcon } from '@linode/ui';
+import { Select } from '@akamai/cds-components/react';
+import { Button, DeleteIcon } from '@linode/ui';
 import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
@@ -51,17 +52,21 @@ export const AssignSingleRole = ({
           control={control}
           name={`roles.${index}.role`}
           render={({ field: { onChange, value }, fieldState }) => (
-            <Autocomplete
-              errorText={fieldState.error?.message}
-              label="Assign New Roles"
-              onChange={(event, newValue) => {
+            <Select
+              autocomplete
+              clearable
+              error={Boolean(fieldState.error?.message)}
+              errorMessage={fieldState.error?.message ?? ''}
+              items={options}
+              noItemsLabel="You have no options to choose from"
+              onChange={(event) => {
+                const newValue = event.detail as unknown as null | RolesType;
                 onChange(newValue);
                 setValue(`roles.${index}.entities`, null);
               }}
-              options={options}
               placeholder="Select a Role"
-              textFieldProps={{ hideLabel: true }}
-              value={value || null}
+              selected={value || null}
+              valueFn={(item) => (item as RolesType).label}
             />
           )}
           rules={{
