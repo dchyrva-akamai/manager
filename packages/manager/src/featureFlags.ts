@@ -305,6 +305,7 @@ export interface Flags {
   resourceLock: ResourceLockFlag;
   secureVmCopy: SecureVMCopy;
   selfServeBetas: boolean;
+  serverlessInference: boolean;
   soldOutChips: boolean;
   supportTicketSeverity: boolean;
   taxBanner: TaxBanner;
