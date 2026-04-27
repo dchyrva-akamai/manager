@@ -1,4 +1,5 @@
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
+import { isWithinDays } from '@akamai/compute-ui-core/datetime';
 import {
   useDatabaseTypesQuery,
   useProfile,
@@ -16,7 +17,7 @@ import {
   getIsLinkInactive,
   useIsDatabasesEnabled,
 } from 'src/features/Databases/utilities';
-import { isWithinDays, parseAPIDate } from 'src/utilities/date';
+import { parseAPIDate } from 'src/utilities/date';
 import { formatDate } from 'src/utilities/formatDate';
 
 import { StyledActionMenuWrapper } from '../shared.styles';

@@ -20,34 +20,3 @@ export const parseAPIDate = (date: number | string) => {
   reportException(err);
   throw err;
 };
-
-export const isBefore = (d1: string, d2: string) => {
-  const date1 = parseAPIDate(d1);
-  const date2 = parseAPIDate(d2);
-  return date1 < date2;
-};
-
-export const isAfter = (d1: string, d2: string) => {
-  const date1 = parseAPIDate(d1);
-  const date2 = parseAPIDate(d2);
-  return date1 > date2;
-};
-
-/**
- * Determines whether or not a date has occurred within the last
- * some number of days.
- * @param days number of days
- * @param date date to check for. This is a string because it expects
- * a date as a string returned by the Linode API.
- * @returns {boolean} true if date has occurred within the last x days
- */
-export const isWithinDays = (days: number, date?: string): boolean => {
-  if (!date) {
-    return true;
-  }
-
-  const dateToCheck = DateTime.fromISO(date);
-  const daysAgo = DateTime.local().minus({ days });
-
-  return dateToCheck.diff(daysAgo).milliseconds > 0;
-};

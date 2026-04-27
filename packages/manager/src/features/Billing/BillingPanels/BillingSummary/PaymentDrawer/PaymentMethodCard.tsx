@@ -1,3 +1,4 @@
+import { isCreditCardExpired } from '@akamai/compute-ui-core/datetime';
 import { Chip } from '@linode/ui';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
@@ -8,7 +9,7 @@ import {
 } from 'src/components/PaymentMethodRow/ThirdPartyPayment';
 import { SelectionCard } from 'src/components/SelectionCard/SelectionCard';
 import { getIcon as getCreditCardIcon } from 'src/features/Billing/BillingPanels/BillingSummary/PaymentDrawer/CreditCard';
-import { formatExpiry, isCreditCardExpired } from 'src/utilities/creditCard';
+import { formatExpiry } from 'src/utilities/creditCard';
 
 import type { PaymentMethod } from '@linode/api-v4';
 
