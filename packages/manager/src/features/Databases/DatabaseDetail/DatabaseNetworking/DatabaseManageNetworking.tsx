@@ -1,7 +1,7 @@
+import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { useAllVPCsQuery } from '@linode/queries';
 import {
   BetaChip,
-  Button,
   CircleProgress,
   ErrorState,
   Stack,
@@ -96,16 +96,19 @@ export const DatabaseManageNetworking = ({ database }: Props) => {
             in progress.
           </Typography>
         </Stack>
-        <Button
-          buttonType="outlined"
-          className={classes.actionBtn}
-          disabled={!hasVPCs}
-          onClick={onManageAccess}
-          TooltipProps={{ placement: 'top' }}
+        <Tooltip
+          disabled={hasVPCs}
           tooltipText="To manage networking, you need to have a VPC in the same region as the database cluster."
         >
-          Manage Networking
-        </Button>
+          <Button
+            className={classes.actionBtn}
+            disabled={!hasVPCs}
+            onClick={onManageAccess}
+          >
+            Manage Networking
+            {!hasVPCs ? <Icon icon="info-outline" size="m" /> : null}
+          </Button>
+        </Tooltip>
       </div>
 
       <StyledGridContainer container size={gridContainerSize} spacing={0}>

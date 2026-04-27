@@ -7,7 +7,10 @@ import {
   databaseFactory,
 } from 'src/factories/databases';
 import { makeResourcePage } from 'src/mocks/serverHandlers';
-import { renderWithTheme } from 'src/utilities/testHelpers';
+import {
+  getShadowRootElement,
+  renderWithTheme,
+} from 'src/utilities/testHelpers';
 
 import { DatabaseConnectionPools } from './DatabaseConnectionPools';
 
@@ -150,7 +153,7 @@ describe('DatabaseConnectionPools Component', () => {
     expect(serviceURIText).not.toBeInTheDocument();
   });
 
-  it('should disable the Add Pool button when the database cluster is not active', () => {
+  it('should disable the Add Pool button when the database cluster is not active', async () => {
     const provisioningDatabase = databaseFactory.build({
       platform: 'rdbms-default',
       private_network: null,
@@ -166,7 +169,13 @@ describe('DatabaseConnectionPools Component', () => {
     renderWithTheme(
       <DatabaseConnectionPools database={provisioningDatabase} />
     );
-    const addPoolBtn = screen.getByRole('button');
+    // eslint-disable-next-line testing-library/no-node-access -- cds-button Web Component host
+    const addPoolHost = screen.getByText('Add Pool').closest('cds-button');
+    expect(addPoolHost).not.toBeNull();
+    const addPoolBtn = await getShadowRootElement(
+      addPoolHost as HTMLElement,
+      'button'
+    );
     expect(addPoolBtn).toBeDisabled();
   });
 });

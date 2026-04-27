@@ -6,7 +6,10 @@ import { describe, it } from 'vitest';
 
 import { subnetFactory, vpcFactory } from 'src/factories';
 import { databaseFactory } from 'src/factories/databases';
-import { renderWithTheme } from 'src/utilities/testHelpers';
+import {
+  getShadowRootElement,
+  renderWithTheme,
+} from 'src/utilities/testHelpers';
 
 import DatabaseManageNetworkingDrawer from './DatabaseManageNetworkingDrawer';
 
@@ -123,8 +126,9 @@ describe('DatabaseManageNetworkingDrawer Component', () => {
     queryMocks.useRegionQuery.mockReturnValue({
       data: mockRegion,
     });
-    await renderWithTheme(<DatabaseManageNetworkingDrawer {...mockProps} />);
-    const saveButton = screen.getByTestId(saveButtonTestId);
+    renderWithTheme(<DatabaseManageNetworkingDrawer {...mockProps} />);
+    const saveButtonHost = screen.getByTestId(saveButtonTestId);
+    const saveButton = await getShadowRootElement(saveButtonHost, 'button');
     expect(saveButton).toBeDisabled();
   });
 
@@ -141,7 +145,8 @@ describe('DatabaseManageNetworkingDrawer Component', () => {
     );
     await userEvent.click(accessCheckbox);
 
-    const saveButton = screen.getByTestId(saveButtonTestId);
+    const saveButtonHost = screen.getByTestId(saveButtonTestId);
+    const saveButton = await getShadowRootElement(saveButtonHost, 'button');
     expect(saveButton).toBeEnabled();
   });
 
@@ -161,9 +166,10 @@ describe('DatabaseManageNetworkingDrawer Component', () => {
     );
     await userEvent.click(accessCheckbox);
 
-    const saveButton = screen.getByTestId(saveButtonTestId);
+    const saveButtonHost = screen.getByTestId(saveButtonTestId);
+    const saveButton = await getShadowRootElement(saveButtonHost, 'button');
     expect(saveButton).toBeEnabled();
-    await userEvent.click(saveButton);
+    await userEvent.click(saveButton!);
     // Check that navigation occurs after form submission
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith({
