@@ -1,4 +1,5 @@
-import { Box, Button, Tooltip, Typography, useTheme } from '@linode/ui';
+import { Button, Tooltip } from '@akamai/cds-components/react';
+import { Box, Typography, useTheme } from '@linode/ui';
 import React from 'react';
 
 import { InlineMenuAction } from 'src/components/InlineMenuAction/InlineMenuAction';
@@ -77,12 +78,12 @@ export const AccountDelegationsTableRow = ({ delegation, index }: Props) => {
                 }}
               >
                 <Tooltip
-                  placement="top"
-                  title="Click to View All Delegate Users"
+                  tooltipPlacement="top"
+                  tooltipText="Click to View All Delegate Users"
                 >
                   <Button
                     onClick={handleUpdateDelegations}
-                    sx={{
+                    style={{
                       color: theme.tokens.alias.Content.Text.Primary.Default,
                       font: theme.tokens.alias.Typography.Label.Regular.Xs,
                       padding: 0,

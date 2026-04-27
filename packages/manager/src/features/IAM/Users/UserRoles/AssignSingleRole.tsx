@@ -1,5 +1,5 @@
-import { Select } from '@akamai/cds-components/react';
-import { Button, DeleteIcon } from '@linode/ui';
+import { Button, Icon, Select, Tooltip } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
@@ -123,14 +123,22 @@ export const AssignSingleRole = ({
           verticalAlign: 'top',
         }}
       >
-        <Button
-          disabled={roles.length === 1}
-          disableRipple
-          onClick={() => onRemove(index)}
-          sx={{ paddingRight: 0 }}
+        <Tooltip
+          disabled={roles.length > 1}
+          tooltipPlacement="bottom"
+          tooltipText={
+            roles.length === 1 ? 'At least one role is required.' : undefined
+          }
         >
-          <DeleteIcon />
-        </Button>
+          <Button
+            disabled={roles.length === 1}
+            onClick={() => onRemove(index)}
+            style={{ paddingLeft: Spacing.S12 }}
+            variant="icon"
+          >
+            <Icon icon="delete" size="m" />
+          </Button>
+        </Tooltip>
       </Box>
     </Box>
   );

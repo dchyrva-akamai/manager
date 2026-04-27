@@ -1,7 +1,8 @@
 import { Select } from '@akamai/cds-components/react';
+import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { useAccountUsers } from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
-import { Button, Paper } from '@linode/ui';
+import { Paper } from '@linode/ui';
 import { Grid, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate, useSearch } from '@tanstack/react-router';
@@ -232,25 +233,31 @@ export const UsersLanding = () => {
             )}
           </Grid>
           <Grid sx={{ alignSelf: 'flex-start' }}>
-            <Button
-              buttonType="primary"
-              data-pendo-id={
-                isDelegateUserType
-                  ? IAM_DELEGATE_USERS_PENDO_IDS.addUserButton
-                  : isChildUserType
-                    ? IAM_CHILD_USERS_PENDO_IDS.addUserButton
-                    : IAM_PARENT_USERS_PENDO_IDS.addUserButton
-              }
-              disabled={!canCreateUser}
-              onClick={() => setIsCreateDrawerOpen(true)}
+            <Tooltip
+              disabled={canCreateUser}
+              tooltipPlacement="bottom"
               tooltipText={
                 !canCreateUser
                   ? 'You do not have permission to create other users.'
                   : undefined
               }
             >
-              Add a User
-            </Button>
+              <Button
+                data-pendo-id={
+                  isDelegateUserType
+                    ? IAM_DELEGATE_USERS_PENDO_IDS.addUserButton
+                    : isChildUserType
+                      ? IAM_CHILD_USERS_PENDO_IDS.addUserButton
+                      : IAM_PARENT_USERS_PENDO_IDS.addUserButton
+                }
+                disabled={!canCreateUser}
+                onClick={() => setIsCreateDrawerOpen(true)}
+                variant="primary"
+              >
+                Add a User
+                {!canCreateUser && <Icon icon="info-outline" size="m" />}
+              </Button>
+            </Tooltip>
           </Grid>
         </Grid>
         <Table aria-label="List of Users" sx={{ tableLayout: 'fixed' }}>
