@@ -1,38 +1,14 @@
-import { getUserTimezone } from '@akamai/compute-ui-core/datetime';
-import { DateTime, Duration } from 'luxon';
+import {
+  getUserTimezone,
+  shouldHumanize,
+} from '@akamai/compute-ui-core/datetime';
+import { DateTime } from 'luxon';
 
 import { DATETIME_DISPLAY_FORMAT, ISO_DATE_FORMAT } from 'src/constants';
 import { reportException } from 'src/exceptionReporting';
 import { parseAPIDate } from 'src/utilities/date';
 
 export type TimeInterval = 'day' | 'month' | 'never' | 'week' | 'year';
-
-const durationMap = {
-  day: () => Duration.fromObject({ days: 1 }),
-  month: () => Duration.fromObject({ months: 1 }),
-  never: () => Duration.fromObject({ years: 1000 }),
-  week: () => Duration.fromObject({ weeks: 1 }),
-  year: () => Duration.fromObject({ years: 1 }),
-};
-
-export const shouldHumanize = (
-  time: DateTime,
-  cutoff?: TimeInterval
-): boolean => {
-  // If cutoff is not provided, use the default ISO output.
-  if (!cutoff) {
-    return false;
-  }
-  const duration = durationMap[cutoff]();
-  /**
-   * Humanize the date if the difference between the current date and provided date
-   * is lower than the cutoff
-   */
-  return (
-    DateTime.local().plus(duration) > time &&
-    DateTime.local().minus(duration) < time
-  );
-};
 
 interface FormatDateOptions {
   displayTime?: boolean;
