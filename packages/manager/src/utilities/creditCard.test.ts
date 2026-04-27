@@ -1,51 +1,10 @@
 import { parseExpiryYear } from '@akamai/compute-ui-core/datetime';
 import { CreditCardSchema } from '@linode/validation';
-import { Settings } from 'luxon';
 
-import { formatExpiry, isCreditCardExpired } from './creditCard';
+import { formatExpiry } from './creditCard';
 
 const currentYear = new Date().getFullYear();
 const currentYearFirstTwoDigits = String(currentYear).slice(0, 2);
-
-describe('isCreditCardExpired', () => {
-  describe('given today is 01/01/2019', () => {
-    // Mock that the current date is 1/1/2019
-    Settings.now = () => new Date(2019, 0, 1).valueOf();
-
-    [
-      ['01/2018', true],
-      ['02/2018', true],
-      ['03/2018', true],
-      ['04/2018', true],
-      ['05/2018', true],
-      ['06/2018', true],
-      ['07/2018', true],
-      ['08/2018', true],
-      ['09/2018', true],
-      ['10/2018', true],
-      ['11/2018', true],
-      ['12/2018', true],
-      ['01/2019', false], // A card is still valid until the end of the month
-      ['02/2019', false],
-      ['03/2019', false],
-      ['04/2019', false],
-      ['05/2019', false],
-      ['06/2019', false],
-      ['07/2019', false],
-      ['08/2019', false],
-      ['09/2019', false],
-      ['10/2019', false],
-      ['11/2019', false],
-      ['12/2019', false],
-    ].forEach(([expiration, result]: [string, boolean]) => {
-      describe(`and a expiration date of ${expiration}`, () => {
-        it(`should return ${result}`, () => {
-          expect(isCreditCardExpired(expiration)).toBe(result);
-        });
-      });
-    });
-  });
-});
 
 describe('formatExpiry', () => {
   [

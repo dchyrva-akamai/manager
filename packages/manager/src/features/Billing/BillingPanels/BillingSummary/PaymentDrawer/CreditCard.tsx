@@ -1,3 +1,4 @@
+import { isCreditCardExpired } from '@akamai/compute-ui-core/datetime';
 import { Box, Typography } from '@linode/ui';
 import * as React from 'react';
 import { makeStyles } from 'tss-react/mui';
@@ -9,7 +10,7 @@ import JCBIcon from 'src/assets/icons/payment/jcb.svg';
 import MastercardIcon from 'src/assets/icons/payment/mastercard.svg';
 import VisaIcon from 'src/assets/icons/payment/visa.svg';
 import { MaskableText } from 'src/components/MaskableText/MaskableText';
-import { formatExpiry, isCreditCardExpired } from 'src/utilities/creditCard';
+import { formatExpiry } from 'src/utilities/creditCard';
 
 import type {
   CardType,
