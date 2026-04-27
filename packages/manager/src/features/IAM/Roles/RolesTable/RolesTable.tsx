@@ -1,4 +1,6 @@
 import {
+  Button,
+  Icon,
   Pagination,
   Select,
   sortRows,
@@ -9,8 +11,9 @@ import {
   TableHeaderCell,
   TableRow,
   TableRowExpanded,
+  Tooltip,
 } from '@akamai/cds-components/react';
-import { Button, Hidden, Typography } from '@linode/ui';
+import { Hidden, Typography } from '@linode/ui';
 import { capitalizeAllWords } from '@linode/utilities';
 import { useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
@@ -215,18 +218,9 @@ export const RolesTable = ({ roles = [] }: Props) => {
               valueFn={(item) => (item as SelectOption).label}
             />
           </Grid>
-          <Button
-            buttonType="primary"
-            data-pendo-id={
-              isDelegateUserType
-                ? IAM_ROLES_PENDO_IDS.assignSelectedRolesAsDelegate
-                : isChildUserType
-                  ? IAM_ROLES_PENDO_IDS.assignSelectedRolesAsChild
-                  : IAM_ROLES_PENDO_IDS.assignSelectedRolesAsParent
-            }
-            disabled={selectedRows.length === 0 || !isAccountAdmin}
-            onClick={() => handleAssignSelectedRoles()}
-            sx={{ height: 34 }}
+          <Tooltip
+            disabled={isAccountAdmin && selectedRows.length > 0}
+            tooltipPlacement="bottom"
             tooltipText={
               !isAccountAdmin
                 ? 'You do not have permission to assign roles.'
@@ -235,8 +229,25 @@ export const RolesTable = ({ roles = [] }: Props) => {
                   : undefined
             }
           >
-            Assign Selected Roles
-          </Button>
+            <Button
+              data-pendo-id={
+                isDelegateUserType
+                  ? IAM_ROLES_PENDO_IDS.assignSelectedRolesAsDelegate
+                  : isChildUserType
+                    ? IAM_ROLES_PENDO_IDS.assignSelectedRolesAsChild
+                    : IAM_ROLES_PENDO_IDS.assignSelectedRolesAsParent
+              }
+              disabled={selectedRows.length === 0 || !isAccountAdmin}
+              onClick={() => handleAssignSelectedRoles()}
+              style={{ height: 34 }}
+              variant="primary"
+            >
+              Assign Selected Roles
+              {!isAccountAdmin || selectedRows.length === 0 ? (
+                <Icon icon="info-outline" size="m" />
+              ) : null}
+            </Button>
+          </Tooltip>
         </Grid>
         <Table data-testid="roles-table">
           <TableHead>

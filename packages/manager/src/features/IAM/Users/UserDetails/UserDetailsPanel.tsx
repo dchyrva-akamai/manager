@@ -1,4 +1,5 @@
-import { Box, Button, Paper, Stack, Typography } from '@linode/ui';
+import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { Box, Paper, Stack, Typography } from '@linode/ui';
 import { Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from '@tanstack/react-router';
@@ -41,6 +42,11 @@ export const UserDetailsPanel = ({
 
   const isProxyOrDelegateUserType =
     activeUser.user_type === 'proxy' || activeUser.user_type === 'delegate';
+
+  const isDeleteUserDisabled =
+    !permissions.delete_user ||
+    profileUserName === activeUser.username ||
+    isProxyOrDelegateUserType;
 
   let deleteTooltipText: string | undefined;
   if (!permissions?.delete_user) {
@@ -167,20 +173,25 @@ export const UserDetailsPanel = ({
           <Button
             disabled={!permissions?.update_user}
             onClick={() => setIsEditDrawerOpen(true)}
+            variant="link"
           >
             Edit Details
           </Button>
-          <Button
-            disabled={
-              !permissions?.delete_user ||
-              profileUserName === activeUser.username ||
-              isProxyOrDelegateUserType
-            }
-            onClick={() => setIsDeleteDialogOpen(true)}
+          <Tooltip
+            disabled={!isDeleteUserDisabled}
             tooltipText={deleteTooltipText}
           >
-            Delete User
-          </Button>
+            <Button
+              disabled={isDeleteUserDisabled}
+              onClick={() => setIsDeleteDialogOpen(true)}
+              variant="link"
+            >
+              Delete User
+              {isDeleteUserDisabled ? (
+                <Icon icon="info-outline" size="m" />
+              ) : null}
+            </Button>
+          </Tooltip>
         </Box>
         <Divider
           sx={(theme) => ({
