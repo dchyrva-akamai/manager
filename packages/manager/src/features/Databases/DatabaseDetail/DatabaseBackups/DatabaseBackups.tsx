@@ -1,8 +1,8 @@
+import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { useDatabaseQuery, useRegionsQuery } from '@linode/queries';
 import { useIsGeckoEnabled } from '@linode/shared';
 import {
   Box,
-  Button,
   Divider,
   Notice,
   Paper,
@@ -179,6 +179,10 @@ export const DatabaseBackups = () => {
     name: ['date', 'time', 'region'],
   });
 
+  const unableToRestoreDisabled =
+    Boolean(unableToRestoreCopy) ||
+    (versionOption === 'dateTime' && (!date || !time || !!errors.time));
+
   if (isDefaultDatabase) {
     return (
       <Paper style={{ marginTop: 16 }}>
@@ -311,19 +315,22 @@ export const DatabaseBackups = () => {
               />
             </StyledRegionStack>
             <Box display="flex" justifyContent="flex-end">
-              <Button
-                buttonType="primary"
-                data-qa-settings-button="restore"
-                disabled={
-                  Boolean(unableToRestoreCopy) ||
-                  (versionOption === 'dateTime' &&
-                    (!date || !time || !!errors.time))
-                }
-                onClick={() => setIsRestoreDialogOpen(true)}
+              <Tooltip
+                disabled={!unableToRestoreDisabled}
                 tooltipText={unableToRestoreCopy}
               >
-                Restore
-              </Button>
+                <Button
+                  data-qa-settings-button="restore"
+                  disabled={unableToRestoreDisabled}
+                  onClick={() => setIsRestoreDialogOpen(true)}
+                  variant="primary"
+                >
+                  Restore
+                  {unableToRestoreDisabled ? (
+                    <Icon icon="info-outline" size="m" />
+                  ) : null}
+                </Button>
+              </Tooltip>
             </Box>
             {database && (
               <DatabaseBackupsDialog
