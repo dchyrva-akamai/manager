@@ -1,11 +1,11 @@
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 
 import {
   DATETIME_DISPLAY_FORMAT,
   ISO_DATETIME_NO_TZ_FORMAT,
 } from 'src/constants';
 
-import { formatDate, shouldHumanize } from './formatDate';
+import { formatDate } from './formatDate';
 
 vi.mock('@akamai/compute-ui-core/datetime', async () => {
   const actual = await vi.importActual('@akamai/compute-ui-core/datetime');
@@ -13,21 +13,6 @@ vi.mock('@akamai/compute-ui-core/datetime', async () => {
     ...actual,
     getUserTimezone: vi.fn().mockReturnValue('utc'),
   };
-});
-
-describe('shouldHumanize', () => {
-  it('should NOT humanize few days duration with day cutoff', () => {
-    expect(
-      shouldHumanize(DateTime.local().plus({ days: 23 }), 'day')
-    ).toBeFalsy();
-  });
-  it('should humanize days duration with month cutoff', () => {
-    const time = DateTime.local().plus({ days: 23 });
-    expect(
-      DateTime.local().plus(Duration.fromObject({ months: 1 })) > time
-    ).toBeTruthy();
-    expect(shouldHumanize(time, 'month')).toBeTruthy();
-  });
 });
 
 describe('formatDate utility', () => {
