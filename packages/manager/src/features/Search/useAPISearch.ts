@@ -7,6 +7,7 @@ import {
   useInfiniteLinodesQuery,
   useInfiniteNodebalancersQuery,
   useInfiniteVolumesQuery,
+  useReservedIPsInfiniteQuery,
   useStackScriptsInfiniteQuery,
   useStreamsInfiniteQuery,
 } from '@linode/queries';
@@ -14,6 +15,7 @@ import { getAPIFilterFromQuery } from '@linode/search';
 import { useDebouncedValue } from '@linode/utilities';
 
 import { useIsACLPLogsEnabled } from 'src/features/Delivery/deliveryUtils';
+import { useIsReserveIpEnabled } from 'src/features/ReservedIps/utils';
 import { useKubernetesClustersInfiniteQuery } from 'src/queries/kubernetes';
 import {
   databaseToSearchableItem,
@@ -24,6 +26,7 @@ import {
   kubernetesClusterToSearchableItem,
   linodeToSearchableItem,
   nodeBalToSearchableItem,
+  reservedIpToSearchableItem,
   stackscriptToSearchableItem,
   streamToSearchableItem,
   volumeToSearchableItem,
@@ -114,6 +117,15 @@ const entities = [
     },
   },
   {
+    getSearchableItem: reservedIpToSearchableItem,
+    name: 'reservedIp' as const,
+    query: useReservedIPsInfiniteQuery,
+    requireReserveIpEnabled: true,
+    searchOptions: {
+      searchableFieldsWithoutOperator: ['address', 'tags'],
+    },
+  },
+  {
     getSearchableItem: streamToSearchableItem,
     name: 'stream' as const,
     query: useStreamsInfiniteQuery,
@@ -147,6 +159,7 @@ const entities = [
 export const useAPISearch = ({ enabled, query }: Props) => {
   const debouncedQuery = useDebouncedValue(query);
   const { isACLPLogsEnabled } = useIsACLPLogsEnabled();
+  const { isReserveIpEnabled } = useIsReserveIpEnabled();
 
   const result = entities.map((entity) => {
     const { error, filter } = getAPIFilterFromQuery(
@@ -162,7 +175,8 @@ export const useAPISearch = ({ enabled, query }: Props) => {
         enabled &&
           error === null &&
           Boolean(debouncedQuery) &&
-          (!entity.requireACLPLogsEnabled || isACLPLogsEnabled)
+          (!entity.requireACLPLogsEnabled || isACLPLogsEnabled) &&
+          (!entity.requireReserveIpEnabled || isReserveIpEnabled)
       ),
     };
   });
