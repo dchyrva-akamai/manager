@@ -6,7 +6,6 @@ import {
 } from '@linode/queries';
 import {
   Box,
-  CircleProgress,
   Divider,
   ErrorState,
   Notice,
@@ -40,6 +39,7 @@ import {
   RESIZE_DISABLED_NON_G7_DEDICATED_SHARED_PLAN_TABS_TEXT,
   RESIZE_DISABLED_PREMIUM_PLAN_TAB_TEXT,
 } from '../../constants';
+import { CircleProgress } from '../../shared/CircleProgress';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import {
   StyledGrid,

@@ -1,5 +1,5 @@
 import { useDatabaseTypesQuery, useRegionsQuery } from '@linode/queries';
-import { Box, CircleProgress, ErrorState, TooltipIcon } from '@linode/ui';
+import { Box, ErrorState, TooltipIcon } from '@linode/ui';
 import { convertMegabytesTo, formatStorageUnits } from '@linode/utilities';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
@@ -7,6 +7,7 @@ import * as React from 'react';
 import { DatabaseEngineVersion } from 'src/features/Databases/DatabaseEngineVersion';
 import { useInProgressEvents } from 'src/queries/events/events';
 
+import { CircleProgress } from '../../shared/CircleProgress';
 import { DatabaseStatusDisplay } from '../DatabaseStatusDisplay';
 import {
   StyledStatusBox,

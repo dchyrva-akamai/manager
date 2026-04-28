@@ -1,6 +1,6 @@
 import { Button } from '@akamai/cds-components/react';
 import { useDatabaseCredentialsQuery } from '@linode/queries';
-import { Box, CircleProgress, TooltipIcon, Typography } from '@linode/ui';
+import { Box, TooltipIcon, Typography } from '@linode/ui';
 import { enqueueSnackbar } from 'notistack';
 import * as React from 'react';
 
@@ -15,6 +15,7 @@ import {
 } from 'src/features/Databases/constants';
 import { useFlags } from 'src/hooks/useFlags';
 
+import { CircleProgress } from '../../shared/CircleProgress';
 import { isDefaultDatabase } from '../../utilities';
 import { ConnectionDetailsHostRows } from '../ConnectionDetailsHostRows';
 import { ConnectionDetailsHostRows2 } from '../ConnectionDetailsHostRows2';
@@ -96,7 +97,7 @@ export const DatabaseSummaryConnectionDetails = (props: Props) => {
       {password}
       {showCredentials && credentialsLoading ? (
         <div className={classes.progressCtn}>
-          <CircleProgress noPadding size="xs" />
+          <CircleProgress size="small" style={{ height: 'auto', margin: 0 }} />
         </div>
       ) : (
         credentialsBtn(

@@ -3,7 +3,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useDatabaseEngineConfig, useDatabaseMutation } from '@linode/queries';
 import {
   ActionsPanel,
-  CircleProgress,
   Divider,
   Drawer,
   Notice,
@@ -24,6 +23,7 @@ import {
   ADVANCED_CONFIG_INFO,
   ADVANCED_CONFIG_LEARN_MORE_LINK,
 } from '../../constants';
+import { CircleProgress } from '../../shared/CircleProgress';
 import { DatabaseConfigurationItem } from './DatabaseConfigurationItem';
 import { DatabaseConfigurationSelect } from './DatabaseConfigurationSelect';
 import {
@@ -204,7 +204,10 @@ export const DatabaseAdvancedConfigurationDrawer = (props: Props) => {
         <Divider spacingBottom={20} spacingTop={24} />
         {isLoading && (
           <Stack alignItems="center" height="100%" justifyContent="center">
-            <CircleProgress size="sm" />
+            <CircleProgress
+              size="small"
+              style={{ flex: 'none', height: 'auto', margin: 0 }}
+            />
           </Stack>
         )}
         {!isLoading && configs.length === 0 && (
