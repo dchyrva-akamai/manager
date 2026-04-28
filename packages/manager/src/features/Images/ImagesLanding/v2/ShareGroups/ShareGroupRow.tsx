@@ -1,9 +1,10 @@
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
 import { usePreferences, useProfile } from '@linode/queries';
-import { Hidden, LinkButton, Tooltip } from '@linode/ui';
+import { Hidden, Tooltip } from '@linode/ui';
 import { truncateEnd } from '@linode/utilities';
 import React from 'react';
 
+import { Link } from 'src/components/Link';
 import { getIsTableStripingEnabled } from 'src/features/Profile/Settings/TableStriping.utils';
 import { formatDate } from 'src/utilities/formatDate';
 
@@ -52,17 +53,17 @@ export const ShareGroupRow = (props: Props) => {
       >
         <Tooltip title={label.length > 32 ? label : ''}>
           <span>
-            <LinkButton
-              onClick={() => {}}
-              sx={{
+            <Link
+              style={{
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 display: 'block',
               }}
+              to={`/images/share-groups/owned-groups/${id}`}
             >
               {truncateEnd(label, 32)}
-            </LinkButton>
+            </Link>
           </span>
         </Tooltip>
       </TableCell>

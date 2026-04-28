@@ -26,6 +26,11 @@ export interface ImageCreateUploadSearchParams {
   imageLabel?: string;
 }
 
+export interface ShareGroupDetailsSearchParams extends TableSearchParams {
+  imagesQuery?: string;
+  membersQuery?: string;
+}
+
 type ImageActionRouteParams = {
   action: ImageAction;
   imageId: string;
@@ -37,6 +42,9 @@ type ImageLibraryTypeRouteParams = {
 
 type ShareGroupsTypeRouteParams = {
   shareGroupsType: ShareGroupsType;
+};
+type ShareGroupDetailsRouteParams = {
+  shareGroupId: string;
 };
 
 const imageActions = {
@@ -325,6 +333,24 @@ const shareGroupsCreateRoute = createRoute({
   ).then((m) => m.shareGroupsCreateLazyRoute)
 );
 
+const shareGroupDetailsRoute = createRoute({
+  getParentRoute: () => imagesRoute,
+  params: {
+    parse: ({ shareGroupId }: ShareGroupDetailsRouteParams) => ({
+      shareGroupId,
+    }),
+    stringify: ({ shareGroupId }: ShareGroupDetailsRouteParams) => ({
+      shareGroupId,
+    }),
+  },
+  path: '/share-groups/owned-groups/$shareGroupId',
+  validateSearch: (search: ShareGroupDetailsSearchParams) => search,
+}).lazy(() =>
+  import(
+    'src/features/Images/ImagesLanding/v2/ShareGroups/ShareGroupsDetails/ShareGroupDetailsLazyRoute'
+  ).then((m) => m.shareGroupDetailsLazyRoute)
+);
+
 export const imagesRouteTree = imagesRoute.addChildren([
   imagesIndexRoute.addChildren([imageActionRoute]),
   imageLibraryLandingRoute.addChildren([
@@ -335,6 +361,7 @@ export const imagesRouteTree = imagesRoute.addChildren([
   shareGroupsLandingRoute.addChildren([
     shareGroupsIndexRoute.addChildren([shareGroupsTypeRoute]),
     shareGroupsCreateRoute,
+    shareGroupDetailsRoute,
   ]),
   imagesCreateRoute.addChildren([
     imagesCreateIndexRoute,

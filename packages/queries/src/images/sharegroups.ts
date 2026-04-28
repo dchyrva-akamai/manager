@@ -1,6 +1,8 @@
 import {
   createSharegroup,
   getSharegroup,
+  getSharegroupImages,
+  getSharegroupMembers,
   getSharegroups,
 } from '@linode/api-v4';
 import { getAll } from '@linode/utilities';
@@ -17,9 +19,11 @@ import type {
   APIError,
   CreateSharegroupPayload,
   Filter,
+  Image,
   Params,
   ResourcePage,
   Sharegroup,
+  SharegroupMember,
 } from '@linode/api-v4';
 import type { UseQueryOptions } from '@tanstack/react-query';
 
@@ -44,6 +48,22 @@ export const shareGroupsQueries = createQueryKeys('sharegroups', {
       sharegroup: (sharegroupId: string) => ({
         queryFn: () => getSharegroup(sharegroupId),
         queryKey: [sharegroupId],
+      }),
+      images: (
+        sharegroupId: string,
+        params: Params = {},
+        filters: Filter = {},
+      ) => ({
+        queryFn: () => getSharegroupImages(sharegroupId, params, filters),
+        queryKey: [sharegroupId, 'images', params, filters],
+      }),
+      members: (
+        sharegroupId: string,
+        params: Params = {},
+        filters: Filter = {},
+      ) => ({
+        queryFn: () => getSharegroupMembers(sharegroupId, params, filters),
+        queryKey: [sharegroupId, 'members', params, filters],
       }),
       infinite: (filters: Filter) => ({
         queryFn: ({ pageParam }) =>
@@ -101,6 +121,34 @@ export const useShareGroupsInfiniteQuery = (
     },
     initialPageParam: 1,
     retry: false,
+  });
+
+export const useShareGroupsImagesQuery = (
+  sharegroupId: string,
+  params: Params = {},
+  filters: Filter = {},
+) =>
+  useQuery<ResourcePage<Image>, APIError[]>({
+    ...shareGroupsQueries.sharegroups._ctx.images(
+      sharegroupId,
+      params,
+      filters,
+    ),
+    placeholderData: keepPreviousData,
+  });
+
+export const useShareGroupsMembersQuery = (
+  sharegroupId: string,
+  params: Params = {},
+  filters: Filter = {},
+) =>
+  useQuery<ResourcePage<SharegroupMember>, APIError[]>({
+    ...shareGroupsQueries.sharegroups._ctx.members(
+      sharegroupId,
+      params,
+      filters,
+    ),
+    placeholderData: keepPreviousData,
   });
 
 export const useCreateShareGroupMutation = () => {
