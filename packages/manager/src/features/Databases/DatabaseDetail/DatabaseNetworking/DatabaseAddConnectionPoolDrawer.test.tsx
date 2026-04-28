@@ -3,7 +3,10 @@ import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { describe, it } from 'vitest';
 
-import { renderWithTheme } from 'src/utilities/testHelpers';
+import {
+  getShadowRootElement,
+  renderWithTheme,
+} from 'src/utilities/testHelpers';
 
 import { DatabaseAddConnectionPoolDrawer } from './DatabaseAddConnectionPoolDrawer';
 
@@ -140,5 +143,39 @@ describe('DatabaseAddConnectionPoolDrawer Component', () => {
     expect(modeError).toBeInTheDocument();
     expect(databaseError).toBeInTheDocument();
     expect(usernameError).toBeInTheDocument();
+  });
+
+  it('Should disable the Username input if the Reuse Inbound User checkbox is checked', async () => {
+    renderWithTheme(<DatabaseAddConnectionPoolDrawer {...mockProps} />);
+
+    const usernameInput = screen.getByLabelText('Username');
+    const reuseInboundUserCheckboxHost = screen.getByTestId(
+      'database-reuse-inbound-user-checkbox'
+    );
+    const reuseInboundUserCheckbox = await getShadowRootElement(
+      reuseInboundUserCheckboxHost as HTMLElement,
+      'input'
+    );
+
+    expect(usernameInput).toBeDisabled();
+    expect(reuseInboundUserCheckbox).toBeChecked();
+  });
+
+  it('Should enable the Username input if the Reuse Inbound User checkbox is not checked', async () => {
+    renderWithTheme(<DatabaseAddConnectionPoolDrawer {...mockProps} />);
+
+    const usernameInput = screen.getByLabelText('Username');
+    const reuseInboundUserCheckboxHost = screen.getByTestId(
+      'database-reuse-inbound-user-checkbox'
+    );
+    const reuseInboundUserCheckbox = await getShadowRootElement(
+      reuseInboundUserCheckboxHost as HTMLElement,
+      'input'
+    );
+
+    await userEvent.click(reuseInboundUserCheckbox!);
+
+    expect(usernameInput).toBeEnabled();
+    expect(reuseInboundUserCheckbox).not.toBeChecked();
   });
 });
