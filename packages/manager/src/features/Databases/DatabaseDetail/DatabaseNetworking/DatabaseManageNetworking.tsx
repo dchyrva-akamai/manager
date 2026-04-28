@@ -1,7 +1,7 @@
-import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { Badge, Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useAllVPCsQuery } from '@linode/queries';
-import { BetaChip, ErrorState, Stack, Typography } from '@linode/ui';
+import { ErrorState, Stack, Typography } from '@linode/ui';
 import React from 'react';
 
 import { Link } from 'src/components/Link';
@@ -77,7 +77,15 @@ export const DatabaseManageNetworking = ({ database }: Props) => {
         <Stack spacing={0.5}>
           <div style={{ display: 'flex' }}>
             <Typography variant="h3">Manage Networking</Typography>
-            {flags.databaseVpcBeta && <BetaChip />}
+            {flags.databaseVpcBeta && (
+              <Badge
+                color="neutral"
+                style={{ marginLeft: Spacing.S8 }}
+                variant="solid"
+              >
+                BETA
+              </Badge>
+            )}
           </div>
           <Typography sx={{ maxWidth: '500px' }}>
             Update access settings or the VPC assignment.{' '}

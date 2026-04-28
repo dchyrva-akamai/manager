@@ -1,7 +1,8 @@
+import { Badge } from '@akamai/cds-components/react/Badge';
+import { Spacing } from '@akamai/cds-tokens';
 import { useAllVPCsQuery, useRegionQuery } from '@linode/queries';
 import {
   Autocomplete,
-  BetaChip,
   Box,
   Checkbox,
   FormHelperText,
@@ -88,7 +89,15 @@ export const DatabaseVPC = (props: DatabaseVPCProps) => {
         })}
       >
         <Typography variant="h3">Assign a VPC</Typography>
-        {flags.databaseVpcBeta && <BetaChip />}
+        {flags.databaseVpcBeta && (
+          <Badge
+            color="neutral"
+            style={{ marginLeft: Spacing.S8 }}
+            variant="solid"
+          >
+            BETA
+          </Badge>
+        )}
       </Box>
       <Typography>
         Assign this cluster to an existing VPC.{' '}

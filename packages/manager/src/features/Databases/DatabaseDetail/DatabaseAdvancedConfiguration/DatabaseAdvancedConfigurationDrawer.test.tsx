@@ -129,7 +129,7 @@ describe('DatabaseAdvancedConfigurationDrawer', () => {
       },
     });
 
-    const restartBadge = screen.getByText('restarts service');
+    const restartBadge = screen.getByText('RESTARTS SERVICE');
     expect(restartBadge).toBeVisible();
 
     const toggle = screen.getByRole('checkbox');

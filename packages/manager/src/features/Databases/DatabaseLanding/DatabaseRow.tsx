@@ -1,3 +1,4 @@
+import { Badge } from '@akamai/cds-components/react/Badge';
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
 import { isWithinDays } from '@akamai/compute-ui-core/datetime';
 import {
@@ -5,7 +6,7 @@ import {
   useProfile,
   useRegionsQuery,
 } from '@linode/queries';
-import { Chip, Hidden } from '@linode/ui';
+import { Hidden } from '@linode/ui';
 import { formatStorageUnits } from '@linode/utilities';
 import * as React from 'react';
 
@@ -76,12 +77,7 @@ export const DatabaseRow = ({
     ) : (
       <>
         {`Primary +${cluster_size - 1}`}
-        <Chip
-          label="HA"
-          size="small"
-          sx={(theme) => ({ borderColor: theme.color.green, mx: 0, my: 0 })}
-          variant="outlined"
-        />
+        <Badge color="green">HA</Badge>
       </>
     );
   return (

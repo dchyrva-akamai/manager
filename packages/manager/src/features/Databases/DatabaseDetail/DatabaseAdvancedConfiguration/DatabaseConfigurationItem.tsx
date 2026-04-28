@@ -1,4 +1,4 @@
-import { Button } from '@akamai/cds-components/react';
+import { Badge, Button } from '@akamai/cds-components/react';
 import {
   Autocomplete,
   CloseIcon,
@@ -9,11 +9,7 @@ import {
 } from '@linode/ui';
 import React from 'react';
 
-import {
-  StyledBox,
-  StyledChip,
-  StyledWrapper,
-} from './DatabaseConfigurationItem.style';
+import { StyledBox, StyledWrapper } from './DatabaseConfigurationItem.style';
 import {
   formatConfigValue,
   isConfigBoolean,
@@ -147,7 +143,7 @@ export const DatabaseConfigurationItem = (props: Props) => {
             : `${configItem?.category}.${configLabel}`}
         </Typography>
         {configItem?.requires_restart && (
-          <StyledChip color="warning" label="restarts service" size="small" />
+          <Badge color="amber">RESTARTS SERVICE</Badge>
         )}
         {configItem?.description && (
           <Typography mt={0.5}>{configItem?.description}</Typography>

@@ -1,9 +1,11 @@
+import { Badge } from '@akamai/cds-components/react/Badge';
+import { Spacing } from '@akamai/cds-tokens';
 import {
   useDatabaseMutation,
   useDatabaseQuery,
   useDatabaseTypesQuery,
 } from '@linode/queries';
-import { BetaChip, ErrorState, Notice } from '@linode/ui';
+import { ErrorState, Notice } from '@linode/ui';
 import { useEditableLabelState } from '@linode/utilities';
 import {
   Outlet,
@@ -72,7 +74,15 @@ export const DatabaseDetail = () => {
       to: `/databases/$engine/$databaseId/metrics`,
       title: 'Metrics',
       hide: !isMonitorEnabled,
-      chip: flags.dbaasV2MonitorMetrics?.beta ? <BetaChip /> : null,
+      chip: flags.dbaasV2MonitorMetrics?.beta ? (
+        <Badge
+          color="neutral"
+          style={{ marginLeft: Spacing.S8 }}
+          variant="solid"
+        >
+          BETA
+        </Badge>
+      ) : null,
     },
     {
       to: `/databases/$engine/$databaseId/networking`,
