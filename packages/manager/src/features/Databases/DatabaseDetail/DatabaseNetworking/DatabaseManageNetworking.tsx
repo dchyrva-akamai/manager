@@ -1,12 +1,7 @@
 import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useAllVPCsQuery } from '@linode/queries';
-import {
-  BetaChip,
-  CircleProgress,
-  ErrorState,
-  Stack,
-  Typography,
-} from '@linode/ui';
+import { BetaChip, ErrorState, Stack, Typography } from '@linode/ui';
 import React from 'react';
 
 import { Link } from 'src/components/Link';
@@ -14,6 +9,7 @@ import { useFlags } from 'src/hooks/useFlags';
 
 import { MANAGE_NETWORKING_LEARN_MORE_LINK } from '../../constants';
 import { makeSettingsItemStyles } from '../../shared.styles';
+import { CircleProgress } from '../../shared/CircleProgress';
 import { ConnectionDetailsHostRows } from '../ConnectionDetailsHostRows';
 import { ConnectionDetailsHostRows2 } from '../ConnectionDetailsHostRows2';
 import { ConnectionDetailsRow } from '../ConnectionDetailsRow';
@@ -66,7 +62,7 @@ export const DatabaseManageNetworking = ({ database }: Props) => {
   };
 
   if (isLoading) {
-    return <CircleProgress />;
+    return <CircleProgress style={{ marginTop: Spacing.S32 }} />;
   }
 
   if (error || (hasVPCConfigured && !currentVPC)) {

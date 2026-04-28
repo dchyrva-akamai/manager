@@ -3,7 +3,7 @@ import {
   useDatabaseQuery,
   useDatabaseTypesQuery,
 } from '@linode/queries';
-import { BetaChip, CircleProgress, ErrorState, Notice } from '@linode/ui';
+import { BetaChip, ErrorState, Notice } from '@linode/ui';
 import { useEditableLabelState } from '@linode/utilities';
 import {
   Outlet,
@@ -24,6 +24,8 @@ import { useFlags } from 'src/hooks/useFlags';
 import { useIsResourceRestricted } from 'src/hooks/useIsResourceRestricted';
 import { useTabs } from 'src/hooks/useTabs';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
+
+import { CircleProgress } from '../shared/CircleProgress';
 
 import type { APIError } from '@linode/api-v4/lib/types';
 

@@ -6,7 +6,7 @@ import {
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import { CircleProgress, Divider, ErrorState, Notice, Paper } from '@linode/ui';
+import { Divider, ErrorState, Notice, Paper } from '@linode/ui';
 import { formatStorageUnits, scrollErrorIntoViewV2 } from '@linode/utilities';
 import { getDynamicDatabaseSchema } from '@linode/validation/lib/databases.schema';
 import Grid from '@mui/material/Grid';
@@ -36,6 +36,7 @@ import { typeLabelDetails } from 'src/features/Linodes/presentation';
 import { useFlags } from 'src/hooks/useFlags';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
 
+import { CircleProgress } from '../shared/CircleProgress';
 import { DatabaseCreateAccessControls } from './DatabaseCreateAccessControls';
 import { DatabaseCreateNetworkingConfiguration } from './DatabaseCreateNetworkingConfiguration';
 
