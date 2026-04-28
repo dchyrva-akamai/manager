@@ -12,6 +12,7 @@ import {
 import { createQueryKeys } from '@lukemorales/query-key-factory';
 import {
   keepPreviousData,
+  useInfiniteQuery,
   useMutation,
   useQueries,
   useQuery,
@@ -61,10 +62,20 @@ export const networkingQueries = createQueryKeys('networking', {
     queryFn: () => getIP(address),
     queryKey: [address],
   }),
-  reservedIPs: (params: Params = {}, filter: Filter = {}) => ({
-    queryFn: () => getReservedIPs(params, filter),
-    queryKey: [params, filter],
-  }),
+  reservedIPs: {
+    contextQueries: {
+      infinite: (filter: Filter = {}) => ({
+        queryFn: ({ pageParam }) =>
+          getReservedIPs({ page: pageParam as number, page_size: 25 }, filter),
+        queryKey: [filter],
+      }),
+      paginated: (params: Params = {}, filter: Filter = {}) => ({
+        queryFn: () => getReservedIPs(params, filter),
+        queryKey: [params, filter],
+      }),
+    },
+    queryKey: null,
+  },
   reservedIP: (address: string) => ({
     queryFn: () => getReservedIP(address),
     queryKey: [address],
@@ -200,11 +211,28 @@ export const useReservedIPsQuery = (
   enabled: boolean = true,
 ) => {
   return useQuery<ResourcePage<IPAddress>, APIError[]>({
-    ...networkingQueries.reservedIPs(params, filter),
+    ...networkingQueries.reservedIPs._ctx.paginated(params, filter),
     enabled,
     placeholderData: keepPreviousData,
   });
 };
+
+export const useReservedIPsInfiniteQuery = (
+  filter: Filter,
+  enabled?: boolean,
+) =>
+  useInfiniteQuery<ResourcePage<IPAddress>, APIError[]>({
+    ...networkingQueries.reservedIPs._ctx.infinite(filter),
+    enabled,
+    getNextPageParam: ({ page, pages }) => {
+      if (page === pages) {
+        return undefined;
+      }
+      return page + 1;
+    },
+    initialPageParam: 1,
+    retry: false,
+  });
 
 export const useReservedIPQuery = (address: string, enabled: boolean = true) =>
   useQuery<IPAddress, APIError[]>({
@@ -218,7 +246,7 @@ export const useReserveIPMutation = () => {
     mutationFn: reserveIP,
     onSuccess(reservedIP) {
       queryClient.invalidateQueries({
-        queryKey: networkingQueries.reservedIPs._def,
+        queryKey: networkingQueries.reservedIPs.queryKey,
       });
       queryClient.setQueryData<IPAddress>(
         networkingQueries.reservedIP(reservedIP.address).queryKey,
@@ -238,7 +266,7 @@ export const useUpdateReservedIPMutation = (address: string) => {
     mutationFn: (data) => updateReservedIP(address, data.tags),
     onSuccess(reservedIP) {
       queryClient.invalidateQueries({
-        queryKey: networkingQueries.reservedIPs._def,
+        queryKey: networkingQueries.reservedIPs.queryKey,
       });
       queryClient.setQueryData<IPAddress>(
         networkingQueries.reservedIP(reservedIP.address).queryKey,
@@ -254,7 +282,7 @@ export const useUnReserveIPMutation = (address: string) => {
     mutationFn: () => unReserveIP(address),
     onSuccess() {
       queryClient.invalidateQueries({
-        queryKey: networkingQueries.reservedIPs._def,
+        queryKey: networkingQueries.reservedIPs.queryKey,
       });
       queryClient.removeQueries({
         queryKey: networkingQueries.reservedIP(address).queryKey,
