@@ -88,19 +88,11 @@ export const CONNECTION_POOL_LABEL_CELL_STYLES = {
   flex: '.5 1 20.5%',
 };
 
-export const defaultUsername = 'Reuse inbound user'; // Represented as null in the API
 export const poolModeOptions = [
   { label: 'Transaction', value: 'transaction' },
   { label: 'Session', value: 'session' },
   { label: 'Statement', value: 'statement' },
 ];
-export const databaseNamesOptions = [
-  { label: 'defaultdb', value: 'defaultdb' },
-]; // Currently the only option for the database name field, but more may be introduced later.
-export const usernameOptions = [
-  { label: defaultUsername, value: defaultUsername },
-  { label: 'akmadmin', value: 'akmadmin' },
-]; // Currently the only options for the username field
 
 export const DEFAULT_PAGE_SIZES = [25, 50, 75, 100];
 export const DISABLE_CREDENTIAL_STATES = [
