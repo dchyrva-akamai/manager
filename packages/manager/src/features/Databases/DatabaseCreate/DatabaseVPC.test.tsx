@@ -223,7 +223,12 @@ describe('DatabaseCreateVPC', () => {
     ) as HTMLInputElement;
     expect(subnetInput?.value).toBe(expectedSubnetValue);
     expect(publicAccessCheckbox).toBeInTheDocument();
-    expect(publicAccessCheckbox.querySelector('input')).toBeChecked();
+    await customElements.whenDefined('cds-checkbox');
+    await waitFor(() => {
+      expect(
+        (publicAccessCheckbox as HTMLElement & { checked?: boolean }).checked
+      ).toBe(true);
+    });
   });
 
   it.skip('Should clear VPC and subnet when selectedRegionId changes', () => {

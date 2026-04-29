@@ -1,13 +1,13 @@
-import { Badge, NotificationBanner } from '@akamai/cds-components/react';
+import {
+  Badge,
+  Checkbox,
+  Icon,
+  NotificationBanner,
+  Tooltip,
+} from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useAllVPCsQuery, useRegionQuery } from '@linode/queries';
-import {
-  Autocomplete,
-  Box,
-  Checkbox,
-  FormHelperText,
-  Typography,
-} from '@linode/ui';
+import { Autocomplete, Box, FormHelperText, Typography } from '@linode/ui';
 import * as React from 'react';
 import type { Control, UseFormSetValue, UseFormTrigger } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
@@ -175,16 +175,21 @@ export const DatabaseVPC = (props: DatabaseVPCProps) => {
               render={({ field, fieldState }) => (
                 <>
                   <Checkbox
-                    checked={field.value}
+                    checked={!!field.value}
                     data-testid="database-public-access-checkbox"
-                    onChange={(e, value) => {
-                      field.onChange(value ?? null);
+                    onChange={(e) => {
+                      field.onChange(e.detail);
                     }}
-                    text={'Enable public access'}
-                    toolTipText={
-                      'Adds a public endpoint to the database in addition to the private VPC endpoint.'
-                    }
-                  />
+                  >
+                    Enable public access
+                  </Checkbox>
+                  <Tooltip
+                    style={{ marginLeft: Spacing.S4 }}
+                    tooltipPlacement="bottom"
+                    tooltipText="Adds a public endpoint to the database in addition to the private VPC endpoint."
+                  >
+                    <Icon icon="info-outline" size="m" />
+                  </Tooltip>
                   {fieldState.error?.message && (
                     <FormHelperText
                       className="error-for-scroll"

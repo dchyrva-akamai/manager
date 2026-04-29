@@ -140,10 +140,15 @@ describe('DatabaseManageNetworkingDrawer Component', () => {
       initialRoute: `/databases/${mockProps.database.engine}/${mockProps.database.id}/networking`,
     });
 
-    const accessCheckbox = screen.getByTestId(
+    const accessCheckboxHost = screen.getByTestId(
       'database-public-access-checkbox'
     );
-    await userEvent.click(accessCheckbox);
+    const accessInput = await getShadowRootElement(
+      accessCheckboxHost as HTMLElement,
+      'input'
+    );
+    expect(accessInput).toBeTruthy();
+    await userEvent.click(accessInput!);
 
     const saveButtonHost = screen.getByTestId(saveButtonTestId);
     const saveButton = await getShadowRootElement(saveButtonHost, 'button');
@@ -161,10 +166,15 @@ describe('DatabaseManageNetworkingDrawer Component', () => {
       initialRoute: `/databases/${mockProps.database.engine}/${mockProps.database.id}/networking`,
     });
 
-    const accessCheckbox = screen.getByTestId(
+    const accessCheckboxHost = screen.getByTestId(
       'database-public-access-checkbox'
     );
-    await userEvent.click(accessCheckbox);
+    const accessInput = await getShadowRootElement(
+      accessCheckboxHost as HTMLElement,
+      'input'
+    );
+    expect(accessInput).toBeTruthy();
+    await userEvent.click(accessInput!);
 
     const saveButtonHost = screen.getByTestId(saveButtonTestId);
     const saveButton = await getShadowRootElement(saveButtonHost, 'button');
