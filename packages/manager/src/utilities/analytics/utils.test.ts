@@ -1,37 +1,9 @@
 import { checkOptanonConsent } from '@akamai/compute-ui-core/analytics';
 
 import {
-  getCookie,
-  getFormattedStringFromFormEventOptions,
   ONE_TRUST_COOKIE_CATEGORIES,
   waitForAdobeAnalyticsToBeLoaded,
 } from './utils';
-
-import type { FormEventOptions } from './types';
-
-describe('getCookie', () => {
-  beforeAll(() => {
-    const mockCookies =
-      'mycookie=my-cookie-value; OptanonConsent=cookie-consent-here; mythirdcookie=my-third-cookie;';
-    vi.spyOn(document, 'cookie', 'get').mockReturnValue(mockCookies);
-  });
-
-  it('should return the value of a cookie from document.cookie given its name, given cookie in middle position', () => {
-    expect(getCookie('OptanonConsent')).toEqual('cookie-consent-here');
-  });
-
-  it('should return the value of a cookie from document.cookie given its name, given cookie in first position', () => {
-    expect(getCookie('mycookie')).toEqual('my-cookie-value');
-  });
-
-  it('should return the value of a cookie from document.cookie given its name, given cookie in last position', () => {
-    expect(getCookie('mythirdcookie')).toEqual('my-third-cookie');
-  });
-
-  it('should return undefined if the cookie does not exist in document.cookie', () => {
-    expect(getCookie('mysecondcookie')).toEqual(undefined);
-  });
-});
 
 describe('checkOptanonConsent', () => {
   it('should return true if consent is enabled for the given Optanon cookie category', () => {
@@ -96,40 +68,4 @@ describe('waitForAdobeAnalyticsToBeLoaded', () => {
       );
     }
   );
-});
-
-describe('getFormattedStringFromFormEventOptions', () => {
-  const formEventOptionsWithHeaders: FormEventOptions = {
-    headerName: 'Header',
-    interaction: 'click',
-    label: 'Component label',
-    subheaderName: 'Subheader',
-  };
-
-  it('should return a string in format "Header:Subheader|Interaction:Component label"', () => {
-    expect(
-      getFormattedStringFromFormEventOptions(formEventOptionsWithHeaders)
-    ).toEqual('Header:Subheader|click:Component label');
-  });
-
-  it('should return defaults if no header or subheader are provided', () => {
-    const formEventOptionsWithoutHeaders: FormEventOptions = {
-      interaction: 'click',
-      label: 'Component label',
-    };
-
-    expect(
-      getFormattedStringFromFormEventOptions(formEventOptionsWithoutHeaders)
-    ).toEqual('No header|click:Component label');
-  });
-
-  it("should append ':once' to the label's end to identify events to track once per page view", () => {
-    const formEventOptionsTrackOnce = {
-      ...formEventOptionsWithHeaders,
-      trackOnce: true,
-    };
-    expect(
-      getFormattedStringFromFormEventOptions(formEventOptionsTrackOnce)
-    ).toEqual('Header:Subheader|click:Component label:once');
-  });
 });

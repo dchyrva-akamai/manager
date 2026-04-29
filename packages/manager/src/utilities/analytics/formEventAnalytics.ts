@@ -1,4 +1,6 @@
-import { getFormattedStringFromFormEventOptions, sendFormEvent } from './utils';
+import { getFormattedStringFromFormEventOptions } from '@akamai/compute-ui-core/analytics';
+
+import { sendFormEvent } from './utils';
 
 import type {
   BasicFormEvent,
