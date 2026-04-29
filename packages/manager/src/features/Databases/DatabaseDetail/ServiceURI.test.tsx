@@ -13,6 +13,12 @@ import { ServiceURI } from './ServiceURI';
 
 import type { DatabaseStatus, Engine } from '@linode/api-v4';
 
+const copyToClipboardMock = vi.hoisted(() => vi.fn());
+
+vi.mock('copy-to-clipboard', () => ({
+  default: copyToClipboardMock,
+}));
+
 const mockCredentials = {
   password: 'password123',
   username: 'lnroot',
@@ -354,7 +360,9 @@ describe('ServiceURI', () => {
     );
   });
 
-  it('should disable the reveal password and copy icon if the Database is suspended', async () => {
+  it('should disable password reveal and prevent copy when the Database is suspended', async () => {
+    copyToClipboardMock.mockClear();
+
     const mockDatabase = {
       ...databaseWithNoVPC,
       status: 'suspended' as DatabaseStatus,
@@ -366,8 +374,16 @@ describe('ServiceURI', () => {
 
     const revealPasswordBtn = await getServiceUriRevealButton(container);
     // eslint-disable-next-line testing-library/no-container
-    const copyButton = container.querySelector('[data-qa-copy-btn]');
+    const copyButton = container.querySelector(
+      '[data-qa-copy-btn]'
+    ) as HTMLButtonElement | null;
+
     expect(revealPasswordBtn).toBeDisabled();
-    expect(copyButton).toBeDisabled();
+    // Copy stays focusable so the CDS tooltip can explain why copy is unavailable.
+    expect(copyButton).not.toBeDisabled();
+
+    await userEvent.click(copyButton!);
+
+    expect(copyToClipboardMock).not.toHaveBeenCalled();
   });
 });

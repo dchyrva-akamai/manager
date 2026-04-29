@@ -1,6 +1,6 @@
-import { Button } from '@akamai/cds-components/react';
+import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { getSSLFields } from '@linode/api-v4/lib/databases/databases';
-import { TooltipIcon } from '@linode/ui';
 import { downloadFile } from '@linode/utilities';
 import { styled } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
@@ -8,8 +8,6 @@ import * as React from 'react';
 
 import DownloadIcon from 'src/assets/icons/lke-download.svg';
 import { getErrorStringOrDefault } from 'src/utilities/errorUtils';
-
-import { sxTooltipIcon } from './DatabaseSummaryConnectionDetails';
 
 import type { Database, SSLFields } from '@linode/api-v4';
 
@@ -66,11 +64,16 @@ export const DatabaseCaCert = (props: Props) => {
       </StyledCaCertButton>
       {disableDownloadCACertificateBtn && (
         <span style={{ alignContent: 'center' }}>
-          <TooltipIcon
-            status="info"
-            sxTooltipIcon={sxTooltipIcon}
-            text="Your Database Cluster is currently provisioning."
-          />
+          <Tooltip
+            style={{ marginLeft: Spacing.S4 }}
+            tooltipText="Your Database Cluster is currently provisioning."
+          >
+            <Icon
+              icon="info-outline"
+              size="m"
+              style={{ position: 'relative', top: -2 }}
+            />
+          </Tooltip>
         </span>
       )}
     </>
