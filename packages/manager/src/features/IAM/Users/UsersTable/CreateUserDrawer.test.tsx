@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import React from 'react';
 
+import { expectNotificationBannerText } from 'src/features/IAM/utilities/testHelpers';
 import { http, HttpResponse, server } from 'src/mocks/testServer';
 import { renderWithTheme } from 'src/utilities/testHelpers';
 
@@ -43,17 +44,20 @@ describe('CreateUserDrawer', () => {
   });
 
   it('should display an error message when submission fails', async () => {
+    const mockErrorMessage = 'An unexpected error occurred.';
+
     server.use(
       http.post('*/account/users', () => {
         return HttpResponse.json(
-          { error: [{ reason: 'An unexpected error occurred.' }] },
+          { errors: [{ reason: mockErrorMessage }] },
           { status: 500 }
         );
       })
     );
 
-    const { findByText, getByLabelText, getByRole, getByTestId } =
-      renderWithTheme(<CreateUserDrawer {...props} />);
+    const { getByLabelText, getByRole, getByTestId } = renderWithTheme(
+      <CreateUserDrawer {...props} />
+    );
 
     const dialog = getByRole('dialog');
     expect(dialog).toBeInTheDocument();
@@ -66,8 +70,7 @@ describe('CreateUserDrawer', () => {
     });
     fireEvent.click(getByTestId('submit'));
 
-    const errorMessage = await findByText('An unexpected error occurred.');
-    expect(errorMessage).toBeInTheDocument();
+    await expectNotificationBannerText(mockErrorMessage);
   });
 });
 

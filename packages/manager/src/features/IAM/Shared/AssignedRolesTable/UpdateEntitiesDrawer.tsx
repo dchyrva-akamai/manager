@@ -1,10 +1,11 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import {
   useGetDefaultDelegationAccessQuery,
   useUpdateDefaultDelegationAccessQuery,
   useUserRoles,
   useUserRolesMutation,
 } from '@linode/queries';
-import { ActionsPanel, Drawer, Notice, Typography } from '@linode/ui';
+import { ActionsPanel, Drawer, Typography } from '@linode/ui';
 import { useTheme } from '@mui/material';
 import { useParams } from '@tanstack/react-router';
 import { enqueueSnackbar } from 'notistack';
@@ -134,7 +135,7 @@ export const UpdateEntitiesDrawer = ({ onClose, open, role }: Props) => {
   return (
     <Drawer onClose={handleClose} open={open} title="Update List of Entities">
       {errors.root?.message && (
-        <Notice text={errors.root?.message} variant="error" />
+        <NotificationBanner text={errors.root?.message} type="error" />
       )}
       <FormProvider {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>

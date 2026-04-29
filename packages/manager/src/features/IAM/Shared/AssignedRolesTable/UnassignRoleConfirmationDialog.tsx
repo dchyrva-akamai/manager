@@ -1,10 +1,11 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import {
   useGetDefaultDelegationAccessQuery,
   useUpdateDefaultDelegationAccessQuery,
   useUserRoles,
   useUserRolesMutation,
 } from '@linode/queries';
-import { ActionsPanel, Notice, Typography } from '@linode/ui';
+import { ActionsPanel, Typography } from '@linode/ui';
 import { useParams } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
@@ -122,12 +123,12 @@ export const UnassignRoleConfirmationDialog = (props: Props) => {
           The role won’t be added to delegate users by default.
         </Typography>
       ) : (
-        <Notice variant="warning">
+        <NotificationBanner type="warning">
           <Typography>
             You’re about to remove the <strong>{role?.name}</strong> role from{' '}
             <strong>{username}</strong>. The change will be applied immediately.
           </Typography>
-        </Notice>
+        </NotificationBanner>
       )}
     </ConfirmationDialog>
   );

@@ -3,6 +3,7 @@ import React from 'react';
 
 import { accountUserFactory } from 'src/factories/accountUsers';
 import { userRolesFactory } from 'src/factories/userRoles';
+import { expectNotificationBannerText } from 'src/features/IAM/utilities/testHelpers';
 import { renderWithTheme } from 'src/utilities/testHelpers';
 
 import { UserProfile } from './UserProfile';
@@ -94,11 +95,9 @@ describe('UserProfile', () => {
 
     renderWithTheme(<UserProfile />);
 
-    expect(
-      screen.getByText(
-        "You do not have permission to view this user's details."
-      )
-    ).toBeVisible();
+    return expectNotificationBannerText(
+      "You do not have permission to view this user's details."
+    );
   });
 
   it('shows an error state when loading the user fails', () => {

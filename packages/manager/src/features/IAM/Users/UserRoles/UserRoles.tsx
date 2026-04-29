@@ -1,5 +1,6 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import { useAccountUser, useUserRoles } from '@linode/queries';
-import { Notice, Paper, Typography, useTheme } from '@linode/ui';
+import { Paper, Typography, useTheme } from '@linode/ui';
 import { useParams } from '@tanstack/react-router';
 import React from 'react';
 
@@ -40,9 +41,10 @@ export const UserRoles = () => {
 
   if (!permissions?.view_user) {
     return (
-      <Notice variant="error">
-        You do not have permission to view this user&apos;s roles.
-      </Notice>
+      <NotificationBanner
+        text="You do not have permission to view this user's roles."
+        type="error"
+      />
     );
   }
 

@@ -31,6 +31,7 @@ const props = {
 const queryMocks = vi.hoisted(() => ({
   useParams: vi.fn().mockReturnValue({ username: 'test_user' }),
   useAccountRoles: vi.fn().mockReturnValue({}),
+  useGetDefaultDelegationAccessQuery: vi.fn().mockReturnValue({}),
   useUserRoles: vi.fn().mockReturnValue({}),
   useUpdateDefaultDelegationAccessQuery: vi.fn().mockReturnValue({}),
   useIsDefaultDelegationRolesForChildAccount: vi
@@ -48,6 +49,8 @@ vi.mock('@linode/queries', async () => {
   return {
     ...actual,
     useAccountRoles: queryMocks.useAccountRoles,
+    useGetDefaultDelegationAccessQuery:
+      queryMocks.useGetDefaultDelegationAccessQuery,
     useUserRoles: queryMocks.useUserRoles,
     useUpdateDefaultDelegationAccessQuery:
       queryMocks.useUpdateDefaultDelegationAccessQuery,
@@ -78,6 +81,12 @@ describe('UnassignRoleConfirmationDialog', () => {
     vi.clearAllMocks();
     queryMocks.useParams.mockReturnValue({
       username: 'test_user',
+    });
+    queryMocks.useGetDefaultDelegationAccessQuery.mockReturnValue({
+      data: {
+        account_access: [mockRole.name],
+        entity_access: [],
+      },
     });
   });
 
@@ -172,8 +181,6 @@ describe('UnassignRoleConfirmationDialog', () => {
     expect(removeButton).toBeVisible();
 
     await userEvent.click(removeButton);
-    await expect(
-      screen.getByText(INTERNAL_ERROR_NO_CHANGES_SAVED)
-    ).toBeVisible();
+    expect(screen.getByText(INTERNAL_ERROR_NO_CHANGES_SAVED)).toBeVisible();
   });
 });

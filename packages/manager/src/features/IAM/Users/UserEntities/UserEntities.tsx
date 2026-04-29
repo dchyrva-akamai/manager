@@ -1,5 +1,6 @@
+import { NotificationBanner } from '@akamai/cds-components/react/NotificationBanner';
 import { useAccountUser, useUserRoles } from '@linode/queries';
-import { Notice, Paper, Typography, useTheme } from '@linode/ui';
+import { Paper, Typography, useTheme } from '@linode/ui';
 import { useParams } from '@tanstack/react-router';
 import React from 'react';
 
@@ -38,9 +39,10 @@ export const UserEntities = () => {
 
   if (!permissions?.list_entities) {
     return (
-      <Notice variant="error">
-        You do not have permission to view this user&apos;s entities.
-      </Notice>
+      <NotificationBanner
+        text="You do not have permission to view this user's entities."
+        type="error"
+      />
     );
   }
 

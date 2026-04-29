@@ -1,5 +1,6 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import { useAccountUser, useUserRoles } from '@linode/queries';
-import { Notice, Stack } from '@linode/ui';
+import { Stack } from '@linode/ui';
 import { useParams } from '@tanstack/react-router';
 import React from 'react';
 
@@ -37,9 +38,10 @@ export const UserProfile = () => {
     !isLoadingPermissions
   ) {
     return (
-      <Notice variant="error">
-        You do not have permission to view this user&apos;s details.
-      </Notice>
+      <NotificationBanner
+        text="You do not have permission to view this user's details."
+        type="error"
+      />
     );
   }
 

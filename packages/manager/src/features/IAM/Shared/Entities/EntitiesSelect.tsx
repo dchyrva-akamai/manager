@@ -1,8 +1,9 @@
+import { NotificationBanner } from '@akamai/cds-components/react/NotificationBanner';
+import { Spacing } from '@akamai/cds-tokens';
 import {
   Autocomplete,
   CloseIcon,
   IconButton,
-  Notice,
   Paper,
   Stack,
   Typography,
@@ -194,7 +195,10 @@ export const EntitiesSelect = ({
         </>
       )}
       {!memoizedEntities.length && !isLoading && (
-        <Notice spacingBottom={0} spacingTop={8} variant="warning">
+        <NotificationBanner
+          style={{ marginBottom: 0, marginTop: Spacing.S8 }}
+          type="warning"
+        >
           <Typography fontSize="inherit">
             <Link to={getCreateLinkForEntityType(type)}>
               Create {type === 'image' ? `an` : `a`}{' '}
@@ -202,7 +206,7 @@ export const EntitiesSelect = ({
             </Link>{' '}
             first or choose a different role to continue assignment.
           </Typography>
-        </Notice>
+        </NotificationBanner>
       )}
     </>
   );

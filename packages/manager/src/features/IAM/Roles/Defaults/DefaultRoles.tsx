@@ -1,5 +1,6 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import { useGetDefaultDelegationAccessQuery } from '@linode/queries';
-import { Notice, Paper, Typography } from '@linode/ui';
+import { Paper, Typography } from '@linode/ui';
 import * as React from 'react';
 
 import { ErrorState } from 'src/features/IAM/Shared/ErrorState/ErrorState';
@@ -34,9 +35,10 @@ export const DefaultRoles = () => {
 
   if (!permissions?.view_default_delegate_access) {
     return (
-      <Notice variant="error">
-        You do not have permission to view default roles for delegate users.
-      </Notice>
+      <NotificationBanner
+        text="You do not have permission to view default roles for delegate users."
+        type="error"
+      />
     );
   }
 

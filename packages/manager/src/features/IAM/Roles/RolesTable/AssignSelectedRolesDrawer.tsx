@@ -1,3 +1,4 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import {
   useAccountRoles,
   useAccountUsersInfiniteQuery,
@@ -9,7 +10,6 @@ import {
   Autocomplete,
   Drawer,
   LinkButton,
-  Notice,
   Typography,
 } from '@linode/ui';
 import { useDebouncedValue } from '@linode/utilities';
@@ -175,7 +175,10 @@ export const AssignSelectedRolesDrawer = ({
       <FormProvider {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {formState.errors.root?.message && (
-            <Notice text={formState.errors.root?.message} variant="error" />
+            <NotificationBanner
+              text={formState.errors.root?.message}
+              type="error"
+            />
           )}
           <Typography sx={{ marginBottom: 2.5 }}>
             Select the user you want to assign selected roles to. Some roles

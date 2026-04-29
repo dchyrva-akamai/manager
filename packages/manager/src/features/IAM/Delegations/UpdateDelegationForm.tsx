@@ -1,3 +1,4 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import {
   useAccountUsersInfiniteQuery,
   useAllAccountUsersQuery,
@@ -8,7 +9,6 @@ import {
   Autocomplete,
   CloseIcon,
   IconButton,
-  Notice,
   Paper,
   Stack,
   Typography,
@@ -20,8 +20,10 @@ import * as React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 
 import { usePermissions } from '../hooks/usePermissions';
-import { IAM_PARENT_USERS_PENDO_IDS } from '../Shared/constants';
-import { INTERNAL_ERROR_NO_CHANGES_SAVED } from '../Shared/constants';
+import {
+  IAM_PARENT_USERS_PENDO_IDS,
+  INTERNAL_ERROR_NO_CHANGES_SAVED,
+} from '../Shared/constants';
 import { getPlaceholder } from '../Shared/Entities/utils';
 
 import type {
@@ -163,7 +165,7 @@ export const UpdateDelegationForm = ({
   return (
     <>
       {errors.root?.message && (
-        <Notice text={errors.root?.message} variant="error" />
+        <NotificationBanner text={errors.root?.message} type="error" />
       )}
       <FormProvider {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
