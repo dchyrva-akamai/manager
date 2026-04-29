@@ -1,13 +1,13 @@
 import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseCredentialsQuery } from '@linode/queries';
-import { TooltipIcon, Typography } from '@linode/ui';
+import { Typography } from '@linode/ui';
 import { Box, Grid, styled } from '@mui/material';
 import copy from 'copy-to-clipboard';
 import { enqueueSnackbar } from 'notistack';
 import React, { useState } from 'react';
 
 import { Code } from 'src/components/Code/Code';
-import { CopyTooltip } from 'src/components/CopyTooltip/CopyTooltip';
 import {
   CLUSTER_PROVISIONING_TEXT,
   CREDENTIALS_ERROR_TEXT,
@@ -15,6 +15,8 @@ import {
   DISABLED_PASSWORD_BUTTON_TEXT,
 } from 'src/features/Databases/constants';
 import { StyledValueGrid } from 'src/features/Databases/DatabaseDetail/DatabaseSummary/DatabaseSummaryClusterConfiguration.style';
+
+import { CopyTooltip } from '../shared/CopyTooltip/CopyTooltip';
 
 import type { Database, DatabaseCredentials } from '@linode/api-v4';
 
@@ -214,7 +216,7 @@ export const ServiceURI = (props: ServiceURIProps) => {
         </Box>
       ) : (
         <Grid alignContent="center" size="auto">
-          <StyledCopyTooltip
+          <CopyTooltip
             disabled={disablePasswordBtn}
             disabledReason={disabledPasswordTooltipText}
             onClickCallback={handleCopy}
@@ -224,16 +226,13 @@ export const ServiceURI = (props: ServiceURIProps) => {
       )}
       {hasPublicVPC && showPrivateVPC && (
         <Grid>
-          <TooltipIcon
-            status="info"
-            sxTooltipIcon={{
-              marginLeft: '2px',
-              padding: '0px',
-            }}
-            text={
-              'Private endpoints are resolvable only for resources within the VPC Subnet. Public endpoints are resolvable outside the VPC.'
-            }
-          />
+          <Tooltip
+            style={{ marginLeft: Spacing.S4 }}
+            tooltipPlacement="bottom"
+            tooltipText="Private endpoints are resolvable only for resources within the VPC Subnet. Public endpoints are resolvable outside the VPC."
+          >
+            <Icon icon="info-outline" size="m" />
+          </Tooltip>
         </Grid>
       )}
     </Grid>
@@ -244,19 +243,4 @@ export const StyledCode = styled(Code, {
   label: 'StyledCode',
 })(() => ({
   margin: 0,
-}));
-
-const StyledCopyTooltip = styled(CopyTooltip, {
-  label: 'StyledCopyTooltip',
-})(({ theme }) => ({
-  alignSelf: 'center',
-  '& svg': {
-    height: theme.spacingFunction(16),
-    width: theme.spacingFunction(16),
-  },
-  '&:hover': {
-    backgroundColor: 'transparent',
-  },
-  display: 'flex',
-  margin: `0 ${theme.spacingFunction(4)}`,
 }));

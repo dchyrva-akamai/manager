@@ -1,5 +1,10 @@
-import { NotificationBanner } from '@akamai/cds-components/react';
-import { Button, Select } from '@akamai/cds-components/react';
+import {
+  Button,
+  Icon,
+  NotificationBanner,
+  Select,
+  Tooltip,
+} from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDatabaseMutation } from '@linode/queries';
@@ -12,7 +17,6 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  TooltipIcon,
   Typography,
 } from '@linode/ui';
 import { updateMaintenanceSchema } from '@linode/validation';
@@ -22,8 +26,6 @@ import { useSnackbar } from 'notistack';
 import * as React from 'react';
 import { useWatch } from 'react-hook-form';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-
-import { Link } from 'src/components/Link';
 
 import type { Database, UpdatesSchedule } from '@linode/api-v4/lib/databases';
 import type { SelectOption } from '@linode/ui';
@@ -247,20 +249,21 @@ export const MaintenanceWindow = (props: Props) => {
                             }
                           />
                         </Box>
-                        <TooltipIcon
-                          status="info"
-                          sxTooltipIcon={{
-                            padding: '0px 8px',
-                          }}
-                          text={
-                            <Typography>
-                              UTC is {utcOffsetText(utcOffsetInHours)} hours
-                              compared to your local timezone. Click{' '}
-                              <Link to="/profile/display">here</Link> to view or
-                              change your timezone settings.
-                            </Typography>
-                          }
-                        />
+                        <Tooltip
+                          style={{ marginLeft: Spacing.S8 }}
+                          tooltipPlacement="bottom"
+                          tooltipText={`UTC is ${utcOffsetText(utcOffsetInHours)} hours
+                              compared to your local timezone. To view or change your timezone settings, navigate to the Display tab under your profile.`}
+                        >
+                          <Icon
+                            icon="info-outline"
+                            size="m"
+                            style={{
+                              position: 'relative',
+                              top: 5,
+                            }}
+                          />
+                        </Tooltip>
                       </Box>
                     </Box>
                   )}

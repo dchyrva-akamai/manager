@@ -1,10 +1,10 @@
-import { Button } from '@akamai/cds-components/react';
+import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseCredentialsQuery } from '@linode/queries';
-import { Box, TooltipIcon, Typography } from '@linode/ui';
+import { Box, Typography } from '@linode/ui';
 import { enqueueSnackbar } from 'notistack';
 import * as React from 'react';
 
-import { CopyTooltip } from 'src/components/CopyTooltip/CopyTooltip';
 import { Link } from 'src/components/Link';
 import { DB_ROOT_USERNAME } from 'src/constants';
 import {
@@ -16,6 +16,7 @@ import {
 import { useFlags } from 'src/hooks/useFlags';
 
 import { CircleProgress } from '../../shared/CircleProgress';
+import { CopyTooltip } from '../../shared/CopyTooltip/CopyTooltip';
 import { isDefaultDatabase } from '../../utilities';
 import { ConnectionDetailsHostRows } from '../ConnectionDetailsHostRows';
 import { ConnectionDetailsHostRows2 } from '../ConnectionDetailsHostRows2';
@@ -30,11 +31,6 @@ import type { Theme } from '@mui/material/styles';
 interface Props {
   database: Database;
 }
-
-export const sxTooltipIcon = {
-  marginLeft: '4px',
-  padding: '0px',
-};
 
 export const DatabaseSummaryConnectionDetails = (props: Props) => {
   const { database } = props;
@@ -106,15 +102,16 @@ export const DatabaseSummaryConnectionDetails = (props: Props) => {
         )
       )}
       {disableShowBtn && (
-        <TooltipIcon
-          status="info"
-          sxTooltipIcon={sxTooltipIcon}
-          text={
+        <Tooltip
+          style={{ marginLeft: Spacing.S4 }}
+          tooltipText={
             database.status === 'provisioning'
               ? CLUSTER_PROVISIONING_TEXT
               : DISABLED_PASSWORD_BUTTON_TEXT
           }
-        />
+        >
+          <Icon icon="info-outline" size="m" />
+        </Tooltip>
       )}
       {showCredentials && credentials && (
         <CopyTooltip className={classes.inlineCopyToolTip} text={password} />
