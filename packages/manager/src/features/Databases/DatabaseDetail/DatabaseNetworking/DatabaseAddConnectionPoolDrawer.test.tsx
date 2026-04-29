@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { describe, it } from 'vitest';
@@ -93,9 +93,11 @@ describe('DatabaseAddConnectionPoolDrawer Component', () => {
     await userEvent.type(poolLabelInput, 'test-pool');
     await userEvent.click(addPoolBtn);
 
-    // Check that the error notice is displayed
-    const errorNotice = await screen.findByText(mockErrorMessage);
-    expect(errorNotice).toBeInTheDocument();
+    // CDS NotificationBanner renders copy inside shadow DOM (not visible to findByText)
+    await waitFor(() => {
+      const banner = document.querySelector('cds-notification-banner');
+      expect(banner?.shadowRoot?.textContent ?? '').toContain(mockErrorMessage);
+    });
   });
 
   it('Should display inline errors', async () => {

@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { describe, it } from 'vitest';
@@ -113,9 +113,11 @@ describe('DatabaseEditConnectionPoolDrawer Component', () => {
     const saveBtn = screen.getByText('Save');
     await userEvent.click(saveBtn);
 
-    // Check that the error notice is displayed
-    const errorNotice = screen.getByText(mockErrorMessage);
-    expect(errorNotice).toBeInTheDocument();
+    // CDS NotificationBanner renders copy inside shadow DOM (not visible to getByText)
+    await waitFor(() => {
+      const banner = document.querySelector('cds-notification-banner');
+      expect(banner?.shadowRoot?.textContent ?? '').toContain(mockErrorMessage);
+    });
   });
 
   it('Should display inline errors', async () => {

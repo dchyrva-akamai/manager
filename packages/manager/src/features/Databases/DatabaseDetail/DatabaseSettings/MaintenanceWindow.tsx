@@ -1,4 +1,6 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import { Button, Select } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDatabaseMutation } from '@linode/queries';
 import {
@@ -7,7 +9,6 @@ import {
   FormControl,
   FormControlLabel,
   InputLabel,
-  Notice,
   Radio,
   RadioGroup,
   Stack,
@@ -145,9 +146,13 @@ export const MaintenanceWindow = (props: Props) => {
                 : 'Set a Weekly Maintenance Window'}
             </Typography>
             {errors.root?.message && (
-              <Notice spacingTop={8} variant="error">
+              <NotificationBanner
+                style={{ marginBottom: Spacing.S16, marginTop: Spacing.S8 }}
+                text={errors.root?.message}
+                type="error"
+              >
                 {errors.root?.message}
-              </Notice>
+              </NotificationBanner>
             )}
             <StyledTypography>
               {isLegacy ? typographyLegacyDatabase : typographyDatabase}{' '}

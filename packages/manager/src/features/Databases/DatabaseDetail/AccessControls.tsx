@@ -1,6 +1,7 @@
-import { Button } from '@akamai/cds-components/react';
+import { Button, NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseMutation } from '@linode/queries';
-import { ActionsPanel, Notice, Typography } from '@linode/ui';
+import { ActionsPanel, Typography } from '@linode/ui';
 import * as React from 'react';
 import type { JSX } from 'react';
 import { makeStyles } from 'tss-react/mui';
@@ -189,7 +190,13 @@ export const AccessControls = (props: Props) => {
         open={isDialogOpen}
         title={`Remove IP Address ${accessControlToBeRemoved}`}
       >
-        {error ? <Notice text={error} variant="error" /> : null}
+        {error ? (
+          <NotificationBanner
+            style={{ marginBottom: Spacing.S16 }}
+            text={error}
+            type="error"
+          />
+        ) : null}
         <Typography data-testid="ip-removal-confirmation-warning">
           IP {accessControlToBeRemoved} will lose all access to the data on this
           database cluster. This action cannot be undone, but you can re-enable

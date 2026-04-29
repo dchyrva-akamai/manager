@@ -1,8 +1,10 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import {
   useLegacyRestoreFromBackupMutation,
   useProfile,
 } from '@linode/queries';
-import { Notice, Typography } from '@linode/ui';
+import { Typography } from '@linode/ui';
 import { useNavigate } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
@@ -72,20 +74,21 @@ export const RestoreLegacyFromBackupDialog = (props: Props) => {
       })}`}
     >
       {error ? (
-        <Notice
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
           text={
             getAPIErrorOrDefault(error, 'Unable to restore this backup.')[0]
               .reason
           }
-          variant="error"
+          type="error"
         />
       ) : null}
-      <Notice variant="warning">
+      <NotificationBanner style={{ marginBottom: Spacing.S16 }} type="warning">
         <Typography style={{ fontSize: '0.875rem' }}>
           <strong>Warning:</strong> Restoring from a backup will erase all
           existing data on this cluster.
         </Typography>
-      </Notice>
+      </NotificationBanner>
     </TypeToConfirmDialog>
   );
 };

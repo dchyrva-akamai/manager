@@ -1,14 +1,13 @@
-import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import {
+  Button,
+  Icon,
+  NotificationBanner,
+  Tooltip,
+} from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseQuery, useRegionsQuery } from '@linode/queries';
 import { useIsGeckoEnabled } from '@linode/shared';
-import {
-  Box,
-  Divider,
-  Notice,
-  Paper,
-  TimePicker,
-  Typography,
-} from '@linode/ui';
+import { Box, Divider, Paper, TimePicker, Typography } from '@linode/ui';
 import {
   FormControl,
   FormControlLabel,
@@ -210,7 +209,11 @@ export const DatabaseBackups = () => {
           )}
         </StyledTypography>
         {unableToRestoreCopy && (
-          <Notice spacingTop={16} text={unableToRestoreCopy} variant="info" />
+          <NotificationBanner
+            style={{ marginTop: Spacing.S16, marginBottom: Spacing.S16 }}
+            text={unableToRestoreCopy}
+            type="info"
+          />
         )}
         <FormProvider {...form}>
           <form>

@@ -1,14 +1,8 @@
-import { Button } from '@akamai/cds-components/react';
+import { Button, NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDatabaseEngineConfig, useDatabaseMutation } from '@linode/queries';
-import {
-  ActionsPanel,
-  Divider,
-  Drawer,
-  Notice,
-  Stack,
-  Typography,
-} from '@linode/ui';
+import { ActionsPanel, Divider, Drawer, Stack, Typography } from '@linode/ui';
 import { scrollErrorIntoViewV2 } from '@linode/utilities';
 import { createDynamicAdvancedConfigSchema } from '@linode/validation';
 import Grid from '@mui/material/Grid';
@@ -161,18 +155,24 @@ export const DatabaseAdvancedConfigurationDrawer = (props: Props) => {
     <Drawer onClose={handleClose} open={open} title="Advanced Configuration">
       <form onSubmit={handleSubmit(onSubmit)} ref={formContainerRef}>
         {errors.root?.message && (
-          <Notice spacingBottom={16} spacingTop={16} variant="error">
+          <NotificationBanner
+            style={{ marginBottom: Spacing.S16, marginTop: Spacing.S16 }}
+            type="error"
+          >
             {errors.root.message}
-          </Notice>
+          </NotificationBanner>
         )}
         <Typography>
           Advanced parameters to configure your database cluster.
         </Typography>
         <Link to={ADVANCED_CONFIG_LEARN_MORE_LINK}>Learn more.</Link>
 
-        <Notice sx={{ mb: 1, mt: 3 }} variant="info">
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S8, marginTop: Spacing.S24 }}
+          type="info"
+        >
           <Typography>{ADVANCED_CONFIG_INFO}</Typography>
-        </Notice>
+        </NotificationBanner>
 
         <Grid
           alignItems="end"

@@ -1,11 +1,11 @@
-import { Badge } from '@akamai/cds-components/react/Badge';
+import { Badge, NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import {
   useDatabaseMutation,
   useDatabaseQuery,
   useDatabaseTypesQuery,
 } from '@linode/queries';
-import { ErrorState, Notice } from '@linode/ui';
+import { ErrorState } from '@linode/ui';
 import { useEditableLabelState } from '@linode/utilities';
 import {
   Outlet,
@@ -198,11 +198,12 @@ export const DatabaseDetail = () => {
       <Tabs index={tabIndex} onChange={handleTabChange}>
         <TanStackTabLinkList tabs={tabs} />
         {isDatabasesGrantReadOnly && (
-          <Notice
+          <NotificationBanner
+            style={{ marginBottom: Spacing.S16 }}
             text={
               "You don't have permissions to modify this Database. Please contact an account administrator for details."
             }
-            variant="warning"
+            type="warning"
           />
         )}
         <TabPanels>

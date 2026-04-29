@@ -1,17 +1,12 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import {
   useDatabaseMutation,
   useDatabaseTypesQuery,
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import {
-  Box,
-  Divider,
-  ErrorState,
-  Notice,
-  Paper,
-  Typography,
-} from '@linode/ui';
+import { Box, Divider, ErrorState, Paper, Typography } from '@linode/ui';
 import { formatStorageUnits } from '@linode/utilities';
 import { useNavigate } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
@@ -256,27 +251,30 @@ export const DatabaseResize = () => {
     database.cluster_size === 1 ? (
       <>
         {costSummary}
-        <Notice variant="warning">
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
+          type="warning"
+        >
           <Typography variant="h3">{`Warning: This operation will cause downtime for your resized node cluster.`}</Typography>
-        </Notice>
+        </NotificationBanner>
       </>
     ) : (
       <>
         {costSummary}
-        <Notice variant="info">
+        <NotificationBanner style={{ marginBottom: Spacing.S16 }} type="info">
           <Typography variant="h3">{`Operation can take up to 2 hours and will incur a failover.`}</Typography>
-        </Notice>
+        </NotificationBanner>
       </>
     );
 
   const currentPlanUnavailableNotice = (
-    <Notice variant="warning">
+    <NotificationBanner style={{ marginBottom: Spacing.S16 }} type="warning">
       <PlanNoticeTypography variant="h3">
         {
           'Warning: Your current plan is currently unavailable and it can\u{2019}t be used to resize the cluster. You can only resize the cluster using other available plans.'
         }
       </PlanNoticeTypography>
-    </Notice>
+    </NotificationBanner>
   );
 
   const displayTypes: PlanSelectionWithDatabaseType[] = React.useMemo(() => {
@@ -524,7 +522,11 @@ export const DatabaseResize = () => {
         title={`Resize Database Cluster ${database.label}?`}
       >
         {resizeError ? (
-          <Notice text={resizeError[0].reason} variant="error" />
+          <NotificationBanner
+            style={{ marginBottom: Spacing.S16 }}
+            text={resizeError[0].reason}
+            type="error"
+          />
         ) : null}
         {confirmationPopUpMessage}
       </TypeToConfirmDialog>

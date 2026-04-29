@@ -1,4 +1,5 @@
-import { Checkbox } from '@akamai/cds-components/react';
+import { Checkbox, NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCreateDatabaseConnectionPoolMutation } from '@linode/queries';
 import {
@@ -6,7 +7,6 @@ import {
   Autocomplete,
   Drawer,
   FormControlLabel,
-  Notice,
   Stack,
   TextField,
   Typography,
@@ -95,7 +95,11 @@ export const DatabaseAddConnectionPoolDrawer = (props: Props) => {
       title="Add a New Connection Pool"
     >
       {errors.root?.message && (
-        <Notice text={errors.root.message} variant="error" />
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
+          text={errors.root.message}
+          type="error"
+        />
       )}
       <Typography>
         Add a PgBouncer connection pool to minimize the use of your server
