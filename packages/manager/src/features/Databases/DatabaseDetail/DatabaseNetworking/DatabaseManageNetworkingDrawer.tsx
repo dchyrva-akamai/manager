@@ -1,8 +1,9 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import { Button } from '@akamai/cds-components/react/Button';
 import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDatabaseMutation } from '@linode/queries';
-import { Box, Drawer, Notice } from '@linode/ui';
+import { Box, Drawer } from '@linode/ui';
 import { updatePrivateNetworkSchema } from '@linode/validation';
 import { useNavigate } from '@tanstack/react-router';
 import { enqueueSnackbar } from 'notistack';
@@ -113,10 +114,18 @@ const DatabaseManageNetworkingDrawer = (props: Props) => {
   return (
     <Drawer onClose={handleOnClose} open={open} title="Manage Networking">
       {errors.root?.message && (
-        <Notice text={errors.root.message} variant="error" />
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
+          text={errors.root.message}
+          type="error"
+        />
       )}
       {errors.private_network?.message && (
-        <Notice text={errors.private_network.message} variant="error" />
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
+          text={errors.private_network.message}
+          type="error"
+        />
       )}
       <FormProvider {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>

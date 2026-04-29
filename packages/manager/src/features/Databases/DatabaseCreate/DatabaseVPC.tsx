@@ -1,4 +1,4 @@
-import { Badge } from '@akamai/cds-components/react/Badge';
+import { Badge, NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useAllVPCsQuery, useRegionQuery } from '@linode/queries';
 import {
@@ -6,7 +6,6 @@ import {
   Box,
   Checkbox,
   FormHelperText,
-  Notice,
   Typography,
 } from '@linode/ui';
 import * as React from 'react';
@@ -203,12 +202,10 @@ export const DatabaseVPC = (props: DatabaseVPCProps) => {
         </>
       ) : (
         mode === 'create' && (
-          <Notice
-            sx={(theme: Theme) => ({
-              marginTop: theme.spacingFunction(20),
-            })}
+          <NotificationBanner
+            style={{ marginTop: Spacing.S16 }}
             text="The cluster will have public access by default if a VPC is not assigned."
-            variant="info"
+            type="info"
           />
         )
       )}

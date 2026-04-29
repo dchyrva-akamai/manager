@@ -1,9 +1,8 @@
-import { Badge } from '@akamai/cds-components/react/Badge';
+import { Badge, NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import {
   FormControl,
   FormControlLabel,
-  Notice,
   Radio,
   RadioGroup,
   Typography,
@@ -176,7 +175,13 @@ export const DatabaseNodeSelector = (props: Props) => {
           handleNodeChange(+e.target.value as ClusterSize);
         }}
       >
-        {error ? <Notice text={error} variant="error" /> : null}
+        {error ? (
+          <NotificationBanner
+            style={{ marginBottom: Spacing.S16 }}
+            text={error}
+            type="error"
+          />
+        ) : null}
         <RadioGroup
           aria-disabled={isRestricted || disabled}
           data-testid="database-nodes"

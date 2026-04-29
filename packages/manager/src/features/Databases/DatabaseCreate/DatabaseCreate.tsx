@@ -1,3 +1,5 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   useCreateDatabaseMutation,
@@ -6,7 +8,7 @@ import {
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import { Divider, ErrorState, Notice, Paper } from '@linode/ui';
+import { Divider, ErrorState, Paper } from '@linode/ui';
 import { formatStorageUnits, scrollErrorIntoViewV2 } from '@linode/utilities';
 import { getDynamicDatabaseSchema } from '@linode/validation/lib/databases.schema';
 import Grid from '@mui/material/Grid';
@@ -292,23 +294,26 @@ export const DatabaseCreate = () => {
           ref={formRef}
         >
           {isRestricted && (
-            <Notice
-              spacingTop={16}
+            <NotificationBanner
+              style={{ marginTop: Spacing.S16, marginBottom: Spacing.S16 }}
               text={getRestrictedResourceText({
                 action: 'create',
                 resourceType: 'Databases',
               })}
-              variant="error"
+              type="error"
             />
           )}
           <Paper>
             {errors.root?.message && (
-              <Notice variant="error">
+              <NotificationBanner
+                style={{ marginBottom: Spacing.S16 }}
+                type="error"
+              >
                 <ErrorMessage
                   entity={{ type: 'database_id' }}
                   message={errors.root.message}
                 />
-              </Notice>
+              </NotificationBanner>
             )}
             <DatabaseClusterData selectedPlan={selectedPlan} />
             <Divider spacingBottom={12} spacingTop={38} />

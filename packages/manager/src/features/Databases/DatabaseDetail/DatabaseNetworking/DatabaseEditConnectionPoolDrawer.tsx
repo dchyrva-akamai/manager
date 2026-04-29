@@ -1,4 +1,5 @@
-import { Checkbox } from '@akamai/cds-components/react';
+import { Checkbox, NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useUpdateDatabaseConnectionPoolMutation } from '@linode/queries';
 import {
@@ -6,7 +7,6 @@ import {
   Autocomplete,
   Drawer,
   FormControlLabel,
-  Notice,
   Stack,
   TextField,
 } from '@linode/ui';
@@ -86,7 +86,11 @@ export const DatabaseEditConnectionPoolDrawer = (props: Props) => {
   return (
     <Drawer onClose={handleOnClose} open={open} title="Edit Connection Pool">
       {errors.root?.message && (
-        <Notice text={errors.root.message} variant="error" />
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
+          text={errors.root.message}
+          type="error"
+        />
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack>
