@@ -1,5 +1,6 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import { useAccountUserDeleteMutation } from '@linode/queries';
-import { ActionsPanel, Notice, Typography } from '@linode/ui';
+import { ActionsPanel, Typography } from '@linode/ui';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 
@@ -61,12 +62,12 @@ export const UserDeleteConfirmation = (props: Props) => {
       open={open}
       title={`Delete user ${username}?`}
     >
-      <Notice variant="warning">
+      <NotificationBanner type="warning">
         <Typography>
           <strong>Warning:</strong> Deleting this User is permanent and can’t be
           undone.
         </Typography>
-      </Notice>
+      </NotificationBanner>
     </ConfirmationDialog>
   );
 };

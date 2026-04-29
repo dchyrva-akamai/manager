@@ -1,4 +1,4 @@
-import { Select } from '@akamai/cds-components/react';
+import { NotificationBanner, Select } from '@akamai/cds-components/react';
 import {
   useAccountRoles,
   useGetDefaultDelegationAccessQuery,
@@ -6,7 +6,7 @@ import {
   useUserRoles,
   useUserRolesMutation,
 } from '@linode/queries';
-import { ActionsPanel, Drawer, Notice, Typography } from '@linode/ui';
+import { ActionsPanel, Drawer, Typography } from '@linode/ui';
 import { useTheme } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
 import React from 'react';
@@ -172,7 +172,7 @@ export const ChangeRoleForEntityDrawer = ({
   return (
     <Drawer onClose={handleClose} open={open} title="Change Role">
       {errors.root?.message && (
-        <Notice text={errors.root?.message} variant="error" />
+        <NotificationBanner text={errors.root?.message} type="error" />
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Typography sx={{ marginBottom: 2.5 }}>

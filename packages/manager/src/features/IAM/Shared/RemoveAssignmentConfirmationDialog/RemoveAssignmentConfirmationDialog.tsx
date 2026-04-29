@@ -1,10 +1,11 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import {
   useGetDefaultDelegationAccessQuery,
   useUpdateDefaultDelegationAccessQuery,
   useUserRoles,
   useUserRolesMutation,
 } from '@linode/queries';
-import { ActionsPanel, Notice, Typography } from '@linode/ui';
+import { ActionsPanel, Typography } from '@linode/ui';
 import { useSnackbar } from 'notistack';
 import React from 'react';
 
@@ -131,14 +132,14 @@ export const RemoveAssignmentConfirmationDialog = (props: Props) => {
           {role?.entity_name} entity by default.
         </Typography>
       ) : (
-        <Notice variant="warning">
+        <NotificationBanner type="warning">
           <Typography>
             You’re about to remove the <strong>{role?.entity_name}</strong>{' '}
             entity from the <strong>{role?.role_name}</strong> role for{' '}
             <strong>{username}</strong>. This change will be applied
             immediately.
           </Typography>
-        </Notice>
+        </NotificationBanner>
       )}
     </ConfirmationDialog>
   );

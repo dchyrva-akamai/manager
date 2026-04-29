@@ -1,6 +1,7 @@
+import { NotificationBanner } from '@akamai/cds-components/react/NotificationBanner';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCreateUserMutation } from '@linode/queries';
-import { ActionsPanel, Box, Drawer, Notice, TextField } from '@linode/ui';
+import { ActionsPanel, Box, Drawer, TextField } from '@linode/ui';
 import { CreateUserSchema } from '@linode/validation';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -59,7 +60,7 @@ export const CreateUserDrawer = (props: Props) => {
   return (
     <Drawer onClose={handleClose} open={open} title="Add a User">
       {errors.root?.message && (
-        <Notice text={errors.root?.message} variant="error" />
+        <NotificationBanner text={errors.root?.message} type="error" />
       )}
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
         <Controller
@@ -99,9 +100,9 @@ export const CreateUserDrawer = (props: Props) => {
         />
 
         <Box sx={{ marginTop: 2 }}>
-          <Notice
+          <NotificationBanner
             text="The user will be sent an email to set their password."
-            variant="warning"
+            type="warning"
           />
         </Box>
         <ActionsPanel

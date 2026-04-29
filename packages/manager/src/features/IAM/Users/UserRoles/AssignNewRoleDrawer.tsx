@@ -1,3 +1,4 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import {
   delegationQueries,
   iamQueries,
@@ -6,13 +7,7 @@ import {
   useUpdateDefaultDelegationAccessQuery,
   useUserRolesMutation,
 } from '@linode/queries';
-import {
-  ActionsPanel,
-  Drawer,
-  LinkButton,
-  Notice,
-  Typography,
-} from '@linode/ui';
+import { ActionsPanel, Drawer, LinkButton, Typography } from '@linode/ui';
 import { useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useParams } from '@tanstack/react-router';
@@ -164,7 +159,10 @@ export const AssignNewRoleDrawer = ({
       <FormProvider {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {formState.errors.root?.message && (
-            <Notice text={formState.errors.root?.message} variant="error" />
+            <NotificationBanner
+              text={formState.errors.root?.message}
+              type="error"
+            />
           )}
 
           <Typography sx={{ marginBottom: 2.5 }}>

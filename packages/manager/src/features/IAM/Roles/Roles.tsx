@@ -1,5 +1,6 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import { useAccountRoles } from '@linode/queries';
-import { Notice, Paper, Typography } from '@linode/ui';
+import { Paper, Typography } from '@linode/ui';
 import React from 'react';
 
 import { RolesTable } from 'src/features/IAM/Roles/RolesTable/RolesTable';
@@ -37,7 +38,10 @@ export const RolesLanding = () => {
 
   if (!permissions?.list_role_permissions) {
     return (
-      <Notice variant="error">You do not have permission to view roles.</Notice>
+      <NotificationBanner
+        text="You do not have permission to view roles."
+        type="error"
+      />
     );
   }
 

@@ -1,5 +1,6 @@
+import { NotificationBanner } from '@akamai/cds-components/react/NotificationBanner';
 import { useGetChildAccountsQuery } from '@linode/queries';
-import { Notice, Paper, Stack } from '@linode/ui';
+import { Paper, Stack } from '@linode/ui';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import React from 'react';
@@ -85,9 +86,10 @@ export const AccountDelegations = () => {
 
   if (!permissions?.list_all_child_accounts) {
     return (
-      <Notice variant="error">
-        You do not have permission to view account delegations.
-      </Notice>
+      <NotificationBanner
+        text="You do not have permission to view account delegations."
+        type="error"
+      />
     );
   }
 

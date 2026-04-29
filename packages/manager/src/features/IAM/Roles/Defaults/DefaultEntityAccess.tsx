@@ -1,5 +1,6 @@
+import { NotificationBanner } from '@akamai/cds-components/react';
 import { useGetDefaultDelegationAccessQuery } from '@linode/queries';
-import { Notice, Paper, Stack, Typography } from '@linode/ui';
+import { Paper, Stack, Typography } from '@linode/ui';
 import * as React from 'react';
 
 import { ErrorState } from 'src/features/IAM/Shared/ErrorState/ErrorState';
@@ -33,10 +34,10 @@ export const DefaultEntityAccess = () => {
 
   if (!permissions?.view_default_delegate_access) {
     return (
-      <Notice variant="error">
-        You do not have permission to view default entity access for delegate
-        users.
-      </Notice>
+      <NotificationBanner
+        text="You do not have permission to view default entity access for delegate users."
+        type="error"
+      />
     );
   }
 
