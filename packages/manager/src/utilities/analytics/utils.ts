@@ -4,7 +4,6 @@ import type {
   AnalyticsEvent,
   BasicFormEvent,
   FormErrorEvent,
-  FormEventOptions,
   FormEventType,
   FormInputEvent,
   FormPayload,
@@ -21,21 +20,6 @@ export const ONE_TRUST_COOKIE_CATEGORIES = {
   'Strictly Necessary Cookies': 'C0001',
   'Targeting Cookies': 'C0005',
 } as const;
-
-/**
- * Given the name of a cookie, parses the document.cookie string and returns the cookie's value.
- * @param name cookie's name
- * @returns value of cookie if it exists in the document; else, undefined
- */
-export const getCookie = (name: string) => {
-  const cookies = document.cookie.split(';');
-
-  const selectedCookie = cookies.find(
-    (cookie) => cookie.trim().startsWith(name + '=') // Trim whitespace so position in cookie string doesn't matter
-  );
-
-  return selectedCookie?.trim().substring(name.length + 1);
-};
 
 /**
  * Sends a direct call rule events to Adobe for a Component Click (and optionally, with `data`, Component Details).
@@ -116,20 +100,3 @@ export const waitForAdobeAnalyticsToBeLoaded = () =>
       }
     }, 1000);
   });
-
-/**
- * A utility function to consistently format the formInput 'inputValue' and formStep 'stepName' string.
- *
- * @returns a string of the format: Header:Subheader|Interaction:Component label
- */
-export const getFormattedStringFromFormEventOptions = ({
-  headerName,
-  interaction,
-  label,
-  subheaderName,
-  trackOnce = false,
-}: FormEventOptions) => {
-  return `${headerName ?? 'No header'}${
-    subheaderName ? `:${subheaderName}` : ''
-  }|${interaction}:${label}${trackOnce ? ':once' : ''}`;
-};

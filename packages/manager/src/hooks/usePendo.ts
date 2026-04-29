@@ -1,4 +1,8 @@
-import { checkOptanonConsent } from '@akamai/compute-ui-core/analytics';
+import {
+  checkOptanonConsent,
+  getCookie,
+  getUniquePendoId,
+} from '@akamai/compute-ui-core/analytics';
 import { useAccount, useProfile } from '@linode/queries';
 import { loadScript } from '@linode/utilities'; // `loadScript` from `useScript` hook
 import React from 'react';
@@ -6,30 +10,11 @@ import React from 'react';
 import { PENDO_API_KEY } from 'src/constants';
 import { reportException } from 'src/exceptionReporting';
 import { getAppRoot } from 'src/OAuth/constants';
-import {
-  getCookie,
-  ONE_TRUST_COOKIE_CATEGORIES,
-} from 'src/utilities/analytics/utils';
+import { ONE_TRUST_COOKIE_CATEGORIES } from 'src/utilities/analytics/utils';
 
 import type { PendoSDK } from '@akamai/compute-ui-core/analytics';
 
 const appRoot = getAppRoot();
-
-/**
- * This function prevents address ID collisions leading to muddled data between environments. Account and visitor IDs must be unique per API-key.
- * See: https://support.pendo.io/hc/en-us/articles/360031862352-Pendo-in-multiple-environments-for-development-and-testing
- * @returns Unique ID for the environment; else, undefined if missing values.
- */
-const getUniquePendoId = (id: string | undefined) => {
-  const isProdEnv = appRoot === 'https://cloud.linode.com';
-
-  if (!id || !appRoot) {
-    return;
-  }
-
-  // Append "-nonprod" to all IDs when in lower environments.
-  return `${id}${!isProdEnv ? '-nonprod' : ''}`;
-};
 
 /**
  * This function uses string matching and replacement to transform the page url into a sanitized url without unwanted data.
@@ -67,8 +52,8 @@ export const usePendo = () => {
   const { data: account } = useAccount();
   const { data: profile } = useProfile();
 
-  const accountId = getUniquePendoId(account?.euuid);
-  const visitorId = getUniquePendoId(profile?.uid.toString());
+  const accountId = getUniquePendoId(account?.euuid, appRoot);
+  const visitorId = getUniquePendoId(profile?.uid.toString(), appRoot);
 
   const optanonCookie = getCookie('OptanonConsent');
   // Since OptanonConsent cookie always has a .linode.com domain, only check for consent in dev/staging/prod envs.
