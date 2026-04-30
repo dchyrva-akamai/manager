@@ -1,18 +1,23 @@
-import { NotificationBanner } from '@akamai/cds-components/react';
+import {
+  Button,
+  Modal,
+  NotificationBanner,
+} from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import {
   useGetDefaultDelegationAccessQuery,
   useUpdateDefaultDelegationAccessQuery,
   useUserRoles,
   useUserRolesMutation,
 } from '@linode/queries';
-import { ActionsPanel, Typography } from '@linode/ui';
+import { Typography } from '@linode/ui';
 import { useParams } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
 import React from 'react';
 
-import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
-
 import { useIsDefaultDelegationRolesForChildAccount } from '../../hooks/useDelegationRole';
+import { ErrorState } from '../ErrorState/ErrorState';
+import styles from '../RemoveAssignmentConfirmationDialog/RemoveAssignmentConfirmationDialog.module.css';
 import { deleteUserRole, getErrorMessage } from '../utilities';
 
 import type { ExtendedRoleView } from '../types';
@@ -84,7 +89,7 @@ export const UnassignRoleConfirmationDialog = (props: Props) => {
       }
       onClose();
     } catch {
-      // error is handled by react-query and shown via <ConfirmationDialog error=… />
+      // The error state is handled by the useMutation hooks, so we don't need to do anything here
     }
   };
 
@@ -93,43 +98,61 @@ export const UnassignRoleConfirmationDialog = (props: Props) => {
     : userRolesError;
 
   return (
-    <ConfirmationDialog
-      actions={
-        <ActionsPanel
-          primaryButtonProps={{
-            label: 'Remove',
-            loading: isPending || isDefaultRolesPending,
-            onClick: onDelete,
-            disabled: isPending || isDefaultRolesPending,
-          }}
-          secondaryButtonProps={{
-            label: 'Cancel',
-            onClick: onClose,
-          }}
-          style={{ padding: 0 }}
-        />
-      }
-      error={getErrorMessage(error)}
-      onClose={onClose}
+    <Modal
+      className={styles.removeAssignmentDialog}
+      onModalClosed={onClose}
       open={open}
-      title={
-        isDefaultDelegationRolesForChildAccount
-          ? `Remove the ${role?.name} role from the list?`
-          : `Unassign the ${role?.name} role?`
-      }
+      role="dialog"
+      size={error ? 'medium' : 'small'}
+      titleMaxLength={150}
     >
-      {isDefaultDelegationRolesForChildAccount ? (
-        <Typography>
-          The role won’t be added to delegate users by default.
-        </Typography>
-      ) : (
+      <span slot="title">
+        {isDefaultDelegationRolesForChildAccount
+          ? `Remove the ${role?.name} role from the list?`
+          : `Unassign the ${role?.name} role?`}
+      </span>
+      <div slot="body">
         <NotificationBanner type="warning">
-          <Typography>
-            You’re about to remove the <strong>{role?.name}</strong> role from{' '}
-            <strong>{username}</strong>. The change will be applied immediately.
-          </Typography>
+          {isDefaultDelegationRolesForChildAccount ? (
+            <Typography>
+              The role won’t be added to delegate users by default.
+            </Typography>
+          ) : (
+            <Typography>
+              You’re about to remove the <strong>{role?.name}</strong> role from{' '}
+              <strong>{username}</strong>. The change will be applied
+              immediately.
+            </Typography>
+          )}
         </NotificationBanner>
-      )}
-    </ConfirmationDialog>
+        {error && <ErrorState errorText={getErrorMessage(error)} />}
+      </div>
+      <div
+        slot="actions"
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: Spacing.S8,
+          marginTop: Spacing.S16,
+          alignItems: 'center',
+        }}
+      >
+        <Button
+          onClick={onClose}
+          style={{ marginRight: Spacing.S8 }}
+          variant="link"
+        >
+          Cancel
+        </Button>
+        <Button
+          disabled={isPending || isDefaultRolesPending}
+          onClick={onDelete}
+          processing={isPending || isDefaultRolesPending}
+          variant="primary"
+        >
+          Remove
+        </Button>
+      </div>
+    </Modal>
   );
 };

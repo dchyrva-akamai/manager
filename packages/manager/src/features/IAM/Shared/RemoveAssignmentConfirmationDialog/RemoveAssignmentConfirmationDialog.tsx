@@ -1,18 +1,23 @@
-import { NotificationBanner } from '@akamai/cds-components/react';
+import {
+  Button,
+  Modal,
+  NotificationBanner,
+} from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import {
   useGetDefaultDelegationAccessQuery,
   useUpdateDefaultDelegationAccessQuery,
   useUserRoles,
   useUserRolesMutation,
 } from '@linode/queries';
-import { ActionsPanel, Typography } from '@linode/ui';
+import { Typography } from '@linode/ui';
 import { useSnackbar } from 'notistack';
 import React from 'react';
 
-import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
-
 import { useIsDefaultDelegationRolesForChildAccount } from '../../hooks/useDelegationRole';
+import { ErrorState } from '../ErrorState/ErrorState';
 import { deleteUserEntity, getErrorMessage } from '../utilities';
+import styles from './RemoveAssignmentConfirmationDialog.module.css';
 
 import type { EntitiesRole } from '../types';
 
@@ -101,46 +106,63 @@ export const RemoveAssignmentConfirmationDialog = (props: Props) => {
     : userRolesError;
 
   return (
-    <ConfirmationDialog
-      actions={
-        <ActionsPanel
-          primaryButtonProps={{
-            label: 'Remove',
-            loading: isPending,
-            onClick: onDelete,
-            disabled: isPending,
-          }}
-          secondaryButtonProps={{
-            label: 'Cancel',
-            onClick: onClose,
-          }}
-          style={{ padding: 0 }}
-        />
-      }
-      error={getErrorMessage(error)}
-      onClose={onClose}
+    <Modal
+      className={styles.removeAssignmentDialog}
+      onModalClosed={onClose}
       open={open}
-      title={
-        isDefaultDelegationRolesForChildAccount
-          ? `Remove the ${role?.entity_name} entity from the list?`
-          : `Remove the ${role?.entity_name} entity from the ${role?.role_name} role assignment?`
-      }
+      role="dialog"
+      size={error ? 'medium' : 'small'}
+      titleMaxLength={150}
     >
-      {isDefaultDelegationRolesForChildAccount ? (
-        <Typography>
-          Delegate users won’t get the {role?.role_name} access on the{' '}
-          {role?.entity_name} entity by default.
-        </Typography>
-      ) : (
+      <span slot="title">
+        {isDefaultDelegationRolesForChildAccount
+          ? `Remove the ${role?.entity_name} entity from the list?`
+          : `Remove the ${role?.entity_name} entity from the ${role?.role_name} role assignment?`}
+      </span>
+      <div slot="body">
         <NotificationBanner type="warning">
-          <Typography>
-            You’re about to remove the <strong>{role?.entity_name}</strong>{' '}
-            entity from the <strong>{role?.role_name}</strong> role for{' '}
-            <strong>{username}</strong>. This change will be applied
-            immediately.
-          </Typography>
+          {isDefaultDelegationRolesForChildAccount ? (
+            <Typography>
+              Delegate users won’t get the {role?.role_name} access on the{' '}
+              {role?.entity_name} entity by default.
+            </Typography>
+          ) : (
+            <Typography>
+              You’re about to remove the <strong>{role?.entity_name}</strong>{' '}
+              entity from the <strong>{role?.role_name}</strong> role for{' '}
+              <strong>{username}</strong>. This change will be applied
+              immediately.
+            </Typography>
+          )}
         </NotificationBanner>
-      )}
-    </ConfirmationDialog>
+        {error && <ErrorState errorText={getErrorMessage(error)} />}
+      </div>
+      <div
+        slot="actions"
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: Spacing.S8,
+          marginTop: Spacing.S16,
+          alignItems: 'center',
+        }}
+      >
+        <Button
+          onClick={onClose}
+          style={{ marginRight: Spacing.S8 }}
+          variant="link"
+        >
+          Cancel
+        </Button>
+        <Button
+          disabled={isPending}
+          onClick={onDelete}
+          processing={isPending}
+          variant="primary"
+        >
+          Remove
+        </Button>
+      </div>
+    </Modal>
   );
 };
