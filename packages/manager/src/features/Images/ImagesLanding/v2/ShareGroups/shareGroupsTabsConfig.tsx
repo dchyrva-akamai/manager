@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { SHARE_GROUPS_OWNED_TAB_PENDO_IDS } from 'src/features/Images/constants';
+import {
+  SHARE_GROUPS_JOINED_TAB_PENDO_IDS,
+  SHARE_GROUPS_OWNED_TAB_PENDO_IDS,
+} from 'src/features/Images/constants';
 
 import type { APIError } from '@linode/api-v4';
 import type { HiddenProps } from '@linode/ui';
@@ -98,13 +101,21 @@ const OWNED_GROUPS_TABLE_COLUMNS: ShareGroupsViewTableColConfig[] = [
 ];
 
 const JOINED_GROUPS_TABLE_COLUMNS: ShareGroupsViewTableColConfig[] = [
-  { name: 'Group', sortableProps: { label: 'label' } },
-  { name: 'Description', sortableProps: { label: 'description' } },
-  { name: 'Membership Status', sortableProps: { label: 'membership_status' } },
+  {
+    name: 'Group',
+    sortableProps: { label: 'label' },
+    className: 'group-column',
+  },
+  {
+    name: 'Membership Status',
+    sortableProps: { label: 'status' },
+    className: 'membership-status-column',
+  },
   {
     name: 'Status Changed',
-    sortableProps: { label: 'status_changed' },
-    hidden: 'lgDown',
+    sortableProps: { label: 'updated' },
+    hidden: 'mdDown',
+    className: 'status-changed-column',
   },
 ];
 
@@ -162,6 +173,11 @@ export const SHAREGROUPS_CONFIG: Record<
       </>
     ),
     columns: JOINED_GROUPS_TABLE_COLUMNS,
+    docsLink: {
+      href: `https://techdocs.akamai.com/cloud-computing/docs/image-sharing`,
+      label: 'Image sharing',
+      pendoId: SHARE_GROUPS_JOINED_TAB_PENDO_IDS.imageSharingDocsLink,
+    },
     emptyMessage: {
       main: 'No share groups to display',
       instruction:
@@ -170,6 +186,7 @@ export const SHAREGROUPS_CONFIG: Record<
     orderByDefault: 'label',
     orderDefault: 'asc',
     preferenceKey: 'joined-groups-table',
+    searchFieldPendoId: SHARE_GROUPS_JOINED_TAB_PENDO_IDS.searchShareGroupsBar,
   },
   'membership-requests': {
     title: 'Membership requests',

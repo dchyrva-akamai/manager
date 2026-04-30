@@ -31,6 +31,7 @@ import {
   regionAvailabilityFactory,
   regions,
   securityQuestionsFactory,
+  sharegroupTokenFactory,
 } from '@linode/utilities';
 import { DateTime } from 'luxon';
 import { http, HttpResponse } from 'msw';
@@ -934,6 +935,30 @@ export const handlers = [
     }
 
     return HttpResponse.json(makeResourcePage([]));
+  }),
+  http.get('*/images/sharegroups/tokens', () => {
+    const activeGroups = sharegroupTokenFactory.buildList(5);
+
+    const pendingGroup = sharegroupTokenFactory.build({
+      status: 'pending',
+    });
+
+    const expiredGroup = sharegroupTokenFactory.build({
+      status: 'expired',
+    });
+
+    const revokedGroup = sharegroupTokenFactory.build({
+      status: 'revoked',
+    });
+
+    const joinedGroups = [
+      ...activeGroups,
+      pendingGroup,
+      expiredGroup,
+      revokedGroup,
+    ];
+
+    return HttpResponse.json(makeResourcePage(joinedGroups));
   }),
   http.post<any, UpdateImageRegionsPayload>(
     '*/v4/images/:id/regions',

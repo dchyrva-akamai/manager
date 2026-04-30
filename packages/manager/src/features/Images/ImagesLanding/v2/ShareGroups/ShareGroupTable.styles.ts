@@ -71,8 +71,22 @@ export const StyledShareGroupsTableContainer = styled('div', {
     ...TABLE_CELL_BASE_STYLES,
     whiteSpace: 'nowrap',
   },
+  '& .membership-status-column': {
+    minWidth: '22%',
+    ...TABLE_CELL_BASE_STYLES,
+    whiteSpace: 'nowrap',
+  },
+  '& .status-changed-column': {
+    minWidth: '22%',
+    ...TABLE_CELL_BASE_STYLES,
+    whiteSpace: 'nowrap',
+  },
   '& .action-column': {
     maxWidth: '5%',
+    ...TABLE_CELL_BASE_STYLES,
+  },
+  '& .joined-leave-column': {
+    maxWidth: '10%',
     ...TABLE_CELL_BASE_STYLES,
   },
 }));

@@ -48,3 +48,10 @@ export const SHARE_GROUPS_OWNED_TAB_PENDO_IDS = {
   imageSharingDocsLink: 'Images Groups Owned-Image sharing docs',
   searchShareGroupsBar: 'Images Groups Owned-Search',
 };
+
+export const SHARE_GROUPS_JOINED_TAB_PENDO_IDS = {
+  imageSharingDocsLink: 'Images Groups Joined-Image sharing docs',
+  joinedGroupName: 'Images Groups Joined-Group name',
+  leaveGroupButton: 'Images Groups Joined-Leave group',
+  searchShareGroupsBar: 'Images Groups Joined-Search',
+};
