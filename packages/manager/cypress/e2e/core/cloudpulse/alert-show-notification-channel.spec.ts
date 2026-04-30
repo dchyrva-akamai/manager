@@ -4,6 +4,7 @@
  * This file contains Cypress tests that validate the display and content of the  Alerts Notification channel Show Detail Page in the CloudPulse application.
  * It ensures that all alert details, criteria, and entity information are displayed correctly.
  */
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { profileFactory } from '@linode/utilities';
 import { cloudPulseServiceMap } from 'support/constants/cloudpulse';
 import { mockGetAccount } from 'support/intercepts/account';
@@ -27,7 +28,6 @@ import {
   flagsFactory,
   notificationChannelFactory,
 } from 'src/factories';
-import { formatDate } from 'src/utilities/formatDate';
 
 // Define mock data for the test.
 

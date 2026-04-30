@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { useProfile, useRegionsQuery } from '@linode/queries';
 import {
   Hidden,
@@ -20,7 +21,6 @@ import {
 } from 'src/features/components/PlansPanel/PlansAvailabilityNotice.styles';
 import { SHARED_WITH_ME_IMAGES_TAB_PENDO_IDS } from 'src/features/Images/constants';
 import { ImagesActionMenu } from 'src/features/Images/ImagesLanding/ImagesActionMenu';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type { Event, Image, ImageRegion } from '@linode/api-v4';
 import type { Handlers } from 'src/features/Images/ImagesLanding/ImagesActionMenu';

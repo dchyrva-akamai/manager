@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { useProfile } from '@linode/queries';
 import { Paper, Stack, Typography } from '@linode/ui';
 import { Hidden } from '@linode/ui';
@@ -8,7 +9,6 @@ import React from 'react';
 
 import { Link } from 'src/components/Link';
 import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';
-import { formatDate } from 'src/utilities/formatDate';
 import { getLinkTargets } from 'src/utilities/getEventsActionLink';
 
 import { SeverityChip } from './SeverityChip';

@@ -1,6 +1,6 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { getProfile } from '@linode/api-v4';
 import { profileFactory } from '@linode/utilities';
-import { formatDate } from '@src/utilities/formatDate';
 import { DateTime } from 'luxon';
 import { authenticate } from 'support/api/authentication';
 import {

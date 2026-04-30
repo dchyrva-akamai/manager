@@ -7,6 +7,7 @@ import {
   TableHeaderCell,
   TableRow,
 } from '@akamai/cds-components/react/Table';
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { useProfile, useShareGroupsMembersQuery } from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
 import {
@@ -28,7 +29,6 @@ import { CopyTooltip } from 'src/components/CopyTooltip/CopyTooltip';
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField/DebouncedSearchTextField';
 import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
-import { formatDate } from 'src/utilities/formatDate';
 
 import { DEFAULT_PAGE_SIZES } from '../../constants';
 

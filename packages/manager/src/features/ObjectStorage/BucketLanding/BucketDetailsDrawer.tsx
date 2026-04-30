@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { useProfile, useRegionQuery, useRegionsQuery } from '@linode/queries';
 import { Divider, Drawer, Typography } from '@linode/ui';
 import { pluralize, readableBytes, truncateMiddle } from '@linode/utilities';
@@ -8,7 +9,6 @@ import { CopyTooltip } from 'src/components/CopyTooltip/CopyTooltip';
 import { Link } from 'src/components/Link';
 import { MaskableText } from 'src/components/MaskableText/MaskableText';
 import { useObjectStorageClusters } from 'src/queries/object-storage/queries';
-import { formatDate } from 'src/utilities/formatDate';
 
 import { AccessSelect } from '../BucketDetail/AccessTab/AccessSelect';
 import { useIsObjMultiClusterEnabled } from '../hooks/useIsObjectStorageGen2Enabled';

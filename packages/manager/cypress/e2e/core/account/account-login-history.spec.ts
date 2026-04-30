@@ -2,6 +2,7 @@
  * @file Integration tests for Cloud Manager account login history flows.
  */
 
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { grantsFactory, profileFactory } from '@linode/utilities';
 import {
   loginEmptyStateMessageText,
@@ -16,7 +17,6 @@ import {
 
 import { accountLoginFactory } from 'src/factories/accountLogin';
 import { PARENT_USER } from 'src/features/Account/constants';
-import { formatDate } from 'src/utilities/formatDate';
 
 describe('Account login history', () => {
   beforeEach(() => {

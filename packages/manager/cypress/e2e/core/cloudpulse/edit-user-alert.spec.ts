@@ -5,6 +5,7 @@
  * It verifies that alert details are correctly displayed, interactive, and editable.
  */
 
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { profileFactory, regionFactory } from '@linode/utilities';
 import {
   EVALUATION_PERIOD_DESCRIPTION,
@@ -49,7 +50,6 @@ import {
   REGION_GROUP_INFO_MESSAGE,
   UPDATE_ALERT_SUCCESS_MESSAGE,
 } from 'src/features/CloudPulse/Alerts/constants';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type { Database } from '@linode/api-v4';
 

@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { getProfile } from '@linode/api-v4';
 import { authenticate } from 'support/api/authentication';
 import { interceptCreateLinode } from 'support/intercepts/linodes';
@@ -14,7 +15,6 @@ import { randomLabel, randomString } from 'support/util/random';
 import { chooseRegion } from 'support/util/regions';
 
 import { stackScriptFactory } from 'src/factories';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type { Profile, StackScript } from '@linode/api-v4';
 

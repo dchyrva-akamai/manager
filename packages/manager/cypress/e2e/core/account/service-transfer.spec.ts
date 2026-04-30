@@ -2,6 +2,7 @@
  * @file Tests for service transfer functionality between accounts.
  */
 
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { getProfile } from '@linode/api-v4/lib/profile';
 import { createLinodeRequestFactory, linodeFactory } from '@linode/utilities';
 import { authenticate } from 'support/api/authentication';
@@ -23,7 +24,6 @@ import { randomLabel, randomUuid } from 'support/util/random';
 import { chooseRegion } from 'support/util/regions';
 
 import { entityTransferFactory } from 'src/factories/entityTransfers';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type {
   EntityTransfer,

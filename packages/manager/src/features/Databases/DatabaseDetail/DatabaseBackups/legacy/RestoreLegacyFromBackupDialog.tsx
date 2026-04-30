@@ -1,5 +1,6 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import {
   useLegacyRestoreFromBackupMutation,
   useProfile,
@@ -11,7 +12,6 @@ import * as React from 'react';
 
 import { TypeToConfirmDialog } from 'src/components/TypeToConfirmDialog/TypeToConfirmDialog';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type { Database, DatabaseBackup } from '@linode/api-v4/lib/databases';
 import type { DialogProps } from '@linode/ui';

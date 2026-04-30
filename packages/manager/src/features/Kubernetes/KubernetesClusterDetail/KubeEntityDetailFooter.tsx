@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { useProfile, useVPCQuery } from '@linode/queries';
 import { Box, CircleProgress, LinkButton } from '@linode/ui';
 import { pluralize } from '@linode/utilities';
@@ -17,7 +18,6 @@ import {
 } from 'src/features/Linodes/LinodeEntityDetail.styles';
 import { useKubernetesClusterMutation } from 'src/queries/kubernetes';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
-import { formatDate } from 'src/utilities/formatDate';
 
 import { useIsLkeEnterpriseEnabled } from '../kubeUtils';
 
