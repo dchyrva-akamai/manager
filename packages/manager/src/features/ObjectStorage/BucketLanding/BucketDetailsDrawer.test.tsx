@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import {
   profileFactory,
   readableBytes,
@@ -12,7 +13,6 @@ import {
   objectStorageBucketFactory,
   objectStorageBucketFactoryGen2,
 } from 'src/factories';
-import { formatDate } from 'src/utilities/formatDate';
 import { renderWithThemeAndHookFormContext } from 'src/utilities/testHelpers';
 
 import { BucketDetailsDrawer } from './BucketDetailsDrawer';
@@ -26,7 +26,13 @@ vi.mock('@linode/utilities', async () => {
     truncateMiddle: vi.fn(),
   };
 });
-vi.mock('src/utilities/formatDate');
+vi.mock('@akamai/compute-ui-core/datetime', async () => {
+  const actual = await vi.importActual('@akamai/compute-ui-core/datetime');
+  return {
+    ...actual,
+    formatDate: vi.fn(),
+  };
+});
 
 // Hoist query mocks
 const queryMocks = vi.hoisted(() => ({

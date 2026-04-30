@@ -3,6 +3,7 @@
 /**
  * @file Integration Tests for CloudPulse Custom and Preset Verification
  */
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { profileFactory, regionFactory } from '@linode/utilities';
 import { DateTime } from 'luxon';
 import { widgetDetails } from 'support/constants/widgets';
@@ -34,7 +35,6 @@ import {
   flagsFactory,
   widgetFactory,
 } from 'src/factories';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type { Database, DateTimeWithPreset } from '@linode/api-v4';
 import type { Interception } from 'support/cypress-exports';

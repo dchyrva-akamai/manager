@@ -23,6 +23,7 @@ vi.mock('@linode/queries', async () => {
   return {
     ...actual,
     useAllFirewallPrefixListsQuery: queryMocks.useAllFirewallPrefixListsQuery,
+    useProfile: vi.fn().mockReturnValue({ data: { timezone: 'utc' } }),
   };
 });
 

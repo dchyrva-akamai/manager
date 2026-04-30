@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { profileFactory } from '@linode/utilities';
 /**
  * @file Integration Tests for the CloudPulse Alerts Listing Page.
@@ -32,7 +33,6 @@ import {
   DISABLE_ALERT_SUCCESS_MESSAGE,
   ENABLE_ALERT_SUCCESS_MESSAGE,
 } from 'src/features/CloudPulse/Alerts/constants';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type {
   Alert,

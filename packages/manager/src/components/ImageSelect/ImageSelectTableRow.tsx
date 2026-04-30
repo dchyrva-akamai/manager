@@ -1,4 +1,5 @@
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import {
   FormControlLabel,
   Hidden,
@@ -15,7 +16,6 @@ import {
   PlanTextTooltip,
   StyledFormattedRegionList,
 } from 'src/features/components/PlansPanel/PlansAvailabilityNotice.styles';
-import { formatDate } from 'src/utilities/formatDate';
 
 import { TABLE_CELL_BASE_STYLE } from './constants';
 import { getRegionListItem } from './utilities';

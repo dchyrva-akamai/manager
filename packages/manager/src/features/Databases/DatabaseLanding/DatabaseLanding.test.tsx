@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { capitalize } from '@linode/utilities';
 import {
   fireEvent,
@@ -12,7 +13,6 @@ import { DatabaseLanding } from 'src/features/Databases/DatabaseLanding/Database
 import DatabaseRow from 'src/features/Databases/DatabaseLanding/DatabaseRow';
 import { makeResourcePage } from 'src/mocks/serverHandlers';
 import { http, HttpResponse, server } from 'src/mocks/testServer';
-import { formatDate } from 'src/utilities/formatDate';
 import {
   mockMatchMedia,
   renderWithTheme,

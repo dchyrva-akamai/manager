@@ -1,6 +1,7 @@
 /**
  * @file Integration Tests for CloudPulse Alerting — Notification Channel Listing Page
  */
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { profileFactory } from '@linode/utilities';
 import { mockGetAccount } from 'support/intercepts/account';
 import {
@@ -27,7 +28,6 @@ import {
   ChannelAlertsTooltipText,
   ChannelListingTableLabelMap,
 } from 'src/features/CloudPulse/Alerts/NotificationChannels/NotificationsChannelsListing/constants';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type { EmailRecipientType, NotificationChannel } from '@linode/api-v4';
 

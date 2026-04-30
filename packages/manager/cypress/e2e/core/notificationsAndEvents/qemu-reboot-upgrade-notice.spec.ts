@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import {
   capitalize,
   linodeConfigInterfaceFactory,
@@ -25,7 +26,6 @@ import {
   VLANFactory,
   volumeFactory,
 } from 'src/factories';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type { Notification } from '@linode/api-v4';
 

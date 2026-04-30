@@ -1,4 +1,5 @@
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { usePreferences, useProfile } from '@linode/queries';
 import { Hidden, Tooltip } from '@linode/ui';
 import { truncateEnd } from '@linode/utilities';
@@ -6,7 +7,6 @@ import React from 'react';
 
 import { Link } from 'src/components/Link';
 import { getIsTableStripingEnabled } from 'src/features/Profile/Settings/TableStriping.utils';
-import { formatDate } from 'src/utilities/formatDate';
 
 import { ShareGroupActionMenu } from './ShareGroupActionMenu';
 import { StyledActionMenuWrapper } from './ShareGroupTable.styles';

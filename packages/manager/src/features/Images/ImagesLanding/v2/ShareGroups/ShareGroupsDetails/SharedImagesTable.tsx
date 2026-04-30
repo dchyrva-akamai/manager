@@ -8,6 +8,7 @@ import {
   TableHeaderCell,
   TableRow,
 } from '@akamai/cds-components/react/Table';
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { useProfile, useShareGroupsImagesQuery } from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
 import {
@@ -25,7 +26,6 @@ import * as React from 'react';
 import { ActionMenu } from 'src/components/ActionMenu/ActionMenu';
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField/DebouncedSearchTextField';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
-import { formatDate } from 'src/utilities/formatDate';
 
 import { DEFAULT_PAGE_SIZES } from '../../constants';
 import { StyledActionMenuWrapper } from '../ShareGroupTable.styles';

@@ -1,3 +1,4 @@
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { getProfile } from '@linode/api-v4/lib/profile';
 import { accessFactory, appTokenFactory } from '@src/factories';
 import 'cypress-file-upload';
@@ -9,8 +10,6 @@ import {
 } from 'support/intercepts/profile';
 import { ui } from 'support/ui';
 import { randomLabel, randomString } from 'support/util/random';
-
-import { formatDate } from 'src/utilities/formatDate';
 
 import type { Profile, Token } from '@linode/api-v4';
 

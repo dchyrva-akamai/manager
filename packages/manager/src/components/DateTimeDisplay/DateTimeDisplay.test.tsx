@@ -16,6 +16,14 @@ vi.mock('@akamai/compute-ui-core/datetime', async () => {
   };
 });
 
+vi.mock('@linode/queries', async () => {
+  const actual = await vi.importActual('@linode/queries');
+  return {
+    ...actual,
+    useProfile: vi.fn().mockReturnValue({ data: { timezone: 'utc' } }),
+  };
+});
+
 const APIDate = '2018-07-20T04:23:17';
 
 describe('DateTimeDisplay component', () => {
