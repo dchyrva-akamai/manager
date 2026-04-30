@@ -36,7 +36,7 @@ vi.mock('@linode/ui', async () => {
   };
 });
 
-vi.mock('src/utilities/formatDate', () => ({
+vi.mock('@akamai/compute-ui-core/datetime', () => ({
   formatDate: vi.fn().mockReturnValue('January 1, 2025'),
 }));
 

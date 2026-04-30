@@ -1,4 +1,5 @@
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
+import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { usePreferences, useProfile } from '@linode/queries';
 import { Hidden, LinkButton, Tooltip } from '@linode/ui';
 import { capitalize, truncateEnd } from '@linode/utilities';
@@ -7,7 +8,6 @@ import React from 'react';
 import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';
 import { SHARE_GROUPS_JOINED_TAB_PENDO_IDS } from 'src/features/Images/constants';
 import { getIsTableStripingEnabled } from 'src/features/Profile/Settings/TableStriping.utils';
-import { formatDate } from 'src/utilities/formatDate';
 
 import type { SharegroupToken } from '@linode/api-v4';
 import type { Status } from 'src/components/StatusIcon/StatusIcon';
