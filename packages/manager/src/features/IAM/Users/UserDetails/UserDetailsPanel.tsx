@@ -12,8 +12,8 @@ import { PARENT_USER } from 'src/features/Account/constants';
 
 import { useDelegationRole } from '../../hooks/useDelegationRole';
 import { MaskableText } from '../../Shared/MaskableText/MaskableText';
+import { UserDeleteConfirmation } from '../../Shared/UserDeleteConfirmation';
 import { EditUserDetailsDrawer } from './EditUserDetailsDrawer';
-import { UserDeleteConfirmation } from './UserDeleteConfirmation';
 import { getTotalAssignedRoles } from './utils';
 
 import type { IamUserRoles, User } from '@linode/api-v4';

@@ -160,8 +160,8 @@ describe('UserDetailsPanel', () => {
 
 describe('UserDetailsPanel – Delete User button', () => {
   const assignedRoles = { account_access: [], entity_access: [] };
-  const getDeleteUserButton = (getByText: (text: string) => HTMLElement) =>
-    getByText('Delete User').closest('cds-button');
+  const getDeleteUserButton = (container: HTMLElement) =>
+    container.querySelector('cds-tooltip > cds-button');
 
   it('disables the Delete User button for proxy users', () => {
     queryMocks.useProfile.mockReturnValue({
@@ -173,7 +173,7 @@ describe('UserDetailsPanel – Delete User button', () => {
       username: 'proxy_user',
     });
 
-    const { getByText } = renderWithTheme(
+    const { container } = renderWithTheme(
       <UserDetailsPanel
         activeUser={user}
         assignedRoles={assignedRoles}
@@ -182,8 +182,9 @@ describe('UserDetailsPanel – Delete User button', () => {
     );
 
     expect(
-      getDeleteUserButton(getByText)?.querySelector('cds-icon')
+      getDeleteUserButton(container)?.querySelector('cds-icon')
     ).toBeTruthy();
+    expect(getDeleteUserButton(container)).toHaveProperty('disabled', true);
   });
 
   it('disables the Delete User button when viewing your own account', () => {
@@ -196,7 +197,7 @@ describe('UserDetailsPanel – Delete User button', () => {
       username: 'current_user',
     });
 
-    const { getByText } = renderWithTheme(
+    const { container } = renderWithTheme(
       <UserDetailsPanel
         activeUser={user}
         assignedRoles={assignedRoles}
@@ -205,8 +206,9 @@ describe('UserDetailsPanel – Delete User button', () => {
     );
 
     expect(
-      getDeleteUserButton(getByText)?.querySelector('cds-icon')
+      getDeleteUserButton(container)?.querySelector('cds-icon')
     ).toBeTruthy();
+    expect(getDeleteUserButton(container)).toHaveProperty('disabled', true);
   });
 
   it('enables the Delete User button for other deletable users', () => {
@@ -219,7 +221,7 @@ describe('UserDetailsPanel – Delete User button', () => {
       username: 'other_user',
     });
 
-    const { getByText } = renderWithTheme(
+    const { container } = renderWithTheme(
       <UserDetailsPanel
         activeUser={user}
         assignedRoles={assignedRoles}
@@ -227,9 +229,9 @@ describe('UserDetailsPanel – Delete User button', () => {
       />
     );
 
-    expect(getDeleteUserButton(getByText)).not.toHaveAttribute('disabled');
+    expect(getDeleteUserButton(container)).not.toHaveAttribute('disabled');
     expect(
-      getDeleteUserButton(getByText)?.querySelector('cds-icon')
+      getDeleteUserButton(container)?.querySelector('cds-icon')
     ).toBeNull();
   });
 
@@ -243,7 +245,7 @@ describe('UserDetailsPanel – Delete User button', () => {
       username: 'other_user',
     });
 
-    const { getByText } = renderWithTheme(
+    const { container, getByText } = renderWithTheme(
       <UserDetailsPanel
         activeUser={user}
         assignedRoles={assignedRoles}
@@ -251,7 +253,7 @@ describe('UserDetailsPanel – Delete User button', () => {
       />
     );
 
-    fireEvent.click(getDeleteUserButton(getByText)!);
+    fireEvent.click(getDeleteUserButton(container)!);
 
     expect(getByText(/Deleting this User is permanent/i)).toBeInTheDocument();
   });
@@ -263,7 +265,7 @@ describe('UserDetailsPanel – Delete User button', () => {
 
     const user = accountUserFactory.build({ username: 'other_user' });
 
-    const { getByText } = renderWithTheme(
+    const { container } = renderWithTheme(
       <UserDetailsPanel
         activeUser={user}
         assignedRoles={assignedRoles}
@@ -271,8 +273,6 @@ describe('UserDetailsPanel – Delete User button', () => {
       />
     );
 
-    expect(
-      getDeleteUserButton(getByText)?.querySelector('cds-icon')
-    ).toBeTruthy();
+    expect(getDeleteUserButton(container)).toHaveProperty('disabled', true);
   });
 });

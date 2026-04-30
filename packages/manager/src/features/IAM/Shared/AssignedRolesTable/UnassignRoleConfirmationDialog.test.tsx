@@ -1,10 +1,14 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { accountRolesFactory } from 'src/factories/accountRoles';
 import { renderWithTheme } from 'src/utilities/testHelpers';
 
+import {
+  getCdsButtonByText,
+  preventCdsModalPortaling,
+} from '../../utilities/testHelpers';
 import { INTERNAL_ERROR_NO_CHANGES_SAVED } from '../constants';
 import { UnassignRoleConfirmationDialog } from './UnassignRoleConfirmationDialog';
 
@@ -33,6 +37,7 @@ const queryMocks = vi.hoisted(() => ({
   useAccountRoles: vi.fn().mockReturnValue({}),
   useGetDefaultDelegationAccessQuery: vi.fn().mockReturnValue({}),
   useUserRoles: vi.fn().mockReturnValue({}),
+  useUserRolesMutation: vi.fn().mockReturnValue({}),
   useUpdateDefaultDelegationAccessQuery: vi.fn().mockReturnValue({}),
   useIsDefaultDelegationRolesForChildAccount: vi
     .fn()
@@ -52,6 +57,7 @@ vi.mock('@linode/queries', async () => {
     useGetDefaultDelegationAccessQuery:
       queryMocks.useGetDefaultDelegationAccessQuery,
     useUserRoles: queryMocks.useUserRoles,
+    useUserRolesMutation: queryMocks.useUserRolesMutation,
     useUpdateDefaultDelegationAccessQuery:
       queryMocks.useUpdateDefaultDelegationAccessQuery,
   };
@@ -65,67 +71,76 @@ vi.mock('@tanstack/react-router', async () => {
   };
 });
 
-const mockDeleteUserRole = vi.fn();
-vi.mock('@linode/api-v4', async () => {
-  return {
-    ...(await vi.importActual<any>('@linode/api-v4')),
-    updateUserRoles: (username: string, data: any) => {
-      mockDeleteUserRole(data);
-      return Promise.resolve(props);
-    },
-  };
-});
-
 describe('UnassignRoleConfirmationDialog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    preventCdsModalPortaling();
+
     queryMocks.useParams.mockReturnValue({
       username: 'test_user',
     });
-    queryMocks.useGetDefaultDelegationAccessQuery.mockReturnValue({
-      data: {
-        account_access: [mockRole.name],
-        entity_access: [],
-      },
+    queryMocks.useUserRoles.mockReturnValue({});
+    queryMocks.useGetDefaultDelegationAccessQuery.mockReturnValue({});
+    queryMocks.useUpdateDefaultDelegationAccessQuery.mockReturnValue({
+      error: undefined,
+      isPending: false,
+      mutateAsync: vi.fn(),
+    });
+    queryMocks.useUserRolesMutation.mockReturnValue({
+      error: undefined,
+      isPending: false,
+      mutateAsync: vi.fn(),
+      reset: vi.fn(),
     });
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+    document.body.style.overflow = '';
+  });
+
   it('should render', async () => {
-    const { getAllByRole, getByText } = renderWithTheme(
+    const { container } = renderWithTheme(
       <UnassignRoleConfirmationDialog {...props} />
     );
 
-    const headerText = getByText('Unassign the account_admin role?');
-    expect(headerText).toBeVisible();
+    // The title is rendered in a slot of cds-modal (light DOM)
+    expect(
+      screen.getByText('Unassign the account_admin role?')
+    ).toBeInTheDocument();
 
-    const paragraph = getByText(/You’re about to remove the/i).closest('p');
+    // Notification banner children are in light DOM — query the paragraph directly
+    const paragraph = container
+      .querySelector('cds-notification-banner')
+      ?.querySelector('p');
 
     expect(paragraph).toBeInTheDocument();
     expect(paragraph).toHaveTextContent(/account_admin/i);
     expect(paragraph).toHaveTextContent(/test_user/i);
-    expect(
-      getByText(/The change will be applied immediately./i)
-    ).toBeInTheDocument();
+    expect(paragraph).toHaveTextContent(
+      /The change will be applied immediately/i
+    );
 
-    const buttons = getAllByRole('button');
-    expect(buttons?.length).toBe(3);
+    expect(container.querySelectorAll('cds-button')).toHaveLength(2);
   });
 
   it('calls the corresponding functions when buttons are clicked', async () => {
-    const { getByText } = renderWithTheme(
+    const { container } = renderWithTheme(
       <UnassignRoleConfirmationDialog {...props} />
     );
 
-    const deleteButton = getByText('Remove');
+    const deleteButton = await getCdsButtonByText(container, 'Remove');
     expect(deleteButton).toBeVisible();
 
-    const cancelButton = getByText('Cancel');
+    const cancelButton = await getCdsButtonByText(container, 'Cancel');
     expect(cancelButton).toBeVisible();
-    fireEvent.click(cancelButton);
+    await userEvent.click(cancelButton as HTMLButtonElement);
     expect(props.onClose).toHaveBeenCalled();
   });
 
   it('should allow unassign `account_admin` role', async () => {
+    const mutateAsync = vi.fn().mockResolvedValue(props);
+
     queryMocks.useUserRoles.mockReturnValue({
       data: {
         account_access: ['account_linode_admin', 'account_admin'],
@@ -143,14 +158,23 @@ describe('UnassignRoleConfirmationDialog', () => {
       data: accountRolesFactory.build(),
     });
 
-    const { getByText } = renderWithTheme(
+    queryMocks.useUserRolesMutation.mockReturnValue({
+      error: undefined,
+      isPending: false,
+      mutateAsync,
+      reset: vi.fn(),
+    });
+
+    const { container } = renderWithTheme(
       <UnassignRoleConfirmationDialog {...props} />
     );
 
-    await userEvent.click(getByText('Remove'));
+    const removeButton = await getCdsButtonByText(container, 'Remove');
+
+    await userEvent.click(removeButton as HTMLButtonElement);
 
     await waitFor(() => {
-      expect(mockDeleteUserRole).toHaveBeenCalledWith({
+      expect(mutateAsync).toHaveBeenCalledWith({
         account_access: ['account_linode_admin'],
         resource_access: [
           {
@@ -165,9 +189,10 @@ describe('UnassignRoleConfirmationDialog', () => {
 
   it('displays error message when there is an API error', async () => {
     const apiError = [{ reason: 'Failed to load user roles' }];
+    const mutateAsync = vi.fn().mockRejectedValue(apiError);
 
     queryMocks.useUpdateDefaultDelegationAccessQuery.mockReturnValue({
-      mutateAsync: vi.fn().mockRejectedValue(apiError),
+      mutateAsync,
       isPending: false,
       error: apiError,
     });
@@ -175,12 +200,16 @@ describe('UnassignRoleConfirmationDialog', () => {
       isDefaultDelegationRolesForChildAccount: true,
     });
 
-    renderWithTheme(<UnassignRoleConfirmationDialog {...props} />);
+    const { container } = renderWithTheme(
+      <UnassignRoleConfirmationDialog {...props} />
+    );
 
-    const removeButton = screen.getByText('Remove');
+    const removeButton = await getCdsButtonByText(container, 'Remove');
     expect(removeButton).toBeVisible();
 
-    await userEvent.click(removeButton);
-    expect(screen.getByText(INTERNAL_ERROR_NO_CHANGES_SAVED)).toBeVisible();
+    await userEvent.click(removeButton as HTMLButtonElement);
+    expect(
+      screen.getByText(INTERNAL_ERROR_NO_CHANGES_SAVED)
+    ).toBeInTheDocument();
   });
 });

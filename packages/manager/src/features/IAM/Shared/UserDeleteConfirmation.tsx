@@ -1,10 +1,15 @@
-import { NotificationBanner } from '@akamai/cds-components/react';
+import {
+  Button,
+  Modal,
+  NotificationBanner,
+} from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useAccountUserDeleteMutation } from '@linode/queries';
-import { ActionsPanel, Typography } from '@linode/ui';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
 
-import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
+import { ErrorState } from './ErrorState/ErrorState';
+import styles from './RemoveAssignmentConfirmationDialog/RemoveAssignmentConfirmationDialog.module.css';
 
 interface Props {
   onClose: () => void;
@@ -42,32 +47,43 @@ export const UserDeleteConfirmation = (props: Props) => {
   };
 
   return (
-    <ConfirmationDialog
-      actions={
-        <ActionsPanel
-          primaryButtonProps={{
-            label: 'Delete User',
-            loading: isPending,
-            onClick: onDelete,
-          }}
-          secondaryButtonProps={{
-            label: 'Cancel',
-            onClick: onClose,
-          }}
-          style={{ padding: 0 }}
-        />
-      }
-      error={error?.[0].reason}
-      onClose={onClose}
+    <Modal
+      className={styles.removeAssignmentDialog}
+      onModalClosed={onClose}
       open={open}
-      title={`Delete user ${username}?`}
+      role="dialog"
+      size={error ? 'medium' : 'small'}
+      // titleMaxLength={150}
     >
-      <NotificationBanner type="warning">
-        <Typography>
-          <strong>Warning:</strong> Deleting this User is permanent and can’t be
-          undone.
-        </Typography>
-      </NotificationBanner>
-    </ConfirmationDialog>
+      <span slot="title">{`Delete user ${username}?`}</span>
+      <div slot="body">
+        <NotificationBanner type="warning">
+          <strong>Warning:</strong> Deleting this User is permanent and
+          can&apos;t be undone.
+        </NotificationBanner>
+        {error && <ErrorState />}
+      </div>
+      <div
+        slot="actions"
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: Spacing.S8,
+          marginTop: Spacing.S16,
+          alignItems: 'center',
+        }}
+      >
+        <Button
+          onClick={onClose}
+          style={{ marginRight: Spacing.S8 }}
+          variant="link"
+        >
+          Cancel
+        </Button>
+        <Button onClick={onDelete} processing={isPending} variant="primary">
+          Delete User
+        </Button>
+      </div>
+    </Modal>
   );
 };
