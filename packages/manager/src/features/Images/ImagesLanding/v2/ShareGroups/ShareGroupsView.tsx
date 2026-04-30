@@ -1,4 +1,8 @@
-import { useProfile, useShareGroupsQuery } from '@linode/queries';
+import {
+  useProfile,
+  useShareGroupsQuery,
+  useShareGroupTokensQuery,
+} from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
 import { CircleProgress, ErrorState } from '@linode/ui';
 import { useNavigate, useSearch } from '@tanstack/react-router';
@@ -22,6 +26,9 @@ interface Props {
 export const ShareGroupsView = (props: Props) => {
   const { type } = props;
   const config = SHAREGROUPS_CONFIG[type];
+
+  const isJoinedGroups = type === 'joined-groups';
+
   const navigate = useNavigate();
   const search = useSearch({ from: '/images/share-groups' });
 
@@ -65,6 +72,7 @@ export const ShareGroupsView = (props: Props) => {
     ...filter,
   };
 
+  // Owned Groups
   const {
     data: shareGroups,
     error: shareGroupsError,
@@ -76,6 +84,23 @@ export const ShareGroupsView = (props: Props) => {
       ...shareGroupsFilter,
     }
   );
+
+  // Joined Groups
+  const {
+    data: shareGroupTokens,
+    error: shareGroupTokensError,
+    isFetching: shareGroupTokensIsFetching,
+    isLoading: shareGroupTokensLoading,
+  } = useShareGroupTokensQuery(
+    { page: pagination.page, page_size: pagination.pageSize },
+    { ...shareGroupsFilter },
+    isJoinedGroups
+  );
+
+  const isFetching = isJoinedGroups
+    ? shareGroupTokensIsFetching
+    : shareGroupsIsFetching;
+  const error = isJoinedGroups ? shareGroupTokensError : shareGroupsError;
 
   const onSearch = (query: string) => {
     navigate({
@@ -89,11 +114,11 @@ export const ShareGroupsView = (props: Props) => {
     });
   };
 
-  if (shareGroupsLoading) {
+  if ((isJoinedGroups && shareGroupTokensLoading) || shareGroupsLoading) {
     return <CircleProgress />;
   }
 
-  if (!search.query && shareGroupsError) {
+  if (!search.query && error) {
     return (
       <>
         <DocumentTitleSegment segment="Share groups" />
@@ -144,7 +169,7 @@ export const ShareGroupsView = (props: Props) => {
         }}
         errorText={searchParseError?.message}
         hideLabel
-        isSearching={shareGroupsIsFetching}
+        isSearching={isFetching}
         label="Search"
         onSearch={onSearch}
         pendoId={config.searchFieldPendoId}
@@ -154,7 +179,7 @@ export const ShareGroupsView = (props: Props) => {
       <ShareGroupsTable
         columns={config.columns}
         emptyMessage={config.emptyMessage}
-        error={shareGroupsError}
+        error={error}
         handleOrderChange={handleShareGroupsOrderChange}
         headerProps={tableHeaderProps}
         order={shareGroupsOrder}
@@ -162,12 +187,18 @@ export const ShareGroupsView = (props: Props) => {
         pagination={{
           page: pagination.page,
           pageSize: pagination.pageSize,
-          count: shareGroups?.results ?? 0,
+          count: isJoinedGroups
+            ? (shareGroupTokens?.results ?? 0)
+            : (shareGroups?.results ?? 0),
           onPageChange: handlePageChange,
           onPageSizeChange: handlePageSizeChange,
         }}
         query={search.query}
-        shareGroups={shareGroups?.data ?? []}
+        shareGroups={
+          isJoinedGroups
+            ? (shareGroupTokens?.data ?? [])
+            : (shareGroups?.data ?? [])
+        }
       />
     </>
   );

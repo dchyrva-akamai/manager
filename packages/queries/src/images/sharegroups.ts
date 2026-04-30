@@ -4,6 +4,7 @@ import {
   getSharegroupImages,
   getSharegroupMembers,
   getSharegroups,
+  getUserSharegroupTokens,
 } from '@linode/api-v4';
 import { getAll } from '@linode/utilities';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
@@ -24,6 +25,7 @@ import type {
   ResourcePage,
   Sharegroup,
   SharegroupMember,
+  SharegroupToken,
 } from '@linode/api-v4';
 import type { UseQueryOptions } from '@tanstack/react-query';
 
@@ -77,8 +79,18 @@ export const shareGroupsQueries = createQueryKeys('sharegroups', {
     },
     queryKey: null,
   },
+  tokens: {
+    contextQueries: {
+      paginated: (params: Params, filters: Filter) => ({
+        queryFn: () => getUserSharegroupTokens(params, filters),
+        queryKey: [params, filters],
+      }),
+    },
+    queryKey: null,
+  },
 });
 
+// Share Groups
 export const useShareGroupsQuery = (
   params: Params,
   filters: Filter,
@@ -174,3 +186,14 @@ export const useCreateShareGroupMutation = () => {
     },
   });
 };
+
+// Tokens
+export const useShareGroupTokensQuery = (
+  params: Params,
+  filters: Filter,
+  enabled: boolean,
+) =>
+  useQuery<ResourcePage<SharegroupToken>, APIError[]>({
+    ...shareGroupsQueries.tokens._ctx.paginated(params, filters),
+    enabled,
+  });

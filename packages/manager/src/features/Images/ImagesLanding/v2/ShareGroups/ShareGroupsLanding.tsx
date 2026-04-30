@@ -53,9 +53,7 @@ export const ShareGroupsTabs = () => {
                   <ShareGroupsView type="owned-groups" />
                 )}
                 {tab.type === 'joined-groups' && (
-                  <Notice variant="info">
-                    Joined Groups is coming soon...
-                  </Notice>
+                  <ShareGroupsView type="joined-groups" />
                 )}
                 {tab.type === 'membership-requests' && (
                   <Notice variant="info">
