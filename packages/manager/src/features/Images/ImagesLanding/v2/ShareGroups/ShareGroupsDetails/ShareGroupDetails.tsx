@@ -18,6 +18,7 @@ import { DocumentTitleSegment } from 'src/components/DocumentTitle';
 import { LandingHeader } from 'src/components/LandingHeader';
 import { getIsTableStripingEnabled } from 'src/features/Profile/Settings/TableStriping.utils';
 
+import { SHARE_GROUP_DETAILS_PENDO_IDS } from '../../constants';
 import { GroupMembersTable } from './GroupMembersTable';
 import { SharedImagesTable } from './SharedImagesTable';
 
@@ -53,6 +54,7 @@ export const ShareGroupDetails = () => {
       <LandingHeader
         docsLabel="Docs"
         docsLink="https://techdocs.akamai.com/cloud-computing/docs/image-sharing"
+        pendoId={SHARE_GROUP_DETAILS_PENDO_IDS.landingHeader}
         spacingBottom={4}
         title={label}
       />
@@ -73,6 +75,7 @@ export const ShareGroupDetails = () => {
             </Box>
           </Paper>
         )}
+
         {!shareGroupError && shareGroup && (
           <>
             <Paper sx={{ mb: 4, p: 2 }}>
@@ -84,9 +87,10 @@ export const ShareGroupDetails = () => {
               >
                 <Typography variant="h3">{label}</Typography>
                 <Stack alignItems="center" direction="row" spacing={2}>
-                  <Button variant="link">Edit</Button>
+                  <Button data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.editShareGroupButton} variant="link">Edit</Button>
                   <Stack alignItems="center" direction="row">
                     <Button
+                      data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.deleteShareGroupButton}
                       disabled={membersCount > 0}
                       style={{ marginRight: '4px' }}
                       variant="link"
@@ -107,7 +111,7 @@ export const ShareGroupDetails = () => {
                 <Typography>Share group UUID</Typography>
                 <Stack alignContent="baseline" direction="row" spacing={1}>
                   <Typography variant="subtitle1">{uuid}</Typography>
-                  <StyledCopyIcon text={uuid ?? ''} />
+                  <StyledCopyIcon data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.copyShareGroupuuidIcon } text={uuid ?? ''} />
                 </Stack>
               </Stack>
               {description && (

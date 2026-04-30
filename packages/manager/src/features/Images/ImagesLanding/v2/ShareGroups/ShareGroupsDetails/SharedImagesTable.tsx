@@ -25,15 +25,27 @@ import * as React from 'react';
 
 import { ActionMenu } from 'src/components/ActionMenu/ActionMenu';
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField/DebouncedSearchTextField';
+import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
-import { DEFAULT_PAGE_SIZES } from '../../constants';
+import {
+  DEFAULT_PAGE_SIZES,
+  SHARE_GROUP_DETAILS_PENDO_IDS,
+} from '../../constants';
 import { StyledActionMenuWrapper } from '../ShareGroupTable.styles';
+
+import type { Filter } from '@linode/api-v4';
 
 interface Props {
   isTableStripingEnabled: boolean;
   shareGroupId: string;
 }
+
+const IMAGES_COLUMNS = [
+  { label: 'Original Image Label', name: 'label' },
+  { label: 'Created', name: 'created' },
+  { label: 'Shared Image ID', name: 'id' },
+];
 
 export const SharedImagesTable = (props: Props) => {
   const { isTableStripingEnabled, shareGroupId } = props;
@@ -45,12 +57,30 @@ export const SharedImagesTable = (props: Props) => {
     from: '/images/share-groups/owned-groups/$shareGroupId',
   });
 
-  const { error: searchParseError, filter } = getAPIFilterFromQuery(
+  const { error: searchParseError, filter: APIfilter } = getAPIFilterFromQuery(
     search.imagesQuery,
     {
       searchableFieldsWithoutOperator: ['label'],
     }
   );
+
+  const { handleOrderChange, order, orderBy } = useOrderV2({
+    initialRoute: {
+      defaultOrder: {
+        order: 'asc',
+        orderBy: 'label',
+      },
+      from: '/images/share-groups/owned-groups/$shareGroupId',
+    },
+    preferenceKey: 'shareGroupDetailsSharedImages',
+    prefix: 'images',
+  });
+
+  const filter: Filter = {
+    ['+order']: order,
+    ['+order_by']: orderBy,
+    ...APIfilter,
+  };
 
   const pagination = usePaginationV2({
     currentRoute: '/images/share-groups/owned-groups/$shareGroupId',
@@ -100,6 +130,7 @@ export const SharedImagesTable = (props: Props) => {
       <Typography mb={2} variant="h3">
         Shared Images
       </Typography>
+
       <Stack direction="row" justifyContent="space-between">
         <DebouncedSearchTextField
           clearable
@@ -115,11 +146,18 @@ export const SharedImagesTable = (props: Props) => {
           isSearching={imagesIsFetching}
           label="Search"
           onSearch={onSearch}
+          pendoId={SHARE_GROUP_DETAILS_PENDO_IDS.imagesSearchField}
           placeholder="Search images"
           value={search.imagesQuery ?? ''}
         />
-        <Button variant="primary">Add Images</Button>
+        <Button
+          data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.addImagesButton}
+          variant="primary"
+        >
+          Add Images
+        </Button>
       </Stack>
+
       <Table>
         <TableHead>
           <TableRow
@@ -128,9 +166,21 @@ export const SharedImagesTable = (props: Props) => {
             }
             headerborder
           >
-            <TableHeaderCell>Original Image Label</TableHeaderCell>
-            <TableHeaderCell>Created</TableHeaderCell>
-            <TableHeaderCell>Shared Image ID</TableHeaderCell>
+            {IMAGES_COLUMNS.map((column) => (
+              <TableHeaderCell
+                key={column.name}
+                onSort={() =>
+                  handleOrderChange(
+                    column.name,
+                    order === 'asc' ? 'desc' : 'asc'
+                  )
+                }
+                sortable
+                sorted={orderBy === column.name ? order : undefined}
+              >
+                {column.label}
+              </TableHeaderCell>
+            ))}
             <TableHeaderCell
               style={{ maxWidth: '40px', boxSizing: 'border-box' }}
             />
@@ -197,12 +247,16 @@ export const SharedImagesTable = (props: Props) => {
                     {
                       title: 'Edit Details',
                       onClick: () => {},
+                      pendoId:
+                        SHARE_GROUP_DETAILS_PENDO_IDS.editImagesDetailsButton,
                       disabled: false,
                       hidden: false,
                     },
                     {
                       title: 'Remove from the Group',
                       onClick: () => {},
+                      pendoId:
+                        SHARE_GROUP_DETAILS_PENDO_IDS.removeFromGroupButton,
                       disabled: false,
                       hidden: false,
                     },

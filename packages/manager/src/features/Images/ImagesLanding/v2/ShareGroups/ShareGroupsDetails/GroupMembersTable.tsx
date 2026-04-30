@@ -28,15 +28,26 @@ import * as React from 'react';
 import { CopyTooltip } from 'src/components/CopyTooltip/CopyTooltip';
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField/DebouncedSearchTextField';
 import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';
+import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
-import { DEFAULT_PAGE_SIZES } from '../../constants';
+import {
+  DEFAULT_PAGE_SIZES,
+  SHARE_GROUP_DETAILS_PENDO_IDS,
+} from '../../constants';
 
 interface Props {
   isTableStripingEnabled: boolean;
   setMembersCount?: (count: number) => void;
   shareGroupId: string;
 }
+
+const MEMBERS_COLUMNS = [
+  { name: 'label', label: 'Member' },
+  { name: 'token_uuid', label: 'Token UUID', hiddenLgDown: false },
+  { name: 'status', label: 'Status', hiddenLgDown: false },
+  { name: 'updated', label: 'Status Changed', hiddenLgDown: true },
+];
 
 export const GroupMembersTable = (props: Props) => {
   const { isTableStripingEnabled, shareGroupId, setMembersCount } = props;
@@ -77,6 +88,19 @@ export const GroupMembersTable = (props: Props) => {
     },
     { ...filter }
   );
+
+  const { handleOrderChange, order, orderBy, sortedData } = useOrderV2({
+    initialRoute: {
+      defaultOrder: {
+        order: 'asc',
+        orderBy: 'label',
+      },
+      from: '/images/share-groups/owned-groups/$shareGroupId',
+    },
+    preferenceKey: 'shareGroupDetailsGroupMembers',
+    prefix: 'members',
+    data: members?.data ?? [],
+  });
 
   React.useEffect(() => {
     setMembersCount?.(members?.data.length ?? 0);
@@ -143,21 +167,30 @@ export const GroupMembersTable = (props: Props) => {
             isSearching={membersIsFetching}
             label="Search"
             onSearch={onSearch}
+            pendoId={SHARE_GROUP_DETAILS_PENDO_IDS.groupMembersSearchField}
             placeholder="Search group members"
             value={search.query ?? ''}
           />
           <Checkbox
             checked={showInactiveMembers}
+            data-pendo-id={
+              SHARE_GROUP_DETAILS_PENDO_IDS.inactiveMembersCheckbox
+            }
             name="inactive-members-checkbox"
             onChange={() => setShowInactiveMembers(!showInactiveMembers)}
           >
             Show inactive members
           </Checkbox>
         </Stack>
-        <Button style={{ marginLeft: 0 }} variant="primary">
+        <Button
+          data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.addMembersButton}
+          style={{ marginLeft: 0 }}
+          variant="primary"
+        >
           Add Members
         </Button>
       </Stack>
+
       <Table>
         <TableHead>
           <TableRow
@@ -166,12 +199,22 @@ export const GroupMembersTable = (props: Props) => {
             }
             headerborder
           >
-            <TableHeaderCell>Member</TableHeaderCell>
-            <TableHeaderCell>Token UUID</TableHeaderCell>
-            <TableHeaderCell>Status</TableHeaderCell>
-            <Hidden lgDown>
-              <TableHeaderCell>Status Changed</TableHeaderCell>
-            </Hidden>
+            {MEMBERS_COLUMNS.map((column) => (
+              <Hidden key={column.name} lgDown={column.hiddenLgDown}>
+                <TableHeaderCell
+                  onSort={() =>
+                    handleOrderChange(
+                      column.name,
+                      order === 'asc' ? 'desc' : 'asc'
+                    )
+                  }
+                  sortable
+                  sorted={orderBy === column.name ? order : undefined}
+                >
+                  {column.label}
+                </TableHeaderCell>
+              </Hidden>
+            ))}
             <TableHeaderCell style={{ maxWidth: '10%' }} />
           </TableRow>
         </TableHead>
@@ -211,8 +254,8 @@ export const GroupMembersTable = (props: Props) => {
               </TableCell>
             </TableRow>
           )}
-          {members?.data
-            .filter(
+          {sortedData
+            ?.filter(
               (member) => showInactiveMembers || member.status === 'active'
             )
             .map((member) => (
@@ -227,6 +270,9 @@ export const GroupMembersTable = (props: Props) => {
                   <Stack alignContent="baseline" direction="row">
                     <Typography>{member.token_uuid ?? '-'}</Typography>
                     <StyledCopyIcon
+                      data-pendo-id={
+                        SHARE_GROUP_DETAILS_PENDO_IDS.copyMembersuuidIcon
+                      }
                       sx={{ padding: 0 }}
                       text={member.token_uuid ?? ''}
                     />
@@ -248,7 +294,14 @@ export const GroupMembersTable = (props: Props) => {
                   </TableCell>
                 </Hidden>
                 <TableCell style={{ maxWidth: '10%' }}>
-                  <Button variant="link">Revoke Access</Button>
+                  <Button
+                    data-pendo-id={
+                      SHARE_GROUP_DETAILS_PENDO_IDS.revokeAccessButton
+                    }
+                    variant="link"
+                  >
+                    Revoke Access
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
