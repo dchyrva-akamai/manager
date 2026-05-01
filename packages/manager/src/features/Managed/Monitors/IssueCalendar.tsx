@@ -1,9 +1,10 @@
-import { getUserTimezone } from '@akamai/compute-ui-core/datetime';
+import {
+  getUserTimezone,
+  parseAPIDate,
+} from '@akamai/compute-ui-core/datetime';
 import { useProfile } from '@linode/queries';
 import { DateTime } from 'luxon';
 import * as React from 'react';
-
-import { parseAPIDate } from 'src/utilities/date';
 
 import IssueDay from './IssueDay';
 

@@ -1,4 +1,4 @@
-import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { formatDate, parseAPIDate } from '@akamai/compute-ui-core/datetime';
 import { acceptServiceTransfer } from '@linode/api-v4';
 import {
   entityTransfersQueryKey,
@@ -14,7 +14,6 @@ import * as React from 'react';
 
 import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
 import { sendEntityTransferReceiveEvent } from 'src/utilities/analytics/customEventAnalytics';
-import { parseAPIDate } from 'src/utilities/date';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
 import { countByEntity } from '../utilities';

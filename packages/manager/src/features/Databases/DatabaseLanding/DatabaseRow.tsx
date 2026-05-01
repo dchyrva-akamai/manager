@@ -1,6 +1,10 @@
 import { Badge } from '@akamai/cds-components/react/Badge';
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
-import { formatDate, isWithinDays } from '@akamai/compute-ui-core/datetime';
+import {
+  formatDate,
+  isWithinDays,
+  parseAPIDate,
+} from '@akamai/compute-ui-core/datetime';
 import {
   useDatabaseTypesQuery,
   useProfile,
@@ -18,7 +22,6 @@ import {
   getIsLinkInactive,
   useIsDatabasesEnabled,
 } from 'src/features/Databases/utilities';
-import { parseAPIDate } from 'src/utilities/date';
 
 import { StyledActionMenuWrapper } from '../shared.styles';
 

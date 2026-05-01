@@ -1,3 +1,4 @@
+import { parseAPIDate } from '@akamai/compute-ui-core/datetime';
 import { Button, Tooltip, Typography } from '@linode/ui';
 import { pluralize } from '@linode/utilities';
 import copy from 'copy-to-clipboard';
@@ -9,7 +10,6 @@ import {
   sendEntityTransferCopyDraftEmailEvent,
   sendEntityTransferCopyTokenEvent,
 } from 'src/utilities/analytics/customEventAnalytics';
-import { parseAPIDate } from 'src/utilities/date';
 
 import {
   StyledCopyableTextField,
