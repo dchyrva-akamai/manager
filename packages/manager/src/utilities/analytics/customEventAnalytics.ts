@@ -1,6 +1,7 @@
-import { generateTimeOfDay } from '@akamai/compute-ui-core/analytics';
-
-import { sendEvent } from './utils';
+import {
+  generateTimeOfDay,
+  sendEvent,
+} from '@akamai/compute-ui-core/analytics';
 
 import type { CustomAnalyticsData } from './types';
 

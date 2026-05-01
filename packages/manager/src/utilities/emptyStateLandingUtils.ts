@@ -1,4 +1,4 @@
-import { sendEvent } from 'src/utilities/analytics/utils';
+import { sendEvent } from '@akamai/compute-ui-core/analytics';
 
 export const guidesMoreLinkText = 'Check out all our Docs';
 export const docsLink = 'https://www.linode.com/docs/';
