@@ -1,9 +1,9 @@
+import { parseAPIDate } from '@akamai/compute-ui-core/datetime';
 import * as React from 'react';
 
 import { DateTimeDisplay } from 'src/components/DateTimeDisplay';
 import { TableCell } from 'src/components/TableCell';
 import { TableRow } from 'src/components/TableRow';
-import { parseAPIDate } from 'src/utilities/date';
 
 import DatabaseBackupActionMenu from './DatabaseBackupActionMenu';
 

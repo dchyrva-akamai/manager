@@ -1,4 +1,4 @@
-import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { formatDate, parseAPIDate } from '@akamai/compute-ui-core/datetime';
 import { useProfile } from '@linode/queries';
 import { Stack, Tooltip } from '@linode/ui';
 import { Hidden } from '@linode/ui';
@@ -17,7 +17,6 @@ import {
 } from 'src/features/Events/utils';
 import { useFlags } from 'src/hooks/useFlags';
 import { useInProgressEvents } from 'src/queries/events/events';
-import { parseAPIDate } from 'src/utilities/date';
 
 import {
   deriveMaintenanceStartISO,

@@ -1,3 +1,4 @@
+import { parseAPIDate } from '@akamai/compute-ui-core/datetime';
 import { useAccount } from '@linode/queries';
 import { ActionsPanel, Typography } from '@linode/ui';
 import { pluralize, useInterval } from '@linode/utilities';
@@ -10,7 +11,6 @@ import { useParentChildAuthentication } from 'src/features/Account/SwitchAccount
 import { setTokenInLocalStorage } from 'src/features/Account/SwitchAccounts/utils';
 import { useDelegationRole } from 'src/features/IAM/hooks/useDelegationRole';
 import { useIsIAMDelegationEnabled } from 'src/features/IAM/hooks/useIsIAMEnabled';
-import { parseAPIDate } from 'src/utilities/date';
 import { getStorage, setStorage } from 'src/utilities/storage';
 
 interface SessionExpirationDialogProps {

@@ -1,4 +1,4 @@
-import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { formatDate, parseAPIDate } from '@akamai/compute-ui-core/datetime';
 import { scheduleOrQueueMigration } from '@linode/api-v4/lib/linodes';
 import { useProfile } from '@linode/queries';
 import { ActionsPanel, LinkButton, Notice, Typography } from '@linode/ui';
@@ -8,7 +8,6 @@ import { useSnackbar } from 'notistack';
 import * as React from 'react';
 
 import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
-import { parseAPIDate } from 'src/utilities/date';
 
 import type { NotificationType } from '@linode/api-v4/lib/account';
 
