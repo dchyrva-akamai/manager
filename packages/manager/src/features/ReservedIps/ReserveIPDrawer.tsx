@@ -145,14 +145,17 @@ export const ReserveIPDrawer = (props: ReserveIPDrawerProps) => {
       const tags = values.tags.map((tag) => tag.value);
 
       switch (mode) {
-        case 'create':
+        // Reserve any random IP address in the selected region with the provided tags
+        case 'create': {
           const created = await reserveIP({ region: values.region, tags });
           enqueueSnackbar(`${created.address} has been reserved`, {
             variant: 'success',
           });
           props.onSuccess?.(created);
           break;
-        case 'edit':
+        }
+        // Update tags for the provided Reserved IP address
+        case 'edit': {
           const edited = await updateReservedIP({
             address: ipAddress?.address ?? '',
             tags,
@@ -162,17 +165,29 @@ export const ReserveIPDrawer = (props: ReserveIPDrawerProps) => {
           });
           props.onSuccess?.(edited);
           break;
-        case 'reserve':
+        }
+        // Reserve the provided Ephemeral IP address with the provided tags and region.
+        case 'reserve': {
           const reserved = await updateIP({
             address: ipAddress?.address ?? '',
-            rdns: ipAddress?.rdns ?? null,
+            rdns: undefined,
             reserved: true,
           });
+
+          // Update tags separately(as updateIP API call doesn't handle tags) if tags are provided
+          if (tags.length > 0) {
+            await updateReservedIP({
+              address: ipAddress?.address ?? '',
+              tags,
+            });
+          }
+
           enqueueSnackbar(`${ipAddress?.address} has been reserved`, {
             variant: 'success',
           });
           props.onSuccess?.(reserved);
           break;
+        }
         default:
           return;
       }
@@ -219,7 +234,12 @@ export const ReserveIPDrawer = (props: ReserveIPDrawerProps) => {
 
             {(mode === 'reserve' || mode === 'edit') && ipAddress?.address && (
               <Box>
-                <Typography sx={{ fontWeight: 'bold' }} variant="body2">
+                <Typography
+                  sx={(theme) => ({
+                    font: theme.font.bold,
+                  })}
+                  variant="body2"
+                >
                   IP Address
                 </Typography>
                 <Typography

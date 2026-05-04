@@ -11,7 +11,8 @@ import {
   TooltipIcon,
   Typography,
 } from '@linode/ui';
-import React, { ChangeEvent } from 'react';
+import React from 'react';
+import type { ChangeEvent } from 'react';
 
 import { FormLabel } from 'src/components/FormLabel';
 import { StyledLinkButtonBox } from 'src/components/SelectFirewallPanel/SelectFirewallPanel';
@@ -25,6 +26,10 @@ type IPAddressMode = 'auto' | 'reserved';
 type IPAddressOption = IPAddress & { label: string };
 
 export interface IPAddressSelectionProps {
+  /**
+   * Error text to show under the reserved IP autocomplete.
+   */
+  error?: string;
   // Header label for the selection component
   label?: {
     fontSize?: string;
@@ -68,6 +73,7 @@ export interface IPAddressSelectionProps {
  * that supports reserved IPs.
  */
 export const IPAddressSelection = ({
+  error,
   label = { fontSize: '14px', text: 'IP Address' },
   mode = 'auto',
   onIPModeChange,
@@ -163,6 +169,7 @@ export const IPAddressSelection = ({
         <Box ml={3}>
           <Autocomplete
             disabled={!regionId}
+            errorText={error}
             getOptionLabel={(option: IPAddressOption) => option.address}
             helperText={
               !regionId

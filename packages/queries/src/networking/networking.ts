@@ -177,9 +177,9 @@ export const useUpdateIPMutation = (address: string) => {
   return useMutation<
     IPAddress,
     APIError[],
-    { address: string; rdns: null | string; reserved: boolean }
+    { address: string; rdns: null | string | undefined; reserved: boolean }
   >({
-    mutationFn: (data) => updateIP(address, data.rdns, data.reserved),
+    mutationFn: (data) => updateIP(address, { reserved: data.reserved }),
     onSuccess(ip) {
       queryClient.invalidateQueries({
         queryKey: networkingQueries.ips._def,
