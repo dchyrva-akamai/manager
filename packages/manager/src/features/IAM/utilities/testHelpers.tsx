@@ -1,4 +1,5 @@
-import { waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { getShadowRootElement } from 'src/utilities/testHelpers';
 
@@ -59,4 +60,15 @@ export const getCdsButtonByText = async (
     return null;
   }
   return getShadowRootElement<HTMLButtonElement>(host, 'button');
+};
+
+export const openActionMenu = async () => {
+  const menu = screen.getByTestId('user-action-menu');
+
+  await waitFor(() => {
+    expect(menu.shadowRoot?.querySelector('cds-icon')).toBeTruthy();
+  });
+
+  const trigger = menu.shadowRoot?.querySelector('cds-icon');
+  await userEvent.click(trigger as HTMLElement);
 };

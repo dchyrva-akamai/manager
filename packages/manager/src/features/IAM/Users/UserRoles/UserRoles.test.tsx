@@ -200,8 +200,8 @@ describe('UserRoles', () => {
     expect(actionMenuButton).toBeVisible();
 
     await userEvent.click(actionMenuButton);
-    expect(screen.getByText('Change Role')).toBeVisible();
-    expect(screen.getByText('Unassign Role')).toBeVisible();
+    expect(screen.getAllByTestId('Change Role')[0]).toBeVisible();
+    expect(screen.getAllByTestId('Unassign Role')[0]).toBeVisible();
   });
 
   it('should show error state when api fails', () => {
