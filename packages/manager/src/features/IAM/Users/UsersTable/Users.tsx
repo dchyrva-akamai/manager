@@ -1,5 +1,4 @@
-import { Select } from '@akamai/cds-components/react';
-import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { Button, Icon, Select, Tooltip } from '@akamai/cds-components/react';
 import { useAccountUsers } from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
 import { Paper } from '@linode/ui';
@@ -236,11 +235,7 @@ export const UsersLanding = () => {
             <Tooltip
               disabled={canCreateUser}
               tooltipPlacement="bottom"
-              tooltipText={
-                !canCreateUser
-                  ? 'You do not have permission to create other users.'
-                  : undefined
-              }
+              tooltipText="You do not have permission to create other users."
             >
               <Button
                 data-pendo-id={

@@ -1,5 +1,4 @@
-import { Select } from '@akamai/cds-components/react';
-import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { Button, Icon, Select, Tooltip } from '@akamai/cds-components/react';
 import {
   useAccountRoles,
   useGetDefaultDelegationAccessQuery,

@@ -1,11 +1,13 @@
 import {
+  Button,
+  Icon,
+  Tooltip,
   ZeroErrorActions,
   ZeroErrorDescription,
   ZeroErrorIcon,
   ZeroErrorState,
   ZeroErrorTitle,
 } from '@akamai/cds-components/react';
-import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import React from 'react';
 
 import { useIsDefaultDelegationRolesForChildAccount } from '../../hooks/useDelegationRole';
@@ -43,11 +45,7 @@ export const NoAssignedRoles = (props: Props) => {
           <Tooltip
             disabled={permissionToCheck}
             tooltipPlacement="bottom"
-            tooltipText={
-              !permissionToCheck
-                ? 'You do not have permission to assign roles.'
-                : undefined
-            }
+            tooltipText="You do not have permission to assign roles."
           >
             <Button
               data-pendo-id={
