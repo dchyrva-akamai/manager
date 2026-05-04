@@ -5,19 +5,17 @@ import React from 'react';
 import { useIsDefaultDelegationRolesForChildAccount } from '../../hooks/useDelegationRole';
 import { IAM_ROLES_PENDO_IDS } from '../constants';
 
-import type { ExtendedRoleView } from '../types';
+import type { EntitiesRole } from '../types';
 import type { PickPermissions } from '@linode/api-v4';
 
 type RolesActionsPermissions = PickPermissions<
   'is_account_admin' | 'update_default_delegate_access'
 >;
 interface Props {
-  handleChangeRole: (role: ExtendedRoleView) => void;
-  handleUnassignRole: (role: ExtendedRoleView) => void;
-  handleUpdateEntities: (role: ExtendedRoleView) => void;
-  handleViewEntities: (role: string) => void;
+  assignment: EntitiesRole;
+  handleChangeRole: (role: EntitiesRole) => void;
+  handleRemoveAssignment: (role: EntitiesRole) => void;
   permissions: Record<RolesActionsPermissions, boolean>;
-  role: ExtendedRoleView;
 }
 
 interface Action {
@@ -30,13 +28,11 @@ interface Action {
   tooltip?: string;
 }
 
-export const AssignedRolesActionMenu = ({
+export const AssignedEntitiesActionMenu = ({
   permissions,
   handleChangeRole,
-  handleUnassignRole,
-  handleUpdateEntities,
-  handleViewEntities,
-  role,
+  handleRemoveAssignment,
+  assignment,
 }: Props) => {
   const { isDefaultDelegationRolesForChildAccount } =
     useIsDefaultDelegationRolesForChildAccount();
@@ -45,17 +41,11 @@ export const AssignedRolesActionMenu = ({
     ? permissions?.update_default_delegate_access
     : permissions?.is_account_admin;
 
-  const removeTooltip = !permissionToCheck
-    ? isDefaultDelegationRolesForChildAccount
-      ? 'You do not have permission to remove this role.'
-      : 'You do not have permission to unassign this role.'
-    : undefined;
-
-  const accountMenu: Action[] = [
+  const actions: Action[] = [
     {
       disabled: !permissionToCheck,
       onClick: () => {
-        handleChangeRole(role);
+        handleChangeRole(assignment);
       },
       title: 'Change Role',
       tooltip: !permissionToCheck
@@ -65,55 +55,17 @@ export const AssignedRolesActionMenu = ({
     {
       disabled: !permissionToCheck,
       onClick: () => {
-        handleUnassignRole(role);
+        handleRemoveAssignment(assignment);
       },
       title: isDefaultDelegationRolesForChildAccount
         ? 'Remove'
-        : 'Unassign Role',
-      tooltip: removeTooltip,
+        : 'Remove Assignment',
+      tooltip: !permissionToCheck
+        ? 'You do not have permission to remove this assignment.'
+        : undefined,
     },
   ];
 
-  const entitiesMenu: Action[] = [
-    {
-      onClick: () => handleViewEntities(role.name),
-      title: 'View Entities',
-    },
-    {
-      disabled: !permissionToCheck,
-      tooltip: !permissionToCheck
-        ? 'You do not have permission to update this role.'
-        : undefined,
-      onClick: () => {
-        handleUpdateEntities(role);
-      },
-      title: 'Update List of Entities',
-    },
-    {
-      disabled: !permissionToCheck,
-      tooltip: !permissionToCheck
-        ? 'You do not have permission to change this role.'
-        : undefined,
-      onClick: () => {
-        handleChangeRole(role);
-      },
-      title: 'Change Role',
-    },
-    {
-      disabled: !permissionToCheck,
-      tooltip: !permissionToCheck
-        ? 'You do not have permission to unassign this role.'
-        : undefined,
-      onClick: () => {
-        handleUnassignRole(role);
-      },
-      title: isDefaultDelegationRolesForChildAccount
-        ? 'Remove'
-        : 'Unassign Role',
-    },
-  ];
-
-  const actions = role.access === 'account_access' ? accountMenu : entitiesMenu;
   const visibleActions = actions.filter((action) => !action.hidden);
 
   if (!visibleActions || visibleActions.length === 0) {
@@ -126,7 +78,7 @@ export const AssignedRolesActionMenu = ({
 
   return (
     <Menu
-      aria-label={`Action menu for role ${role.name}`}
+      aria-label={`Action menu for entity ${assignment.entity_name}`}
       data-pendo-id={pendoId}
       data-testid="user-action-menu"
       icon="actions"
