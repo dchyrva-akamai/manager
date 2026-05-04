@@ -1,4 +1,5 @@
 import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { Color, Spacing } from '@akamai/cds-tokens';
 import { Box, Paper, Stack, Typography } from '@linode/ui';
 import { Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
@@ -7,7 +8,6 @@ import React from 'react';
 
 import { DateTimeDisplay } from 'src/components/DateTimeDisplay';
 import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';
-import { TextTooltip } from 'src/components/TextTooltip';
 import { PARENT_USER } from 'src/features/Account/constants';
 
 import { useDelegationRole } from '../../hooks/useDelegationRole';
@@ -144,12 +144,24 @@ export const UserDetailsPanel = ({
       label: 'SSH keys',
       value:
         activeUser.ssh_keys.length > 0 ? (
-          <TextTooltip
-            displayText={String(activeUser.ssh_keys.length)}
-            minWidth={1}
-            sxTypography={(theme) => ({ font: theme.font.bold })}
-            tooltipText={activeUser.ssh_keys.join(', ')}
-          />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Tooltip
+              tooltipPlacement="right"
+              tooltipText={activeUser.ssh_keys.join(', ')}
+            >
+              <p
+                style={{
+                  marginRight: Spacing.S0,
+                  color: Color.Brand[90],
+                  cursor: 'pointer',
+                  textDecoration: 'underline dotted ' + Color.Brand[90],
+                  textUnderlineOffset: '4px',
+                }}
+              >
+                {activeUser.ssh_keys.length}
+              </p>
+            </Tooltip>
+          </div>
         ) : (
           <Typography sx={(theme) => ({ font: theme.font.bold })}>0</Typography>
         ),

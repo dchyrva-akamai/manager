@@ -1,5 +1,7 @@
+import { Icon, Tooltip } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useProfile } from '@linode/queries';
-import { Box, Chip, Stack, Tooltip, TooltipIcon, Typography } from '@linode/ui';
+import { Box, Chip, Stack, Typography } from '@linode/ui';
 import { capitalize, truncateEnd } from '@linode/utilities';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
@@ -63,8 +65,9 @@ export const UserRow = ({ onDelete, user }: Props) => {
           />
           <MaskableText isToggleable text={user.username}>
             <Tooltip
-              placement="bottom"
-              title={user.username.length > 32 ? user.username : null}
+              disabled={user.username.length <= 32}
+              tooltipPlacement="bottom"
+              tooltipText={user.username}
             >
               <Typography sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {canViewUser ? (
@@ -108,26 +111,13 @@ export const UserRow = ({ onDelete, user }: Props) => {
           display: { sm: 'table-cell', xs: 'none' },
         }}
       >
-        {isChildOrDelegateWithDelegationEnabled ? (
-          user.user_type === 'child' ? (
-            <MaskableText isToggleable text={user.email} />
-          ) : (
-            <Typography>
-              Not applicable{' '}
-              <TooltipIcon
-                status="info"
-                sxTooltipIcon={{
-                  marginLeft: '-9px',
-                  marginTop: '-5px',
-                }}
-                text="E-mail addresses of delegate users are not displayed."
-                tooltipPosition="right"
-              />
-            </Typography>
-          )
-        ) : (
-          <MaskableText isToggleable text={user.email} />
-        )}
+        <UserEmailContent
+          isChildOrDelegateWithDelegationEnabled={
+            isChildOrDelegateWithDelegationEnabled
+          }
+          userEmail={user.email}
+          userType={user.user_type}
+        />
       </TableCell>
       <TableCell sx={{ display: { lg: 'table-cell', xs: 'none' } }}>
         <LastLogin last_login={user.last_login} user_type={user.user_type} />
@@ -158,18 +148,7 @@ const LastLogin = (props: Pick<User, 'last_login' | 'user_type'>) => {
 
   if (user_type === 'delegate') {
     return (
-      <Typography>
-        Not applicable
-        <TooltipIcon
-          status="info"
-          sxTooltipIcon={{
-            marginLeft: '-9px',
-            marginTop: '-5px',
-          }}
-          text="Last login of delegate users is not displayed."
-          tooltipPosition="right"
-        />
-      </Typography>
+      <NotApplicableWithTooltip tooltipText="Last login of delegate users is not displayed." />
     );
   }
 
@@ -190,3 +169,39 @@ const LastLogin = (props: Pick<User, 'last_login' | 'user_type'>) => {
     </Stack>
   );
 };
+
+/**
+ * Displays the email of a user
+ *
+ * - The component renders "Not applicable" if the user is a delegate and IAM Delegation is enabled
+ * - The component renders the user's email with the ability to toggle visibility for all other cases
+ */
+const UserEmailContent = ({
+  isChildOrDelegateWithDelegationEnabled,
+  userEmail,
+  userType,
+}: {
+  isChildOrDelegateWithDelegationEnabled: boolean;
+  userEmail: string;
+  userType: User['user_type'];
+}) => {
+  if (!isChildOrDelegateWithDelegationEnabled || userType === 'child') {
+    return <MaskableText isToggleable text={userEmail} />;
+  }
+
+  return (
+    <NotApplicableWithTooltip tooltipText="E-mail addresses of delegate users are not displayed." />
+  );
+};
+
+/**
+ * Displays "Not applicable" with a tooltip for delegate users
+ */
+const NotApplicableWithTooltip = ({ tooltipText }: { tooltipText: string }) => (
+  <Typography>
+    Not applicable{' '}
+    <Tooltip tooltipPlacement="left" tooltipText={tooltipText}>
+      <Icon icon="info-outline" size="m" style={{ marginBottom: Spacing.S4 }} />
+    </Tooltip>
+  </Typography>
+);
