@@ -1,15 +1,4 @@
 /**
- * Based on Login's OneTrust cookie list
- */
-export const ONE_TRUST_COOKIE_CATEGORIES = {
-  'Functional Cookies': 'C0003',
-  'Performance Cookies': 'C0002', // Analytics cookies fall into this category
-  'Social Media Cookies': 'C0004',
-  'Strictly Necessary Cookies': 'C0001',
-  'Targeting Cookies': 'C0005',
-} as const;
-
-/**
  * A Promise that will resolve once Adobe Analytics loads.
  *
  * @throws if Adobe does not load after 5 seconds
