@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { renderWithTheme } from 'src/utilities/testHelpers';
 
-import { SuspenseLoader } from './SuspenseLoader';
+import { SuspenseLoader } from '../SuspenseLoader/SuspenseLoader';
 
 const testId = 'circle-progress';
 

@@ -9,7 +9,7 @@ import { useFlags } from 'src/hooks/useFlags';
 
 import { MANAGE_NETWORKING_LEARN_MORE_LINK } from '../../constants';
 import { makeSettingsItemStyles } from '../../shared.styles';
-import { CircleProgress } from '../../shared/CircleProgress';
+import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
 import { ConnectionDetailsHostRows } from '../ConnectionDetailsHostRows';
 import { ConnectionDetailsHostRows2 } from '../ConnectionDetailsHostRows2';
 import { ConnectionDetailsRow } from '../ConnectionDetailsRow';

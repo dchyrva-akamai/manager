@@ -15,7 +15,7 @@ import {
 } from 'src/features/Databases/constants';
 import { useFlags } from 'src/hooks/useFlags';
 
-import { CircleProgress } from '../../shared/CircleProgress';
+import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
 import { CopyTooltip } from '../../shared/CopyTooltip/CopyTooltip';
 import { isDefaultDatabase } from '../../utilities';
 import { ConnectionDetailsHostRows } from '../ConnectionDetailsHostRows';

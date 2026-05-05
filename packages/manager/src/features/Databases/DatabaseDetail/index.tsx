@@ -27,7 +27,7 @@ import { useIsResourceRestricted } from 'src/hooks/useIsResourceRestricted';
 import { useTabs } from 'src/hooks/useTabs';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
-import { CircleProgress } from '../shared/CircleProgress';
+import { CircleProgress } from '../shared/CircleProgress/CircleProgress';
 
 import type { APIError } from '@linode/api-v4/lib/types';
 

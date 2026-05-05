@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { CircleProgress } from './CircleProgress';
+import { CircleProgress } from '../CircleProgress/CircleProgress';
 
 interface Props {
   /**
