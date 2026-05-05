@@ -1,12 +1,5 @@
-import { Badge, Button } from '@akamai/cds-components/react';
-import {
-  Autocomplete,
-  CloseIcon,
-  FormControlLabel,
-  TextField,
-  Toggle,
-  Typography,
-} from '@linode/ui';
+import { Badge, Button, FormField, Switch } from '@akamai/cds-components/react';
+import { Autocomplete, CloseIcon, TextField, Typography } from '@linode/ui';
 import React from 'react';
 
 import { StyledBox, StyledWrapper } from './DatabaseConfigurationItem.style';
@@ -34,15 +27,14 @@ export const DatabaseConfigurationItem = (props: Props) => {
   const renderInputField = () => {
     if (configItem && isConfigBoolean(configItem)) {
       return (
-        <FormControlLabel
-          control={
-            <Toggle
-              checked={Boolean(configItem.value)}
-              onChange={(e) => onChange(e.target.checked)}
-            />
-          }
-          label={formatConfigValue(String(configItem.value))}
-        />
+        <FormField>
+          <Switch
+            checked={Boolean(configItem.value)}
+            onChange={(e) => onChange(e.detail)}
+          >
+            {formatConfigValue(String(configItem.value))}
+          </Switch>
+        </FormField>
       );
     }
     if (configItem && isConfigStringWithEnum(configItem)) {
