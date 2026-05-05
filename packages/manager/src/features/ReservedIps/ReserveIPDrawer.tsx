@@ -307,7 +307,8 @@ export const ReserveIPDrawer = (props: ReserveIPDrawerProps) => {
               disabled: isSubmitDisabled,
               label: reserveIPDrawerConfig[mode].submitLabel,
               loading: isSubmitting,
-              type: 'submit',
+              type: 'button',
+              onClick: handleSubmit(onSubmit),
             }}
             secondaryButtonProps={{
               'data-testid': 'cancel-button',

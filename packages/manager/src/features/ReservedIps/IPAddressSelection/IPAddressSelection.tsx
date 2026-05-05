@@ -27,10 +27,16 @@ type IPAddressOption = IPAddress & { label: string };
 
 export interface IPAddressSelectionProps {
   /**
-   * Error text to show under the reserved IP autocomplete.
+   * Whether the component should be disabled. Used when region is not selected in parent form.
+   */
+  disabled?: boolean;
+  /**
+   * Error message to display below the Autocomplete field
    */
   error?: string;
-  // Header label for the selection component
+  /**
+   * Header label for the selection component
+   */
   label?: {
     fontSize?: string;
     text: string;
@@ -73,6 +79,7 @@ export interface IPAddressSelectionProps {
  * that supports reserved IPs.
  */
 export const IPAddressSelection = ({
+  disabled = false,
   error,
   label = { fontSize: '14px', text: 'IP Address' },
   mode = 'auto',
@@ -131,6 +138,7 @@ export const IPAddressSelection = ({
         <FormControlLabel
           control={<Radio />}
           data-qa-ip-mode-option="auto"
+          disabled={disabled}
           key="auto"
           label={
             <Stack direction="row" mt={1.25} spacing={0.5}>
@@ -149,6 +157,7 @@ export const IPAddressSelection = ({
         <FormControlLabel
           control={<Radio />}
           data-qa-ip-mode-option="reserved"
+          disabled={disabled}
           key="reserved"
           label={
             <Stack direction="row" mt={1.25} spacing={0.5}>

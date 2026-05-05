@@ -34,6 +34,7 @@ import {
   getLinodeCreateType,
   useGetLinodeCreateType,
 } from 'src/features/Linodes/LinodeCreate/Tabs/utils/useGetLinodeCreateType';
+import { useIsReserveIpEnabled } from 'src/features/ReservedIps/utils';
 import { useFlags } from 'src/hooks/useFlags';
 import { useSecureVMNoticesEnabled } from 'src/hooks/useSecureVMNoticesEnabled';
 import { useTabs } from 'src/hooks/useTabs';
@@ -92,6 +93,7 @@ export const LinodeCreate = () => {
   const { data: profile } = useProfile();
   const { isLinodeCloneFirewallEnabled } = useIsLinodeCloneFirewallEnabled();
   const { isVMHostMaintenanceEnabled } = useVMHostMaintenanceEnabled();
+  const { isReserveIpEnabled } = useIsReserveIpEnabled();
   const linodeCreateType = useGetLinodeCreateType();
 
   const { aclpServices, linodeCreateBanner } = useFlags();
@@ -109,6 +111,7 @@ export const LinodeCreate = () => {
     context: {
       isPasswordLessLinodesEnabled,
       isLinodeInterfacesEnabled,
+      isReserveIpEnabled,
       profile,
       secureVMNoticesEnabled,
     },
