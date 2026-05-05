@@ -101,3 +101,7 @@ export const DISABLE_CREDENTIAL_STATES = [
   'suspending',
   'suspended',
 ];
+
+export const ERROR_STATE_TITLE = 'An unexpected error occurred.';
+
+export const ERROR_STATE_TEXT = 'Refresh the page or try again later.';

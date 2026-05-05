@@ -8,7 +8,7 @@ import {
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import { ErrorState, Paper } from '@linode/ui';
+import { Paper } from '@linode/ui';
 import { formatStorageUnits, scrollErrorIntoViewV2 } from '@linode/utilities';
 import { getDynamicDatabaseSchema } from '@linode/validation/lib/databases.schema';
 import Grid from '@mui/material/Grid';
@@ -40,6 +40,7 @@ import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGran
 
 import { CircleProgress } from '../shared/CircleProgress/CircleProgress';
 import { Divider } from '../shared/Divider/Divider';
+import { ErrorState } from '../shared/ErrorState/ErrorState';
 import { DatabaseCreateAccessControls } from './DatabaseCreateAccessControls';
 import { DatabaseCreateNetworkingConfiguration } from './DatabaseCreateNetworkingConfiguration';
 
@@ -268,7 +269,7 @@ export const DatabaseCreate = () => {
   }
 
   if (regionsError || enginesError || typesError) {
-    return <ErrorState errorText="An unexpected error occurred." />;
+    return <ErrorState />;
   }
 
   return (

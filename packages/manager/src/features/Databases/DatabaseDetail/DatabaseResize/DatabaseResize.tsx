@@ -6,7 +6,7 @@ import {
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import { Box, ErrorState, Paper, Typography } from '@linode/ui';
+import { Box, Paper, Typography } from '@linode/ui';
 import { formatStorageUnits } from '@linode/utilities';
 import { useNavigate } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
@@ -36,6 +36,7 @@ import {
 } from '../../constants';
 import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
 import { Divider } from '../../shared/Divider/Divider';
+import { ErrorState } from '../../shared/ErrorState/ErrorState';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import {
   StyledGrid,
@@ -422,7 +423,7 @@ export const DatabaseResize = () => {
   }
 
   if (typesError || regionsError) {
-    return <ErrorState errorText="An unexpected error occurred." />;
+    return <ErrorState />;
   }
 
   return (

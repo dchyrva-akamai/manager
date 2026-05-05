@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@akamai/cds-components/react';
 import { useDatabaseConnectionPoolsQuery } from '@linode/queries';
-import { ErrorState, Hidden, Stack, Typography } from '@linode/ui';
+import { Hidden, Stack, Typography } from '@linode/ui';
 import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
@@ -33,6 +33,7 @@ import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
 import { makeSettingsItemStyles } from '../../shared.styles';
 import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
+import { ErrorState } from '../../shared/ErrorState/ErrorState';
 import { ServiceURI } from '../ServiceURI';
 import { DatabaseAddConnectionPoolDrawer } from './DatabaseAddConnectionPoolDrawer';
 import { DatabaseConnectionPoolDeleteDialog } from './DatabaseConnectionPoolDeleteDialog';

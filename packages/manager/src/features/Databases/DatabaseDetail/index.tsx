@@ -5,7 +5,6 @@ import {
   useDatabaseQuery,
   useDatabaseTypesQuery,
 } from '@linode/queries';
-import { ErrorState } from '@linode/ui';
 import { useEditableLabelState } from '@linode/utilities';
 import {
   Outlet,
@@ -28,6 +27,7 @@ import { useTabs } from 'src/hooks/useTabs';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
 import { CircleProgress } from '../shared/CircleProgress/CircleProgress';
+import { ErrorState } from '../shared/ErrorState/ErrorState';
 
 import type { APIError } from '@linode/api-v4/lib/types';
 
@@ -110,13 +110,7 @@ export const DatabaseDetail = () => {
   ]);
 
   if (error) {
-    return (
-      <ErrorState
-        errorText={
-          getAPIErrorOrDefault(error, 'Error loading your database.')[0].reason
-        }
-      />
-    );
+    return <ErrorState errorText={error[0]?.reason} />;
   }
 
   if (location.pathname === `/databases/${engine}/${databaseId}`) {
