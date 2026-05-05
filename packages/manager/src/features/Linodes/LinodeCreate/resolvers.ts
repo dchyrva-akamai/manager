@@ -133,6 +133,42 @@ export const getLinodeCreateResolver = (
       };
     }
 
+    // Validate reserved IP selection:
+    // An empty addresses array means the user chose "Reserved" mode but didn't select an IP.
+    // (Auto mode uses the sentinel value [{ address: 'auto' }], so it won't be empty.)
+    if (
+      context?.isReserveIpEnabled &&
+      context?.isLinodeInterfacesEnabled &&
+      values.linodeInterfaces
+    ) {
+      for (let i = 0; i < values.linodeInterfaces.length; i++) {
+        const linodeInterface = values.linodeInterfaces[i];
+        const addresses = linodeInterface.public?.ipv4?.addresses;
+
+        if (
+          linodeInterface.purpose === 'public' &&
+          Array.isArray(addresses) &&
+          addresses.length === 0
+        ) {
+          const typedErrors = errors as FieldErrors<LinodeCreateFormValues>;
+
+          typedErrors.linodeInterfaces = {
+            ...typedErrors.linodeInterfaces,
+            [i]: {
+              public: {
+                ipv4: {
+                  addresses: {
+                    message: 'Please select a reserved IP address.',
+                    type: 'validate',
+                  },
+                },
+              },
+            },
+          };
+        }
+      }
+    }
+
     if (errors) {
       return { errors, values: rawValues };
     }

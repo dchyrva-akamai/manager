@@ -123,6 +123,21 @@ export const getLinodeCreatePayload = (
               isDualStackEnabled
             )
           );
+
+      // For legacy mode with reserved IP: add root-level ipv4 field
+      const publicInterfaceWithReservedIP = formValues.linodeInterfaces.find(
+        (iface) =>
+          iface.purpose === 'public' &&
+          iface.public?.ipv4?.addresses?.[0]?.address &&
+          iface.public.ipv4.addresses[0].address !== 'auto'
+      );
+
+      const reservedIPAddress =
+        publicInterfaceWithReservedIP?.public?.ipv4?.addresses?.[0]?.address;
+
+      if (reservedIPAddress) {
+        values.ipv4 = [reservedIPAddress];
+      }
     }
   } else {
     values.interfaces = getInterfacesPayload(
@@ -283,6 +298,11 @@ export interface LinodeCreateFormContext {
    * When false, root_pass is required.
    */
   isPasswordLessLinodesEnabled: boolean;
+  /**
+   * Is the Reserved IP feature enabled?
+   * When true, users can select a reserved IP address for their Linode.
+   */
+  isReserveIpEnabled: boolean;
   /**
    * Profile data is used in the Linode Create resolver because
    * restricted users are subject to different validation.
