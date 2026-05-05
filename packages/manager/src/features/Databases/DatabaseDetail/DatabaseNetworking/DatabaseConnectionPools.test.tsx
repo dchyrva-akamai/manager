@@ -61,9 +61,23 @@ vi.mock('@linode/queries', async () => {
   };
 });
 
+function mockMatchMedia() {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches: true,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+    onchange: null,
+  })) as unknown as typeof window.matchMedia;
+}
+
 describe('DatabaseConnectionPools Component', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    mockMatchMedia();
   });
 
   it('should render PgBouncer Connection Pools field', () => {

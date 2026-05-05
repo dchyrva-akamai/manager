@@ -1,9 +1,9 @@
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
-import { Hidden } from '@linode/ui';
 import * as React from 'react';
 
 import { ActionMenu } from 'src/components/ActionMenu/ActionMenu';
 import { CONNECTION_POOL_LABEL_CELL_STYLES } from 'src/features/Databases/constants';
+import { useBreakpoint } from 'src/features/Databases/hooks/useBreakpoint';
 import { StyledActionMenuWrapper } from 'src/features/Databases/shared.styles';
 
 import type { ConnectionPool, DatabaseStatus } from '@linode/api-v4';
@@ -27,6 +27,7 @@ interface Props {
 }
 
 export const DatabaseConnectionPoolRow = (props: Props) => {
+  const showFromSmUp = useBreakpoint('up', 'sm');
   const { pool, onDelete, onEdit, databaseStatus } = props;
   const editDisabled = databaseStatus !== 'active';
 
@@ -50,19 +51,17 @@ export const DatabaseConnectionPoolRow = (props: Props) => {
       <TableCell style={CONNECTION_POOL_LABEL_CELL_STYLES}>
         {pool.label}
       </TableCell>
-      <Hidden smDown>
+      {showFromSmUp && (
         <TableCell>
           {`${pool.mode.charAt(0).toUpperCase()}${pool.mode.slice(1)}`}
         </TableCell>
-      </Hidden>
-      <Hidden smDown>
-        <TableCell>{pool.size}</TableCell>
-      </Hidden>
-      <Hidden smDown>
+      )}
+      {showFromSmUp && <TableCell>{pool.size}</TableCell>}
+      {showFromSmUp && (
         <TableCell>
           {pool.username === null ? 'Reuse inbound user' : pool.username}
         </TableCell>
-      </Hidden>
+      )}
       <StyledActionMenuWrapper>
         <ActionMenu
           actionsList={connectionPoolActions}

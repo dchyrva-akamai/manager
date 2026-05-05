@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@akamai/cds-components/react';
 import { useDatabaseConnectionPoolsQuery } from '@linode/queries';
-import { Hidden, Stack, Typography } from '@linode/ui';
+import { Stack, Typography } from '@linode/ui';
 import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
@@ -28,6 +28,7 @@ import {
   StyledLabelTypography,
   StyledValueGrid,
 } from 'src/features/Databases/DatabaseDetail/DatabaseSummary/DatabaseSummaryClusterConfiguration.style';
+import { useBreakpoint } from 'src/features/Databases/hooks/useBreakpoint';
 import { useFlags } from 'src/hooks/useFlags';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
@@ -50,6 +51,7 @@ interface Props {
 export const DatabaseConnectionPools = ({ database }: Props) => {
   const { classes } = makeSettingsItemStyles();
   const theme = useTheme();
+  const showFromSmUp = useBreakpoint('up', 'sm');
   const flags = useFlags();
   const isDatabaseInactive = database.status !== 'active';
 
@@ -164,15 +166,9 @@ export const DatabaseConnectionPools = ({ database }: Props) => {
               <TableHeaderCell style={CONNECTION_POOL_LABEL_CELL_STYLES}>
                 Pool Label
               </TableHeaderCell>
-              <Hidden smDown>
-                <TableHeaderCell>Pool Mode</TableHeaderCell>
-              </Hidden>
-              <Hidden smDown>
-                <TableHeaderCell>Pool Size</TableHeaderCell>
-              </Hidden>
-              <Hidden smDown>
-                <TableHeaderCell>Username</TableHeaderCell>
-              </Hidden>
+              {showFromSmUp && <TableHeaderCell>Pool Mode</TableHeaderCell>}
+              {showFromSmUp && <TableHeaderCell>Pool Size</TableHeaderCell>}
+              {showFromSmUp && <TableHeaderCell>Username</TableHeaderCell>}
               <TableHeaderCell style={{ maxWidth: 40 }} />
             </TableRow>
           </TableHead>

@@ -10,7 +10,6 @@ import {
   useProfile,
   useRegionsQuery,
 } from '@linode/queries';
-import { Hidden } from '@linode/ui';
 import { formatStorageUnits } from '@linode/utilities';
 import * as React from 'react';
 
@@ -18,6 +17,7 @@ import { Link } from 'src/components/Link';
 import { DatabaseStatusDisplay } from 'src/features/Databases/DatabaseDetail/DatabaseStatusDisplay';
 import { DatabaseEngineVersion } from 'src/features/Databases/DatabaseEngineVersion';
 import { DatabaseActionMenu } from 'src/features/Databases/DatabaseLanding/DatabaseActionMenu';
+import { useBreakpoint } from 'src/features/Databases/hooks/useBreakpoint';
 import {
   getIsLinkInactive,
   useIsDatabasesEnabled,
@@ -72,6 +72,9 @@ export const DatabaseRow = ({
   const formattedPlan = plan && formatStorageUnits(plan.label);
   const actualRegion = regions?.find((r) => r.id === region);
   const { isDatabasesV2GA } = useIsDatabasesEnabled();
+  const showFromSmUp = useBreakpoint('up', 'sm');
+  const showFromMdUp = useBreakpoint('up', 'md');
+  const showFromLgUp = useBreakpoint('up', 'lg');
 
   const configuration =
     cluster_size === 1 ? (
@@ -104,9 +107,7 @@ export const DatabaseRow = ({
         <DatabaseStatusDisplay database={database} events={events} />
       </TableCell>
       {isNewDatabase && <TableCell>{formattedPlan}</TableCell>}
-      <Hidden smDown>
-        <TableCell>{configuration}</TableCell>
-      </Hidden>
+      {showFromSmUp && <TableCell>{configuration}</TableCell>}
       <TableCell>
         <DatabaseEngineVersion
           databaseEngine={engine}
@@ -116,10 +117,8 @@ export const DatabaseRow = ({
           databaseVersion={version}
         />
       </TableCell>
-      <Hidden mdDown>
-        <TableCell>{actualRegion?.label ?? region}</TableCell>
-      </Hidden>
-      <Hidden lgDown>
+      {showFromMdUp && <TableCell>{actualRegion?.label ?? region}</TableCell>}
+      {showFromLgUp && (
         <TableCell>
           {isWithinDays(3, created)
             ? parseAPIDate(created).toRelative()
@@ -127,7 +126,7 @@ export const DatabaseRow = ({
                 timezone: profile?.timezone,
               })}
         </TableCell>
-      </Hidden>
+      )}
       {isDatabasesV2GA && isNewDatabase && (
         <StyledActionMenuWrapper>
           <DatabaseActionMenu
