@@ -1,7 +1,10 @@
 import { useFlags } from 'src/hooks/useFlags';
 
 import type { IPAddress } from '@linode/api-v4';
-
+import type {
+  DataCenterPricingByTypeOptions,
+  RegionPrice,
+} from 'src/utilities/pricing/dynamicPricing';
 /**
  *
  * @returns an object that contains boolean property to check whether Reserved IP is enabled or not
@@ -32,4 +35,31 @@ export const getReservedIPDescription = (reservedIp: IPAddress): string => {
   }
 
   return `Assigned to ${label || type}`;
+};
+
+/**
+ * Returns the exact hourly price for a Reserved IP in a given region,
+ * as provided by the API without any rounding or formatting.
+ *
+ * @returns The raw hourly price as a string (e.g. "0.007"), or `undefined`
+ *          if the price cannot be determined.
+ *
+ * @example
+ * getReservedIPHourlyPrice({ regionId: 'us-east', type: reservedIPTypes[0] })
+ * // => "0.007"
+ */
+export const getReservedIPHourlyPrice = ({
+  regionId,
+  type,
+}: DataCenterPricingByTypeOptions): number | undefined => {
+  if (!regionId || !type) {
+    return undefined;
+  }
+
+  const price =
+    type.region_prices.find(
+      (region_price: RegionPrice) => region_price.id === regionId
+    )?.hourly ?? type.price?.hourly;
+
+  return price != null ? price : undefined;
 };

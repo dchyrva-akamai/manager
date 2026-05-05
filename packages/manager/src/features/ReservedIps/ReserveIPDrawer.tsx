@@ -36,12 +36,9 @@ import { Link } from 'src/components/Link';
 import { RegionSelect } from 'src/components/RegionSelect/RegionSelect';
 import { TagsInput } from 'src/components/TagsInput/TagsInput';
 import { useFlags } from 'src/hooks/useFlags';
-import {
-  getDCSpecificPriceByType,
-  renderMonthlyPriceToCorrectDecimalPlace,
-} from 'src/utilities/pricing/dynamicPricing';
 
 import { RESERVE_IP_DESCRIPTION, RESERVED_IPS_DOCS_LINK } from './constants';
+import { getReservedIPHourlyPrice } from './utils';
 
 import type { APIError, IPAddress } from '@linode/api-v4';
 import type { TagOption } from 'src/components/TagsInput/TagsInput';
@@ -131,7 +128,7 @@ export const ReserveIPDrawer = (props: ReserveIPDrawerProps) => {
 
   const selectedRegion = useWatch({ control, name: 'region' });
 
-  const reservedIPPrice = getDCSpecificPriceByType({
+  const reservedIPPrice = getReservedIPHourlyPrice({
     regionId: selectedRegion,
     type: reservedIPTypes?.[0],
   });
@@ -294,9 +291,7 @@ export const ReserveIPDrawer = (props: ReserveIPDrawerProps) => {
                 sx={(theme) => ({ color: theme.palette.text.secondary })}
                 variant="body1"
               >
-                {`$${renderMonthlyPriceToCorrectDecimalPlace(
-                  Number(reservedIPPrice)
-                )} / mo.`}
+                {`$${reservedIPPrice} / hour.`}
               </Typography>
             )}
           </Stack>

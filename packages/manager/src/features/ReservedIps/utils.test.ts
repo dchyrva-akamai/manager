@@ -2,9 +2,13 @@ import { renderHook, waitFor } from '@testing-library/react';
 
 import { wrapWithTheme } from 'src/utilities/testHelpers';
 
-import { getReservedIPDescription, useIsReserveIpEnabled } from './utils';
+import {
+  getReservedIPDescription,
+  getReservedIPHourlyPrice,
+  useIsReserveIpEnabled,
+} from './utils';
 
-import type { IPAddress } from '@linode/api-v4';
+import type { IPAddress, PriceType } from '@linode/api-v4';
 
 describe('useIsReserveIpEnabled', () => {
   it('returns true if the feature is enabled', async () => {
@@ -90,5 +94,65 @@ describe('getReservedIPDescription', () => {
     expect(getReservedIPDescription(reservedIp as IPAddress)).toBe(
       'Assigned to linode'
     );
+  });
+});
+
+describe('getReservedIPHourlyPrice', () => {
+  const mockType: PriceType = {
+    id: 'reserved-ip',
+    label: 'Reserved IP',
+    price: {
+      hourly: 0.01,
+      monthly: 7.0,
+    },
+    region_prices: [
+      {
+        id: 'us-east',
+        hourly: 0.007,
+        monthly: 5.0,
+      },
+      {
+        id: 'eu-west',
+        hourly: 0.009,
+        monthly: 6.0,
+      },
+    ],
+    transfer: 0,
+  };
+
+  it('returns region-specific price when regionId matches', () => {
+    const result = getReservedIPHourlyPrice({
+      regionId: 'us-east',
+      type: mockType,
+    });
+
+    expect(result).toBe(0.007);
+  });
+
+  it('returns base price when region not found in region_prices', () => {
+    const result = getReservedIPHourlyPrice({
+      regionId: 'ap-south',
+      type: mockType,
+    });
+
+    expect(result).toBe(0.01);
+  });
+
+  it('returns undefined when regionId is not provided', () => {
+    const result = getReservedIPHourlyPrice({
+      regionId: undefined,
+      type: mockType,
+    });
+
+    expect(result).toBeUndefined();
+  });
+
+  it('returns undefined when type is not provided', () => {
+    const result = getReservedIPHourlyPrice({
+      regionId: 'us-east',
+      type: undefined,
+    });
+
+    expect(result).toBeUndefined();
   });
 });
