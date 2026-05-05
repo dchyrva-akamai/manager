@@ -1,7 +1,7 @@
 import { Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseTypesQuery, useRegionsQuery } from '@linode/queries';
-import { Box, ErrorState } from '@linode/ui';
+import { Box } from '@linode/ui';
 import { convertMegabytesTo, formatStorageUnits } from '@linode/utilities';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
@@ -10,6 +10,7 @@ import { DatabaseEngineVersion } from 'src/features/Databases/DatabaseEngineVers
 import { useInProgressEvents } from 'src/queries/events/events';
 
 import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
+import { ErrorState } from '../../shared/ErrorState/ErrorState';
 import { DatabaseStatusDisplay } from '../DatabaseStatusDisplay';
 import {
   StyledStatusBox,
@@ -48,7 +49,7 @@ export const DatabaseResizeCurrentConfiguration = ({ database }: Props) => {
   }
 
   if (typesError) {
-    return <ErrorState errorText="An unexpected error occurred." />;
+    return <ErrorState />;
   }
 
   if (!database || !type) {

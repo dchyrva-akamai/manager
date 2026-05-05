@@ -1,7 +1,7 @@
 import { Badge, Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useAllVPCsQuery } from '@linode/queries';
-import { ErrorState, Stack, Typography } from '@linode/ui';
+import { Stack, Typography } from '@linode/ui';
 import React from 'react';
 
 import { Link } from 'src/components/Link';
@@ -10,6 +10,7 @@ import { useFlags } from 'src/hooks/useFlags';
 import { MANAGE_NETWORKING_LEARN_MORE_LINK } from '../../constants';
 import { makeSettingsItemStyles } from '../../shared.styles';
 import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
+import { ErrorState } from '../../shared/ErrorState/ErrorState';
 import { ConnectionDetailsHostRows } from '../ConnectionDetailsHostRows';
 import { ConnectionDetailsHostRows2 } from '../ConnectionDetailsHostRows2';
 import { ConnectionDetailsRow } from '../ConnectionDetailsRow';
