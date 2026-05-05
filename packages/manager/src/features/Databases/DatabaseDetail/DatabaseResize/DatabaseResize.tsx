@@ -6,7 +6,7 @@ import {
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import { Box, Divider, ErrorState, Paper, Typography } from '@linode/ui';
+import { Box, ErrorState, Paper, Typography } from '@linode/ui';
 import { formatStorageUnits } from '@linode/utilities';
 import { useNavigate } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
@@ -34,7 +34,8 @@ import {
   RESIZE_DISABLED_NON_G7_DEDICATED_SHARED_PLAN_TABS_TEXT,
   RESIZE_DISABLED_PREMIUM_PLAN_TAB_TEXT,
 } from '../../constants';
-import { CircleProgress } from '../../shared/CircleProgress';
+import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
+import { Divider } from '../../shared/Divider/Divider';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import {
   StyledGrid,
@@ -461,7 +462,7 @@ export const DatabaseResize = () => {
         />
         {isNewDatabaseGA && (
           <>
-            <Divider spacingBottom={20} spacingTop={20} />
+            <Divider marginBottom={Spacing.S20} marginTop={Spacing.S20} />
             <DatabaseNodeSelector
               currentClusterSize={database.cluster_size}
               currentPlan={currentPlan}

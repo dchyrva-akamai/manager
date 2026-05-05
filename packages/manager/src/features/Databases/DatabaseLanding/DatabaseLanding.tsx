@@ -14,7 +14,7 @@ import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
-import { CircleProgress } from '../shared/CircleProgress';
+import { CircleProgress } from '../shared/CircleProgress/CircleProgress';
 
 const preferenceKey = 'databases';
 

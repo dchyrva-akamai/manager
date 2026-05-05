@@ -32,7 +32,7 @@ import { useFlags } from 'src/hooks/useFlags';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
 import { makeSettingsItemStyles } from '../../shared.styles';
-import { CircleProgress } from '../../shared/CircleProgress';
+import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
 import { ServiceURI } from '../ServiceURI';
 import { DatabaseAddConnectionPoolDrawer } from './DatabaseAddConnectionPoolDrawer';
 import { DatabaseConnectionPoolDeleteDialog } from './DatabaseConnectionPoolDeleteDialog';

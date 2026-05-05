@@ -7,7 +7,7 @@ import {
 import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseQuery, useRegionsQuery } from '@linode/queries';
 import { useIsGeckoEnabled } from '@linode/shared';
-import { Box, Divider, Paper, TimePicker, Typography } from '@linode/ui';
+import { Box, Paper, TimePicker, Typography } from '@linode/ui';
 import {
   FormControl,
   FormControlLabel,
@@ -41,6 +41,7 @@ import {
   BACKUPS_MIN_TIME_EXCEEDED_VALIDATON_TEXT,
   BACKUPS_UNABLE_TO_RESTORE_TEXT,
 } from '../../constants';
+import { Divider } from '../../shared/Divider/Divider';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import { DatabaseBackupsDialog } from './DatabaseBackupsDialog';
 import DatabaseBackupsLegacy from './legacy/DatabaseBackupsLegacy';
@@ -192,7 +193,7 @@ export const DatabaseBackups = () => {
           version-specific binary backups, which when combined with binary logs
           allow for consistent recovery to a specific point in time (PITR).
         </StyledTypography>
-        <Divider spacingBottom={25} spacingTop={25} />
+        <Divider marginBottom={Spacing.S24} marginTop={Spacing.S24} />
         <Typography variant="h2">Restore a Backup</Typography>
         <StyledTypography>
           {isDatabasesV2GA ? (

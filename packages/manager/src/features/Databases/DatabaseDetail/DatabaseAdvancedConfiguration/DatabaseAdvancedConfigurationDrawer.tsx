@@ -2,7 +2,7 @@ import { Button, NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDatabaseEngineConfig, useDatabaseMutation } from '@linode/queries';
-import { ActionsPanel, Divider, Drawer, Stack, Typography } from '@linode/ui';
+import { ActionsPanel, Drawer, Stack, Typography } from '@linode/ui';
 import { scrollErrorIntoViewV2 } from '@linode/utilities';
 import { createDynamicAdvancedConfigSchema } from '@linode/validation';
 import Grid from '@mui/material/Grid';
@@ -17,7 +17,8 @@ import {
   ADVANCED_CONFIG_INFO,
   ADVANCED_CONFIG_LEARN_MORE_LINK,
 } from '../../constants';
-import { CircleProgress } from '../../shared/CircleProgress';
+import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
+import { Divider } from '../../shared/Divider/Divider';
 import { DatabaseConfigurationItem } from './DatabaseConfigurationItem';
 import { DatabaseConfigurationSelect } from './DatabaseConfigurationSelect';
 import {
@@ -201,7 +202,7 @@ export const DatabaseAdvancedConfigurationDrawer = (props: Props) => {
             </Button>
           </Grid>
         </Grid>
-        <Divider spacingBottom={20} spacingTop={24} />
+        <Divider marginBottom={Spacing.S20} marginTop={Spacing.S24} />
         {isLoading && (
           <Stack alignItems="center" height="100%" justifyContent="center">
             <CircleProgress
@@ -240,7 +241,7 @@ export const DatabaseAdvancedConfigurationDrawer = (props: Props) => {
             }}
           />
         ))}
-        <Divider spacingBottom={20} spacingTop={24} />
+        <Divider marginBottom={Spacing.S20} marginTop={Spacing.S24} />
         <ActionsPanel
           primaryButtonProps={{
             disabled: !isDirty,

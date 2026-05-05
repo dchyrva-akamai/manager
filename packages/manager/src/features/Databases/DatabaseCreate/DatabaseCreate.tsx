@@ -8,7 +8,7 @@ import {
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import { Divider, ErrorState, Paper } from '@linode/ui';
+import { ErrorState, Paper } from '@linode/ui';
 import { formatStorageUnits, scrollErrorIntoViewV2 } from '@linode/utilities';
 import { getDynamicDatabaseSchema } from '@linode/validation/lib/databases.schema';
 import Grid from '@mui/material/Grid';
@@ -38,7 +38,8 @@ import { typeLabelDetails } from 'src/features/Linodes/presentation';
 import { useFlags } from 'src/hooks/useFlags';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
 
-import { CircleProgress } from '../shared/CircleProgress';
+import { CircleProgress } from '../shared/CircleProgress/CircleProgress';
+import { Divider } from '../shared/Divider/Divider';
 import { DatabaseCreateAccessControls } from './DatabaseCreateAccessControls';
 import { DatabaseCreateNetworkingConfiguration } from './DatabaseCreateNetworkingConfiguration';
 
@@ -316,7 +317,7 @@ export const DatabaseCreate = () => {
               </NotificationBanner>
             )}
             <DatabaseClusterData selectedPlan={selectedPlan} />
-            <Divider spacingBottom={12} spacingTop={38} />
+            <Divider marginBottom={Spacing.S12} marginTop={Spacing.S32} />
             <Grid>
               <Controller
                 control={control}
@@ -347,7 +348,7 @@ export const DatabaseCreate = () => {
                 )}
               />
             </Grid>
-            <Divider spacingBottom={12} spacingTop={26} />
+            <Divider marginBottom={Spacing.S12} marginTop={Spacing.S24} />
             <Grid>
               <Controller
                 control={control}
@@ -365,7 +366,7 @@ export const DatabaseCreate = () => {
                 )}
               />
             </Grid>
-            <Divider spacingBottom={12} spacingTop={26} />
+            <Divider marginBottom={Spacing.S12} marginTop={Spacing.S24} />
             {isVPCEnabled ? (
               <DatabaseCreateNetworkingConfiguration
                 accessControlsConfiguration={accessControlsConfiguration}
