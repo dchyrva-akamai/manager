@@ -1,4 +1,5 @@
-import { NotificationBanner } from '@akamai/cds-components/react';
+import { Button, NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import {
   delegationQueries,
   iamQueries,
@@ -7,7 +8,7 @@ import {
   useUpdateDefaultDelegationAccessQuery,
   useUserRolesMutation,
 } from '@linode/queries';
-import { ActionsPanel, Drawer, LinkButton, Typography } from '@linode/ui';
+import { ActionsPanel, Drawer, Typography } from '@linode/ui';
 import { useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useParams } from '@tanstack/react-router';
@@ -16,7 +17,6 @@ import React, { useEffect, useState } from 'react';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 
 import { Link } from 'src/components/Link';
-import { StyledLinkButtonBox } from 'src/components/SelectFirewallPanel/SelectFirewallPanel';
 import { AssignSingleRole } from 'src/features/IAM/Users/UserRoles/AssignSingleRole';
 
 import { useIsDefaultDelegationRolesForChildAccount } from '../../hooks/useDelegationRole';
@@ -185,13 +185,12 @@ export const AssignNewRoleDrawer = ({
           >
             <Typography variant={'h3'}>Roles</Typography>
             {roles.length > 0 && roles.some((field) => field.role) && (
-              <StyledLinkButtonBox sx={{ marginTop: 0 }}>
-                <LinkButton
-                  onClick={() => setAreDetailsHidden(!areDetailsHidden)}
-                >
-                  {areDetailsHidden ? 'Show' : 'Hide'} details
-                </LinkButton>
-              </StyledLinkButtonBox>
+              <Button
+                onClick={() => setAreDetailsHidden(!areDetailsHidden)}
+                variant="link"
+              >
+                {areDetailsHidden ? 'Show' : 'Hide'} details
+              </Button>
             )}
           </Grid>
 
@@ -209,11 +208,17 @@ export const AssignNewRoleDrawer = ({
 
           {/* If all roles are filled, allow them to add another */}
           {roles.length > 0 && roles.every((field) => field.role?.value) && (
-            <StyledLinkButtonBox sx={{ marginTop: theme.tokens.spacing.S12 }}>
-              <LinkButton onClick={() => append({ role: null })}>
+            <div
+              style={{
+                marginTop: Spacing.S12,
+                display: 'flex',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <Button onClick={() => append({ role: null })} variant="link">
                 Add another role
-              </LinkButton>
-            </StyledLinkButtonBox>
+              </Button>
+            </div>
           )}
           <ActionsPanel
             primaryButtonProps={{
