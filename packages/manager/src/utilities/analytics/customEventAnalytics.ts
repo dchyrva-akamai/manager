@@ -3,7 +3,7 @@ import {
   sendEvent,
 } from '@akamai/compute-ui-core/analytics';
 
-import type { CustomAnalyticsData } from './types';
+import type { CustomAnalyticsData } from '@akamai/compute-ui-core/analytics';
 
 /**
  * Custom Events

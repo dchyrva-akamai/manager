@@ -1,3 +1,4 @@
+import type { AnalyticsPayload } from '@akamai/compute-ui-core/analytics';
 import type { LinodeCreateType } from '@linode/utilities';
 
 // Define a custom type for the _satellite object
@@ -17,29 +18,6 @@ type DTMSatellite = {
 interface PageViewPayload {
   euuid?: string;
   url: string;
-}
-
-export interface CustomAnalyticsData {
-  /**
-   * Whether the Linode was powered before before being cloned.
-   */
-  isLinodePoweredOff?: boolean;
-
-  /**
-   * Whether a newly created Linode is Secure VM compliant:
-   * - Undefined for users the policy doesn't apply
-   * - True for compliant Linodes
-   * - False when choosing to override the policy
-   */
-  secureVMCompliant?: boolean;
-}
-
-export interface AnalyticsEvent {
-  action: string;
-  category: string;
-  data?: CustomAnalyticsData;
-  label?: string;
-  value?: number;
 }
 
 export type FormEventType =
@@ -99,8 +77,4 @@ export interface FormEventOptions {
 export interface LinodeCreateFormEventOptions extends FormEventOptions {
   createType: LinodeCreateType;
   interaction: 'change' | 'clear' | 'click';
-}
-
-export interface AnalyticsPayload extends Omit<AnalyticsEvent, 'data'> {
-  data?: string;
 }
