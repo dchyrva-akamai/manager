@@ -7,11 +7,11 @@ import { useNavigate } from '@tanstack/react-router';
 import React from 'react';
 
 import { DateTimeDisplay } from 'src/components/DateTimeDisplay';
-import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';
 import { PARENT_USER } from 'src/features/Account/constants';
 
 import { useDelegationRole } from '../../hooks/useDelegationRole';
 import { MaskableText } from '../../Shared/MaskableText/MaskableText';
+import { StatusIcon } from '../../Shared/StatusIcon/StatusIcon';
 import { UserDeleteConfirmation } from '../../Shared/UserDeleteConfirmation';
 import { EditUserDetailsDrawer } from './EditUserDetailsDrawer';
 import { getTotalAssignedRoles } from './utils';
@@ -95,7 +95,6 @@ export const UserDetailsPanel = ({
                   ? 'active'
                   : 'error'
               }
-              sx={{ alignSelf: 'center' }}
             />
           )}
         </Stack>
