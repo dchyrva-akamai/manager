@@ -25,32 +25,32 @@ import type {
  * If the given bucket is not a test bucket (in other words, its label does not
  * begin with `cy-test-`), the promise will reject.
  *
- * @param clusterId - ID of cluster for test bucket.
- * @param bucketLabel - Label for test bucket.
+ * @param regionId - ID of the region for test bucket.
+ * @param bucketName - Name (label) for test bucket.
  *
  * @returns Promise that resolves when all test bucket objects are deleted.
  */
 export const deleteAllTestBucketObjects = async (
-  clusterId: string,
-  bucketLabel: string
+  regionId: string,
+  bucketName: string
 ) => {
-  if (!isTestLabel(bucketLabel)) {
+  if (!isTestLabel(bucketName)) {
     throw new Error(
-      `Attempted to delete objects belonging to a non-test Object Storage bucket '${bucketLabel}'.`
+      `Attempted to delete objects belonging to a non-test Object Storage bucket '${bucketName}'.`
     );
   }
 
   authenticate();
   // @TODO Improve object retrieval to account for pagination for buckets with many objects.
   const storageObjects = await getObjectList({
-    bucket: bucketLabel,
-    clusterId,
+    bucketName,
+    regionId,
   });
   const storageObjectDeletePromises = storageObjects.data.map(
     async (storageObject: ObjectStorageObject) => {
       const objectUrl = await getObjectURL(
-        clusterId,
-        bucketLabel,
+        regionId,
+        bucketName,
         storageObject.name,
         'DELETE'
       );
@@ -99,13 +99,10 @@ export const deleteAllTestBuckets = async () => {
 
   const deleteBucketsPromises = buckets.map(
     async (bucket: ObjectStorageBucket) => {
-      await deleteAllTestBucketObjects(
-        bucket.region || bucket.cluster,
-        bucket.label
-      );
+      await deleteAllTestBucketObjects(bucket.region, bucket.label);
       return deleteBucket({
-        cluster: bucket.region || bucket.cluster,
-        label: bucket.label,
+        regionId: bucket.region,
+        bucketName: bucket.label,
       });
     }
   );

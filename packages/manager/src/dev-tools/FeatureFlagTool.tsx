@@ -51,7 +51,6 @@ const options: { flag: keyof Flags; label: string }[] = [
   { flag: 'networkLoadBalancer', label: 'Network Load Balancer' },
   { flag: 'nodebalancerIpv6', label: 'NodeBalancer Dual Stack (IPv6)' },
   { flag: 'nodebalancerVpc', label: 'NodeBalancer-VPC Integration' },
-  { flag: 'objMultiCluster', label: 'OBJ Multi-Cluster' },
   { flag: 'objectStorageGen2', label: 'OBJ Gen2' },
   { flag: 'objectStorageGlobalQuotas', label: 'OBJ Global Quotas' },
   { flag: 'passwordlessLinodes', label: 'PasswordLess Linodes' },

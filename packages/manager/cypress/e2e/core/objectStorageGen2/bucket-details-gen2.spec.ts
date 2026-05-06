@@ -18,7 +18,6 @@ import type { ACLType, ObjectStorageEndpointTypes } from '@linode/api-v4';
 describe('Object Storage Gen 2 bucket details tabs', () => {
   beforeEach(() => {
     mockAppendFeatureFlags({
-      objMultiCluster: true,
       objectStorageGen2: { enabled: true },
     }).as('getFeatureFlags');
     mockGetAccount(

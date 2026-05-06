@@ -1,7 +1,6 @@
 import {
   getBuckets,
   getBucketsInRegion,
-  getClusters,
   getObjectStorageEndpoints,
   getObjectStorageTypes,
 } from '@linode/api-v4';
@@ -10,17 +9,10 @@ import { getAll } from '@linode/utilities';
 import type {
   APIError,
   ObjectStorageBucket,
-  ObjectStorageCluster,
   ObjectStorageEndpoint,
   PriceType,
   Region,
 } from '@linode/api-v4';
-
-/**
- * @deprecated This will be replaced with `getAllObjectStorageEndpoints` when OBJ Gen2 is in GA.
- */
-export const getAllObjectStorageClusters = () =>
-  getAll<ObjectStorageCluster>(() => getClusters())().then((data) => data.data);
 
 export const getAllObjectStorageBuckets = () =>
   getAll<ObjectStorageBucket>(() => getBuckets())().then((data) => data.data);

@@ -16,7 +16,7 @@ const BUCKET_ACCESS_URL = '*object-storage/buckets/*/*/access';
 const OBJECT_ACCESS_URL = '*object-storage/buckets/*/*/object-acl';
 
 const defaultProps: Props = {
-  clusterOrRegion: 'in-maa',
+  regionId: 'in-maa',
   endpointType: 'E1',
   name: 'my-object-name',
   variant: 'bucket',

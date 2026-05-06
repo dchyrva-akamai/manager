@@ -292,7 +292,6 @@ export interface Flags {
   objectStorageContextualMetrics: boolean;
   objectStorageGen2: BaseFeatureFlag;
   objectStorageGlobalQuotas: boolean;
-  objMultiCluster: boolean;
   objSummaryPage: boolean;
   passwordlessLinodes: boolean;
   placementGroupPolicyUpdate: boolean;

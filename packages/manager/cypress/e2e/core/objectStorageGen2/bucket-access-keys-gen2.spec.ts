@@ -91,7 +91,6 @@ describe('Object Storage gen2 access keys tests', () => {
       'getObjectStorageEndpoints'
     );
     mockAppendFeatureFlags({
-      objMultiCluster: true,
       objectStorageGen2: { enabled: true },
     }).as('getFeatureFlags');
     mockGetAccount(
@@ -194,7 +193,6 @@ describe('Object Storage gen2 access keys tests', () => {
 describe('Object Storage Gen2 create access key modal has disabled fields for restricted user', () => {
   beforeEach(() => {
     mockAppendFeatureFlags({
-      objMultiCluster: true,
       objectStorageGen2: { enabled: true },
     }).as('getFeatureFlags');
     mockGetAccount(

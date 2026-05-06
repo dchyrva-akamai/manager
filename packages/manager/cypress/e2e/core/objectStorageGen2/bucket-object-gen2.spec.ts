@@ -30,7 +30,6 @@ import type { ObjectStorageEndpoint } from '@linode/api-v4';
 describe('Object Storage Gen2 bucket object tests', () => {
   beforeEach(() => {
     mockAppendFeatureFlags({
-      objMultiCluster: true,
       objectStorageGen2: { enabled: true },
     }).as('getFeatureFlags');
     mockGetAccount(
@@ -143,7 +142,6 @@ describe('Object Storage Gen2 bucket object tests', () => {
 
     // mockGetBuckets([]).as('getBuckets');
     mockCreateBucket({
-      cors_enabled: true,
       endpoint_type: 'E0',
       label: bucketLabel,
       region: mockRegion.id,
@@ -203,7 +201,6 @@ describe('Object Storage Gen2 bucket object tests', () => {
 
     // mockGetBuckets([]).as('getBuckets');
     mockCreateBucket({
-      cors_enabled: true,
       endpoint_type: 'E1',
       label: bucketLabel,
       region: mockRegion.id,
@@ -262,7 +259,6 @@ describe('Object Storage Gen2 bucket object tests', () => {
     });
 
     mockCreateBucket({
-      cors_enabled: true,
       endpoint_type: 'E2',
       label: bucketLabel,
       region: mockRegion.id,
@@ -322,7 +318,6 @@ describe('Object Storage Gen2 bucket object tests', () => {
     });
 
     mockCreateBucket({
-      cors_enabled: true,
       endpoint_type: 'E3',
       label: bucketLabel,
       region: mockRegion.id,
