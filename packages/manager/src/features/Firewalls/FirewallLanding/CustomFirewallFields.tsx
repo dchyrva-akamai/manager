@@ -28,12 +28,12 @@ import {
 } from './constants';
 
 import type { CreateFirewallFormValues } from './formUtilities';
+import type { LinodeCreateFormEventOptions } from '@akamai/compute-ui-core/analytics';
 import type {
   FirewallDeviceEntityType,
   Linode,
   NodeBalancer,
 } from '@linode/api-v4';
-import type { LinodeCreateFormEventOptions } from 'src/utilities/analytics/types';
 
 interface CustomFirewallProps {
   createFlow: FirewallDeviceEntityType | undefined;
