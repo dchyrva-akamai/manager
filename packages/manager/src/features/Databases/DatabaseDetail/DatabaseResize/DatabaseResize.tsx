@@ -6,7 +6,7 @@ import {
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import { Box, Paper, Typography } from '@linode/ui';
+import { Box, Typography } from '@linode/ui';
 import { formatStorageUnits } from '@linode/utilities';
 import { useNavigate } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
@@ -37,6 +37,7 @@ import {
 import { CircleProgress } from '../../shared/CircleProgress/CircleProgress';
 import { Divider } from '../../shared/Divider/Divider';
 import { ErrorState } from '../../shared/ErrorState/ErrorState';
+import { Paper } from '../../shared/Paper/Paper';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import {
   StyledGrid,
@@ -428,13 +429,13 @@ export const DatabaseResize = () => {
 
   return (
     <>
-      <Paper sx={{ marginTop: 2 }}>
+      <Paper marginTop={Spacing.S16}>
         {resizeDescription}
         <Box sx={{ marginTop: 2 }}>
           <DatabaseResizeCurrentConfiguration database={database} />
         </Box>
       </Paper>
-      <Paper sx={{ marginTop: 2 }}>
+      <Paper marginTop={Spacing.S16}>
         <StyledPlansPanel
           additionalBanners={
             isCurrentPlanUnavailable && Boolean(flags.databasePremium)
@@ -484,7 +485,7 @@ export const DatabaseResize = () => {
           </>
         )}
       </Paper>
-      <Paper sx={{ marginTop: 2 }}>
+      <Paper marginTop={Spacing.S16}>
         <DatabaseSummarySection
           currentClusterSize={database.cluster_size}
           currentEngine={selectedEngine}

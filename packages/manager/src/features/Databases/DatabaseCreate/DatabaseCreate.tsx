@@ -8,7 +8,6 @@ import {
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import { Paper } from '@linode/ui';
 import { formatStorageUnits, scrollErrorIntoViewV2 } from '@linode/utilities';
 import { getDynamicDatabaseSchema } from '@linode/validation/lib/databases.schema';
 import Grid from '@mui/material/Grid';
@@ -41,6 +40,7 @@ import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGran
 import { CircleProgress } from '../shared/CircleProgress/CircleProgress';
 import { Divider } from '../shared/Divider/Divider';
 import { ErrorState } from '../shared/ErrorState/ErrorState';
+import { Paper } from '../shared/Paper/Paper';
 import { DatabaseCreateAccessControls } from './DatabaseCreateAccessControls';
 import { DatabaseCreateNetworkingConfiguration } from './DatabaseCreateNetworkingConfiguration';
 
@@ -377,7 +377,7 @@ export const DatabaseCreate = () => {
               <DatabaseCreateAccessControls {...accessControlsConfiguration} />
             )}
           </Paper>
-          <Paper sx={{ marginTop: 3 }}>
+          <Paper marginTop={Spacing.S24}>
             <DatabaseSummarySection
               currentClusterSize={clusterSize}
               currentEngine={selectedEngine}

@@ -7,7 +7,7 @@ import {
 import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseQuery, useRegionsQuery } from '@linode/queries';
 import { useIsGeckoEnabled } from '@linode/shared';
-import { Box, Paper, TimePicker, Typography } from '@linode/ui';
+import { Box, TimePicker, Typography } from '@linode/ui';
 import {
   FormControl,
   FormControlLabel,
@@ -42,6 +42,7 @@ import {
   BACKUPS_UNABLE_TO_RESTORE_TEXT,
 } from '../../constants';
 import { Divider } from '../../shared/Divider/Divider';
+import { Paper } from '../../shared/Paper/Paper';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import { DatabaseBackupsDialog } from './DatabaseBackupsDialog';
 import DatabaseBackupsLegacy from './legacy/DatabaseBackupsLegacy';
@@ -185,7 +186,7 @@ export const DatabaseBackups = () => {
 
   if (isDefaultDatabase) {
     return (
-      <Paper style={{ marginTop: 16 }}>
+      <Paper marginTop={Spacing.S16}>
         <Typography variant="h2">Summary</Typography>
         <StyledTypography>
           Databases are automatically backed-up with full daily backups for the

@@ -1,5 +1,6 @@
+import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseBackupsQuery } from '@linode/queries';
-import { Paper, Typography } from '@linode/ui';
+import { Typography } from '@linode/ui';
 import * as React from 'react';
 
 import { Table } from 'src/components/Table';
@@ -11,6 +12,7 @@ import { TableSortCell } from 'src/components/TableSortCell';
 import RestoreLegacyFromBackupDialog from 'src/features/Databases/DatabaseDetail/DatabaseBackups/legacy/RestoreLegacyFromBackupDialog';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 
+import { Paper } from '../../../shared/Paper/Paper';
 import DatabaseBackupTableBody from './DatabaseBackupTableBody';
 
 import type { APIError } from '@linode/api-v4';
@@ -96,7 +98,7 @@ export const DatabaseBackupsLegacy = (props: Props) => {
           />
         </TableBody>
       </Table>
-      <Paper style={{ marginTop: 16 }}>
+      <Paper marginTop={Spacing.S16}>
         <Typography variant="h3">Backup Schedule</Typography>
         <Typography style={{ lineHeight: '20px', marginTop: 4 }}>
           A backup of this database is created every 24 hours and each backup is
