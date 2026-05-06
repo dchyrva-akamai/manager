@@ -28,8 +28,8 @@ import { createFirewallResolver } from './formUtilities';
 import { TemplateFirewallFields } from './TemplateFirewallFields';
 
 import type { CreateFirewallFormValues } from './formUtilities';
+import type { LinodeCreateFormEventOptions } from '@akamai/compute-ui-core/analytics';
 import type { Firewall, FirewallDeviceEntityType } from '@linode/api-v4';
-import type { LinodeCreateFormEventOptions } from 'src/utilities/analytics/types';
 
 export interface CreateFirewallDrawerProps {
   createFlow: FirewallDeviceEntityType | undefined;
