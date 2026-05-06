@@ -1,5 +1,5 @@
 import { useProfile } from '@linode/queries';
-import { Paper, Stack, Typography } from '@linode/ui';
+import { Stack, Typography } from '@linode/ui';
 import * as React from 'react';
 
 import {
@@ -21,6 +21,7 @@ import {
 import { useFlags } from 'src/hooks/useFlags';
 
 import { Divider } from '../../shared/Divider/Divider';
+import { Paper } from '../../shared/Paper/Paper';
 import AccessControls from '../AccessControls';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import { DatabaseSettingsDeleteClusterDialog } from './DatabaseSettingsDeleteClusterDialog';
