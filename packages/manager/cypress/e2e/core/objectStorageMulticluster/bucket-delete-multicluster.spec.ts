@@ -33,7 +33,6 @@ describe('Object Storage Multicluster Bucket delete', () => {
       })
     );
     mockAppendFeatureFlags({
-      objMultiCluster: true,
       objectStorageGen2: { enabled: false },
     });
     mockGetBuckets([bucketMock]).as('getBuckets');

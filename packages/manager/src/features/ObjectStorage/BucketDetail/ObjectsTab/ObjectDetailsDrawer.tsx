@@ -13,12 +13,12 @@ import { AccessSelect } from '../AccessTab/AccessSelect';
 
 export interface ObjectDetailsDrawerProps {
   bucketName: string;
-  clusterId: string;
   displayName?: string;
   lastModified?: null | string;
   name?: string;
   onClose: () => void;
   open: boolean;
+  regionId: string;
   size?: null | number;
   url?: string;
 }
@@ -27,7 +27,7 @@ export const ObjectDetailsDrawer = React.memo(
   (props: ObjectDetailsDrawerProps) => {
     const {
       bucketName,
-      clusterId,
+      regionId,
       displayName,
       lastModified,
       name,
@@ -45,7 +45,7 @@ export const ObjectDetailsDrawer = React.memo(
     const isLoadingEndpoint = isLoadingEndpointData || !bucketsData;
 
     const bucket = bucketsData?.buckets.find(
-      ({ label, region }) => label === bucketName && region === clusterId
+      ({ label, region }) => label === bucketName && region === regionId
     );
 
     const { endpoint_type: endpointType } = bucket ?? {};
@@ -95,9 +95,9 @@ export const ObjectDetailsDrawer = React.memo(
             <Divider spacingBottom={16} spacingTop={16} />
             <AccessSelect
               bucketName={bucketName}
-              clusterOrRegion={clusterId}
               endpointType={endpointType}
               name={name}
+              regionId={regionId}
               variant="object"
             />
           </>

@@ -10,7 +10,7 @@ import { TypeToConfirmDialog } from 'src/components/TypeToConfirmDialog/TypeToCo
 import { useObjectStorageRegions } from 'src/features/ObjectStorage/hooks/useObjectStorageRegions';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import {
-  useDeleteBucketWithRegionMutation,
+  useDeleteBucketMutation,
   useObjectStorageBuckets,
 } from 'src/queries/object-storage/queries';
 import {
@@ -45,7 +45,7 @@ export const OMC_BucketLanding = (props: Props) => {
     isLoading: areBucketsLoading,
   } = useObjectStorageBuckets();
 
-  const { mutateAsync: deleteBucket } = useDeleteBucketWithRegionMutation();
+  const { mutateAsync: deleteBucket } = useDeleteBucketMutation();
 
   const { classes } = useStyles();
 
@@ -75,16 +75,16 @@ export const OMC_BucketLanding = (props: Props) => {
     setError(undefined);
     setIsLoading(true);
 
-    const { label, region } = selectedBucket;
+    const { label, region: regionId } = selectedBucket;
 
-    if (region) {
+    if (regionId) {
       try {
-        await deleteBucket({ label, region });
+        await deleteBucket({ bucketName: label, regionId });
         removeBucketConfirmationDialog.close();
         setIsLoading(false);
-        sendDeleteBucketEvent(region);
+        sendDeleteBucketEvent(regionId);
       } catch (e) {
-        sendDeleteBucketFailedEvent(region);
+        sendDeleteBucketFailedEvent(regionId);
         setIsLoading(false);
         setError(e);
       }

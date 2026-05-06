@@ -61,7 +61,6 @@ describe('Object Storage enrollment', () => {
   it('can enroll in Object Storage', () => {
     mockGetAccount(accountFactory.build({ capabilities: ['Object Storage'] }));
     mockAppendFeatureFlags({
-      objMultiCluster: false,
       objectStorageGen2: { enabled: false },
     });
 
@@ -302,7 +301,7 @@ describe('Object Storage enrollment', () => {
           .should('be.visible')
           .type(mockAccessKey.label);
 
-        cy.findByLabelText('Regions', { exact: false })
+        cy.findByPlaceholderText('Select regions', { exact: false })
           .should('be.visible')
           .type('Jakarta, ID{enter}');
 
@@ -368,7 +367,7 @@ describe('Object Storage enrollment', () => {
           .should('be.visible')
           .type(randomLabel());
 
-        cy.findByLabelText('Regions', { exact: false })
+        cy.findByPlaceholderText('Select regions', { exact: false })
           .should('be.visible')
           .type('Jakarta, ID{enter}');
 

@@ -110,7 +110,6 @@ import {
   notificationChannelFactory,
   notificationFactory,
   objectStorageBucketFactoryGen2,
-  objectStorageClusterFactory,
   objectStorageEndpointsFactory,
   objectStorageKeyFactory,
   objectStorageMetricCriteria,
@@ -2054,29 +2053,6 @@ export const handlers = [
   }),
   http.post('*/object-storage/buckets', () => {
     return HttpResponse.json(objectStorageBucketFactoryGen2.build());
-  }),
-  http.get('*object-storage/clusters', () => {
-    const jakartaCluster = objectStorageClusterFactory.build({
-      id: `id-cgk-0` as any,
-      region: 'id-cgk',
-    });
-    const saoPauloCluster = objectStorageClusterFactory.build({
-      id: `br-gru-0` as any,
-      region: 'br-gru',
-    });
-    const basePricingCluster = objectStorageClusterFactory.build({
-      id: `us-east-0` as any,
-      region: 'us-east',
-    });
-    const clusters = objectStorageClusterFactory.buildList(3);
-    return HttpResponse.json(
-      makeResourcePage([
-        jakartaCluster,
-        saoPauloCluster,
-        basePricingCluster,
-        ...clusters,
-      ])
-    );
   }),
 
   http.get('*object-storage/keys', () => {

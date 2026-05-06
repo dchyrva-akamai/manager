@@ -405,7 +405,7 @@ describe('StreamFormDelivery', () => {
 
           // Endpoint should be auto-filled with the bucket's hostname
           expect(screen.getByLabelText('Endpoint')).toHaveValue(
-            'bucket-with-hostname.us-east-1.linodeobjects.com'
+            'us-east-1.linodeobjects.com'
           );
         });
 

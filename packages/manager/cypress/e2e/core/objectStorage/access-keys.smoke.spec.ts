@@ -29,7 +29,6 @@ describe('object storage access keys smoke tests', () => {
 
     mockGetAccount(accountFactory.build({ capabilities: ['Object Storage'] }));
     mockAppendFeatureFlags({
-      objMultiCluster: false,
       objectStorageGen2: { enabled: false },
     });
 
@@ -54,7 +53,7 @@ describe('object storage access keys smoke tests', () => {
           .should('be.visible')
           .type(mockAccessKey.label);
 
-        cy.findByLabelText('Regions', { exact: false })
+        cy.findByPlaceholderText('Select regions', { exact: false })
           .should('be.visible')
           .type('Atlanta, {enter}');
 
@@ -109,7 +108,6 @@ describe('object storage access keys smoke tests', () => {
 
     mockGetAccount(accountFactory.build({ capabilities: ['Object Storage'] }));
     mockAppendFeatureFlags({
-      objMultiCluster: false,
       objectStorageGen2: { enabled: false },
     });
 
@@ -123,7 +121,7 @@ describe('object storage access keys smoke tests', () => {
     cy.findByLabelText('List of Object Storage Access Keys').within(() => {
       cy.findByText(accessKey.label).should('be.visible');
       cy.findByText(accessKey.access_key).should('be.visible');
-      cy.findByText('Revoke').should('be.visible').click();
+      ui.actionMenuItem.findByTitle('Revoke').should('be.visible').click();
     });
 
     // Mock next GET request to respond with no data to reflect key revocation.

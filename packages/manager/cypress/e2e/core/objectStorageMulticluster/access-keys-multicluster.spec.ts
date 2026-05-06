@@ -46,7 +46,6 @@ describe('Object Storage Multicluster access keys', () => {
       })
     );
     mockAppendFeatureFlags({
-      objMultiCluster: true,
       objectStorageGen2: { enabled: false },
     });
   });

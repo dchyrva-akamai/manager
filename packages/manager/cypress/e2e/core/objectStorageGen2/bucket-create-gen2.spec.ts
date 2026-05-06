@@ -34,7 +34,6 @@ import type { ACLType, ObjectStorageEndpoint } from '@linode/api-v4';
 describe('Object Storage Gen2 create bucket tests', () => {
   beforeEach(() => {
     mockAppendFeatureFlags({
-      objMultiCluster: true,
       objectStorageGen2: { enabled: true },
     }).as('getFeatureFlags');
     mockGetAccount(
@@ -158,7 +157,6 @@ describe('Object Storage Gen2 create bucket tests', () => {
     mockGetBuckets([]).as('getBuckets');
     mockDeleteBucket(bucketLabel, mockRegion.id).as('deleteBucket');
     mockCreateBucket({
-      cors_enabled: true,
       endpoint_type: 'E0',
       label: bucketLabel,
       region: mockRegion.id,
@@ -299,7 +297,6 @@ describe('Object Storage Gen2 create bucket tests', () => {
     mockGetBuckets([]).as('getBuckets');
     mockDeleteBucket(bucketLabel, mockRegion.id).as('deleteBucket');
     mockCreateBucket({
-      cors_enabled: true,
       endpoint_type: 'E1',
       label: bucketLabel,
       region: mockRegion.id,
@@ -425,7 +422,6 @@ describe('Object Storage Gen2 create bucket tests', () => {
     mockGetBuckets([]).as('getBuckets');
     mockDeleteBucket(bucketLabel, mockRegion.id).as('deleteBucket');
     mockCreateBucket({
-      cors_enabled: true,
       endpoint_type: 'E2',
       label: bucketLabel,
       region: mockRegion.id,
@@ -549,7 +545,6 @@ describe('Object Storage Gen2 create bucket tests', () => {
     mockGetBuckets([]).as('getBuckets');
     mockDeleteBucket(bucketLabel, mockRegion.id).as('deleteBucket');
     mockCreateBucket({
-      cors_enabled: false,
       endpoint_type: 'E3',
       label: bucketLabel,
       region: mockRegion.id,
@@ -744,7 +739,6 @@ describe('Object Storage Gen2 create bucket tests', () => {
 describe('Object Storage Gen2 create bucket modal has disabled fields for restricted user', () => {
   beforeEach(() => {
     mockAppendFeatureFlags({
-      objMultiCluster: true,
       objectStorageGen2: { enabled: true },
     }).as('getFeatureFlags');
     mockGetAccount(
