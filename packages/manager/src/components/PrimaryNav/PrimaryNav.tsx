@@ -23,11 +23,11 @@ import { useIsACLPEnabled } from 'src/features/CloudPulse/Utils/utils';
 import { useIsDatabasesEnabled } from 'src/features/Databases/utilities';
 import { useIsACLPLogsEnabled } from 'src/features/Delivery/deliveryUtils';
 import { useIsIAMEnabled } from 'src/features/IAM/hooks/useIsIAMEnabled';
+import { useIsInferencePlatformEnabled } from 'src/features/InferencePlatform/utils';
 import { useIsMarketplaceV2Enabled } from 'src/features/Marketplace/shared';
 import { useIsNetworkLoadBalancerEnabled } from 'src/features/NetworkLoadBalancers/utils';
 import { useIsPlacementGroupsEnabled } from 'src/features/PlacementGroups/utils';
 import { useIsReserveIpEnabled } from 'src/features/ReservedIps/utils';
-import { useIsServerlessInferenceEnabled } from 'src/features/ServerlessInference/utils';
 import { useFlags } from 'src/hooks/useFlags';
 
 import PrimaryLink from './PrimaryLink';
@@ -51,6 +51,7 @@ export type NavEntity =
   | 'Help & Support'
   | 'Identity & Access'
   | 'Images'
+  | 'Inference Platform'
   | 'Kubernetes'
   | 'Linodes'
   | 'Login History'
@@ -69,7 +70,6 @@ export type NavEntity =
   | 'Quick Deploy Apps'
   | 'Quotas'
   | 'Reserved IPs'
-  | 'Serverless Inference'
   | 'Service Transfers'
   | 'StackScripts'
   | 'Users & Grants'
@@ -142,9 +142,9 @@ export const PrimaryNav = (props: PrimaryNavProps) => {
 
   const { isIAMEnabled } = useIsIAMEnabled();
 
-  const { isNetworkLoadBalancerEnabled } = useIsNetworkLoadBalancerEnabled();
+  const { isInferencePlatformEnabled } = useIsInferencePlatformEnabled();
 
-  const { isServerlessInferenceEnabled } = useIsServerlessInferenceEnabled();
+  const { isNetworkLoadBalancerEnabled } = useIsNetworkLoadBalancerEnabled();
 
   const { isMarketplaceV2FeatureEnabled } = useIsMarketplaceV2Enabled();
 
@@ -264,9 +264,9 @@ export const PrimaryNav = (props: PrimaryNavProps) => {
             icon: <AI />,
             links: [
               {
-                display: 'Serverless Inference',
-                hide: !isServerlessInferenceEnabled,
-                to: '/serverless-inference',
+                display: 'Inference Platform',
+                hide: !isInferencePlatformEnabled,
+                to: '/inference-platform',
               },
             ],
             name: 'AI',
@@ -389,7 +389,7 @@ export const PrimaryNav = (props: PrimaryNavProps) => {
         isMarketplaceV2FeatureEnabled,
         isNetworkLoadBalancerEnabled,
         isReserveIpEnabled,
-        isServerlessInferenceEnabled,
+        isInferencePlatformEnabled,
         limitsEvolution,
       ]
     );

@@ -34,18 +34,18 @@ const ModelLibrary = React.lazy(() =>
   }))
 );
 
-export const ServerlessInference = () => {
+export const InferencePlatform = () => {
   // useLocation subscribes to route changes, ensuring the component re-renders
   // on navigation so useTabs can recompute the active tab index.
   useLocation();
 
   const tabs: Tab[] = [
-    { title: 'Inference Hub', to: '/serverless-inference/inference-hub' },
-    { title: 'Model Playground', to: '/serverless-inference/model-playground' },
-    { title: 'Model Library', to: '/serverless-inference/model-library' },
+    { title: 'Inference Hub', to: '/inference-platform/inference-hub' },
+    { title: 'Model Playground', to: '/inference-platform/model-playground' },
+    { title: 'Model Library', to: '/inference-platform/model-library' },
     {
       title: 'API Key Management',
-      to: '/serverless-inference/api-key-management',
+      to: '/inference-platform/api-key-management',
     },
   ];
 
@@ -53,11 +53,11 @@ export const ServerlessInference = () => {
 
   return (
     <React.Fragment>
-      <DocumentTitleSegment segment="Serverless Inference" />
+      <DocumentTitleSegment segment="Inference Platform" />
       <LandingHeader
-        breadcrumbProps={{ pathname: '/serverless-inference' }}
+        breadcrumbProps={{ pathname: '/inference-platform' }}
         removeCrumbX={1}
-        title="Serverless Inference"
+        title="Inference Platform"
       />
       <Tabs index={tabIndex} onChange={handleTabChange}>
         <TanStackTabLinkList tabs={[...tabs]} />

@@ -3,21 +3,21 @@ import { isFeatureEnabledV2 } from '@linode/utilities';
 
 import { useFlags } from 'src/hooks/useFlags';
 
-export const useIsServerlessInferenceEnabled = (): {
-  isServerlessInferenceEnabled: boolean;
+export const useIsInferencePlatformEnabled = (): {
+  isInferencePlatformEnabled: boolean;
 } => {
   const { data: account } = useAccount();
   const flags = useFlags();
 
   if (!flags) {
-    return { isServerlessInferenceEnabled: false };
+    return { isInferencePlatformEnabled: false };
   }
 
-  const isServerlessInferenceEnabled = isFeatureEnabledV2(
+  const isInferencePlatformEnabled = isFeatureEnabledV2(
     'AI',
-    Boolean(flags.serverlessInference),
+    Boolean(flags.inferencePlatform),
     account?.capabilities ?? []
   );
 
-  return { isServerlessInferenceEnabled };
+  return { isInferencePlatformEnabled };
 };

@@ -4,17 +4,17 @@ import React from 'react';
 
 import { DocumentTitleSegment } from 'src/components/DocumentTitle';
 import { SuspenseLoader } from 'src/components/SuspenseLoader';
-import { useIsServerlessInferenceEnabled } from 'src/features/ServerlessInference/utils';
+import { useIsInferencePlatformEnabled } from 'src/features/InferencePlatform/utils';
 
-export const ServerlessInferenceRoute = () => {
-  const { isServerlessInferenceEnabled } = useIsServerlessInferenceEnabled();
+export const InferencePlatformRoute = () => {
+  const { isInferencePlatformEnabled } = useIsInferencePlatformEnabled();
 
-  if (!isServerlessInferenceEnabled) {
+  if (!isInferencePlatformEnabled) {
     return <NotFound />;
   }
   return (
     <React.Suspense fallback={<SuspenseLoader />}>
-      <DocumentTitleSegment segment="Serverless Inference" />
+      <DocumentTitleSegment segment="Inference Platform" />
       <Outlet />
     </React.Suspense>
   );
