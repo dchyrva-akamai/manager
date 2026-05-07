@@ -11,14 +11,16 @@ import { getIsTableStripingEnabled } from 'src/features/Profile/Settings/TableSt
 import { ShareGroupActionMenu } from './ShareGroupActionMenu';
 import { StyledActionMenuWrapper } from './ShareGroupTable.styles';
 
+import type { Handlers } from './ShareGroupActionMenu';
 import type { Sharegroup } from '@linode/api-v4';
 
 interface Props {
+  handlers?: Handlers;
   shareGroup: Sharegroup;
 }
 
 export const ShareGroupRow = (props: Props) => {
-  const { shareGroup } = props;
+  const { shareGroup, handlers } = props;
   const { data: profile } = useProfile();
 
   const {
@@ -92,7 +94,11 @@ export const ShareGroupRow = (props: Props) => {
         </TableCell>
       </Hidden>
       <StyledActionMenuWrapper>
-        <ShareGroupActionMenu deleteButtonDisabled={!!members_count} />
+        <ShareGroupActionMenu
+          deleteButtonDisabled={!!members_count}
+          handlers={handlers}
+          shareGroup={shareGroup}
+        />
       </StyledActionMenuWrapper>
     </TableRow>
   );

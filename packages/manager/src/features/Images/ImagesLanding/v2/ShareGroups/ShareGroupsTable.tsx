@@ -31,6 +31,7 @@ import { JoinedGroupRow } from './JoinedGroupRow';
 import { ShareGroupRow } from './ShareGroupRow';
 import { StyledShareGroupsTableContainer } from './ShareGroupTable.styles';
 
+import type { Handlers } from './ShareGroupActionMenu';
 import type { ShareGroupsViewTableColConfig } from './shareGroupsTabsConfig';
 import type { APIError, Sharegroup, SharegroupToken } from '@linode/api-v4';
 import type { Order } from 'src/hooks/useOrderV2';
@@ -56,6 +57,7 @@ interface ShareGroupsTableProps {
   };
   error?: APIError[] | null;
   handleOrderChange: (newOrderBy: string, newOrder: Order) => void;
+  handlers?: Handlers;
   headerProps?: HeaderProps;
   order: Order;
   orderBy: string;
@@ -77,6 +79,7 @@ export const ShareGroupsTable = (props: ShareGroupsTableProps) => {
     shareGroups,
     query,
     handleOrderChange,
+    handlers,
     error,
     emptyMessage,
     order,
@@ -235,6 +238,7 @@ export const ShareGroupsTable = (props: ShareGroupsTableProps) => {
                 } else {
                   return (
                     <ShareGroupRow
+                      handlers={handlers}
                       key={sharegroup.id}
                       shareGroup={sharegroup}
                     />
