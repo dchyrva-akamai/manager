@@ -1,5 +1,6 @@
 import {
   createSharegroup,
+  deleteSharegroup,
   getSharegroup,
   getSharegroupImages,
   getSharegroupMembers,
@@ -27,7 +28,10 @@ import type {
   SharegroupMember,
   SharegroupToken,
 } from '@linode/api-v4';
-import type { UseQueryOptions } from '@tanstack/react-query';
+import type {
+  UseMutationOptions,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 
 export const getAllShareGroups = (
   passedParams: Params = {},
@@ -134,6 +138,33 @@ export const useShareGroupsInfiniteQuery = (
     initialPageParam: 1,
     retry: false,
   });
+
+export const useDeleteShareGroupMutation = (
+  options: UseMutationOptions<{}, APIError[], { shareGroupId: string }>,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<{}, APIError[], { shareGroupId: string }>({
+    mutationFn: ({ shareGroupId }) => deleteSharegroup(shareGroupId),
+    ...options,
+    onSuccess(response, variables, context) {
+      options.onSuccess?.(response, variables, context);
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.paginated._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.all._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.infinite._def,
+      });
+      queryClient.removeQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.sharegroup(
+          variables.shareGroupId,
+        ).queryKey,
+      });
+    },
+  });
+};
 
 export const useShareGroupsImagesQuery = (
   sharegroupId: string,

@@ -16,40 +16,44 @@ import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 import { ShareGroupsTable } from './ShareGroupsTable';
 import { SHAREGROUPS_CONFIG } from './shareGroupsTabsConfig';
 
+import type { Handlers as ShareGroupHandlers } from './ShareGroupActionMenu';
 import type { Filter } from '@linode/api-v4';
 import type { ShareGroupsType } from 'src/features/Images/utils';
 
 interface Props {
+  handlers?: ShareGroupHandlers;
   type: ShareGroupsType;
 }
 
 export const ShareGroupsView = (props: Props) => {
-  const { type } = props;
+  const { handlers, type } = props;
   const config = SHAREGROUPS_CONFIG[type];
 
   const isJoinedGroups = type === 'joined-groups';
 
+  const shareGroupsTypeRoute = '/images/share-groups/$shareGroupsType';
   const navigate = useNavigate();
-  const search = useSearch({ from: '/images/share-groups' });
+  const search = useSearch({
+    from: '/images/share-groups/$shareGroupsType',
+    shouldThrow: false,
+  });
+  const query = search?.query;
 
   const { data: profile } = useProfile();
   const isRestrictedUser = profile?.restricted;
 
   const pagination = usePaginationV2({
-    currentRoute: '/images/share-groups/$shareGroupsType',
+    currentRoute: shareGroupsTypeRoute,
     preferenceKey: config.preferenceKey,
     searchParams: (prev) => ({
       ...prev,
-      query: search.query,
+      query,
     }),
   });
 
-  const { error: searchParseError, filter } = getAPIFilterFromQuery(
-    search.query,
-    {
-      searchableFieldsWithoutOperator: ['label'],
-    }
-  );
+  const { error: searchParseError, filter } = getAPIFilterFromQuery(query, {
+    searchableFieldsWithoutOperator: ['label'],
+  });
 
   const {
     handleOrderChange: handleShareGroupsOrderChange,
@@ -61,7 +65,7 @@ export const ShareGroupsView = (props: Props) => {
         order: config.orderDefault,
         orderBy: config.orderByDefault,
       },
-      from: '/images/share-groups/$shareGroupsType',
+      from: shareGroupsTypeRoute,
     },
     preferenceKey: config.preferenceKey,
   });
@@ -109,7 +113,7 @@ export const ShareGroupsView = (props: Props) => {
         page: undefined,
         query: query || undefined,
       }),
-      to: '/images/share-groups/$shareGroupsType',
+      to: shareGroupsTypeRoute,
       params: { shareGroupsType: type },
     });
   };
@@ -118,7 +122,7 @@ export const ShareGroupsView = (props: Props) => {
     return <CircleProgress />;
   }
 
-  if (!search.query && error) {
+  if (!query && error) {
     return (
       <>
         <DocumentTitleSegment segment="Share groups" />
@@ -143,7 +147,6 @@ export const ShareGroupsView = (props: Props) => {
           buttonText: config.buttonProps.buttonText,
           onButtonClick: () =>
             navigate({
-              /* TODO: Implement OnButtonClick logic with follow-up ticket UIE-9410 */
               search: () => ({}),
               to: config.buttonProps?.navigateTo ?? '/',
             }),
@@ -174,13 +177,14 @@ export const ShareGroupsView = (props: Props) => {
         onSearch={onSearch}
         pendoId={config.searchFieldPendoId}
         placeholder="Search share groups"
-        value={search.query ?? ''}
+        value={query ?? ''}
       />
       <ShareGroupsTable
         columns={config.columns}
         emptyMessage={config.emptyMessage}
         error={error}
         handleOrderChange={handleShareGroupsOrderChange}
+        handlers={handlers}
         headerProps={tableHeaderProps}
         order={shareGroupsOrder}
         orderBy={shareGroupsOrderBy}
@@ -193,7 +197,7 @@ export const ShareGroupsView = (props: Props) => {
           onPageChange: handlePageChange,
           onPageSizeChange: handlePageSizeChange,
         }}
-        query={search.query}
+        query={query}
         shareGroups={
           isJoinedGroups
             ? (shareGroupTokens?.data ?? [])

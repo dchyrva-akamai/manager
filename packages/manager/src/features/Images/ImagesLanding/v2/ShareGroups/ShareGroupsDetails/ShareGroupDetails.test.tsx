@@ -58,7 +58,10 @@ vi.mock('@tanstack/react-router', async () => {
 });
 
 vi.mock('@akamai/cds-components/react', () => ({
-  Button: ({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+  Button: ({
+    children,
+    ...props
+  }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button {...props} type="button">
       {children}
     </button>

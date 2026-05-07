@@ -10,14 +10,24 @@ import { TabPanels } from 'src/components/Tabs/TabPanels';
 import { Tabs } from 'src/components/Tabs/Tabs';
 import { getSubTabIndex } from 'src/features/Images/utils';
 
+import { DeleteShareGroupDialog } from './DeleteShareGroupDialog';
 import { shareGroupsSubTabs as subTabs } from './shareGroupsTabsConfig';
 import { ShareGroupsView } from './ShareGroupsView';
+
+import type { Handlers as ShareGroupHandlers } from './ShareGroupActionMenu';
+import type { Sharegroup } from '@linode/api-v4';
+import type { ShareGroupAction } from 'src/routes/images';
 
 export const ShareGroupsTabs = () => {
   const navigate = useNavigate();
 
   const shareGroupsTypeParams = useParams({
     from: '/images/share-groups/$shareGroupsType',
+    shouldThrow: false,
+  });
+
+  const ownedGroupsActionParams = useParams({
+    from: '/images/share-groups/owned-groups/$shareGroupId/$action',
     shouldThrow: false,
   });
 
@@ -35,6 +45,37 @@ export const ShareGroupsTabs = () => {
     shareGroupsTypeParams?.shareGroupsType
   );
 
+  const handleShareGroupAction = (
+    shareGroup: Sharegroup,
+    action: ShareGroupAction
+  ) => {
+    navigate({
+      params: {
+        shareGroupId: String(shareGroup.id),
+        action,
+      },
+      search: (prev) => prev,
+      to: '/images/share-groups/owned-groups/$shareGroupId/$action',
+    });
+  };
+
+  const handleCloseDialog = () =>
+    navigate({
+      search: (prev) => prev,
+      to: '/images/share-groups/$shareGroupsType',
+      params: {
+        shareGroupsType: 'owned-groups',
+      },
+    });
+
+  const handleDelete = (shareGroup: Sharegroup) => {
+    handleShareGroupAction(shareGroup, 'delete');
+  };
+
+  const handlers: ShareGroupHandlers = {
+    onDelete: handleDelete,
+  };
+
   return (
     <Stack spacing={3}>
       <Tabs index={subTabIndex} onChange={onTabChange}>
@@ -50,7 +91,7 @@ export const ShareGroupsTabs = () => {
             {subTabs.map((tab, index) => (
               <SafeTabPanel index={index} key={`images-${tab.type}-content`}>
                 {tab.type === 'owned-groups' && (
-                  <ShareGroupsView type="owned-groups" />
+                  <ShareGroupsView handlers={handlers} type="owned-groups" />
                 )}
                 {tab.type === 'joined-groups' && (
                   <ShareGroupsView type="joined-groups" />
@@ -65,6 +106,12 @@ export const ShareGroupsTabs = () => {
           </TabPanels>
         </React.Suspense>
       </Tabs>
+      <DeleteShareGroupDialog
+        onClose={handleCloseDialog}
+        onSuccess={handleCloseDialog}
+        open={ownedGroupsActionParams?.action === 'delete'}
+        shareGroupId={ownedGroupsActionParams?.shareGroupId}
+      />
     </Stack>
   );
 };

@@ -2,14 +2,23 @@ import React from 'react';
 
 import { ActionMenu } from 'src/components/ActionMenu/ActionMenu';
 
+import type { Sharegroup } from '@linode/api-v4';
 import type { Action } from 'src/components/ActionMenu/ActionMenu';
+
+export interface Handlers {
+  onDelete?: (shareGroup: Sharegroup) => void;
+}
 
 interface Props {
   deleteButtonDisabled: boolean;
+  handlers?: Handlers;
+  shareGroup: Sharegroup;
 }
+
 export const ShareGroupActionMenu = (props: Props) => {
-  const { deleteButtonDisabled } = props;
-  /* TODO: Implement action menu logic for each corresponding action */
+  const { deleteButtonDisabled, handlers, shareGroup } = props;
+  const { onDelete } = handlers ?? {};
+
   const actions: Action[] = [
     {
       title: 'Edit Group Details',
@@ -34,7 +43,7 @@ export const ShareGroupActionMenu = (props: Props) => {
     },
     {
       title: 'Delete',
-      onClick: () => {},
+      onClick: () => onDelete?.(shareGroup),
       disabled: deleteButtonDisabled,
       hidden: false,
       tooltip: deleteButtonDisabled

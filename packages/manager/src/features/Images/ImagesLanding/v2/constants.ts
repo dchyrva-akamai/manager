@@ -15,7 +15,7 @@ export const VIEW_SHARED_IMAGE_DETAILS_DRAWER_PENDO_IDS = {
 
 export const SHARE_GROUP_DETAILS_PENDO_IDS = {
   landingHeader: 'Images Share Groups Details-Landing Header',
-  copyShareGroupuuidIcon: 'Share Groups Details-Copy UUID',
+  copyShareGroupUUIDIcon: 'Share Groups Details-Copy UUID',
   editGroupButton: 'Share Groups Details-Edit Group Button',
   editShareGroupButton: 'Share Groups Details-Edit Group Button',
   deleteShareGroupButton: 'Share Groups Details-Delete Group Button',
@@ -29,4 +29,11 @@ export const SHARE_GROUP_DETAILS_PENDO_IDS = {
   addImagesButton: 'Share Groups Details-Add Images Button',
   copyMembersuuidIcon: 'Share Groups Details-Copy Token UUID',
   revokeAccessButton: 'Share Groups Details-Revoke Access Button',
+};
+
+export const DELETE_SHARE_GROUP_PENDO_IDS = {
+  cancelButton: 'Share Groups Delete-Cancel Button',
+  deleteButton: 'Share Groups Delete-Delete Share Group Button',
+  preferencesLink: 'Share Groups Delete-Preferences Link',
+  xButton: 'Share Groups Delete-X Button',
 };

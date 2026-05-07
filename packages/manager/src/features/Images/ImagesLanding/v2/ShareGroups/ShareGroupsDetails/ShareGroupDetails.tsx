@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@linode/ui';
 import { Grid, styled } from '@mui/material';
-import { useParams } from '@tanstack/react-router';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import * as React from 'react';
 
 import { CopyTooltip } from 'src/components/CopyTooltip/CopyTooltip';
@@ -19,10 +19,13 @@ import { LandingHeader } from 'src/components/LandingHeader';
 import { getIsTableStripingEnabled } from 'src/features/Profile/Settings/TableStriping.utils';
 
 import { SHARE_GROUP_DETAILS_PENDO_IDS } from '../../constants';
+import { DeleteShareGroupDialog } from '../DeleteShareGroupDialog';
 import { GroupMembersTable } from './GroupMembersTable';
 import { SharedImagesTable } from './SharedImagesTable';
 
 export const ShareGroupDetails = () => {
+  const navigate = useNavigate();
+
   const { data: tableStripingPreference } = usePreferences(
     (preferences) => preferences?.isTableStripingEnabled
   );
@@ -43,6 +46,7 @@ export const ShareGroupDetails = () => {
   const { label, description, uuid } = shareGroup ?? {};
 
   const [membersCount, setMembersCount] = React.useState(0);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
   if (isLoading) {
     return <CircleProgress />;
@@ -87,11 +91,23 @@ export const ShareGroupDetails = () => {
               >
                 <Typography variant="h3">{label}</Typography>
                 <Stack alignItems="center" direction="row" spacing={2}>
-                  <Button data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.editShareGroupButton} variant="link">Edit</Button>
+                  <Button
+                    data-pendo-id={
+                      SHARE_GROUP_DETAILS_PENDO_IDS.editShareGroupButton
+                    }
+                    variant="link"
+                  >
+                    Edit
+                  </Button>
                   <Stack alignItems="center" direction="row">
                     <Button
-                      data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.deleteShareGroupButton}
+                      data-pendo-id={
+                        SHARE_GROUP_DETAILS_PENDO_IDS.deleteShareGroupButton
+                      }
                       disabled={membersCount > 0}
+                      onClick={() => {
+                        setIsDeleteDialogOpen(!isDeleteDialogOpen);
+                      }}
                       style={{ marginRight: '4px' }}
                       variant="link"
                     >
@@ -111,7 +127,12 @@ export const ShareGroupDetails = () => {
                 <Typography>Share group UUID</Typography>
                 <Stack alignContent="baseline" direction="row" spacing={1}>
                   <Typography variant="subtitle1">{uuid}</Typography>
-                  <StyledCopyIcon data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.copyShareGroupuuidIcon } text={uuid ?? ''} />
+                  <StyledCopyIcon
+                    data-pendo-id={
+                      SHARE_GROUP_DETAILS_PENDO_IDS.copyShareGroupUUIDIcon
+                    }
+                    text={uuid ?? ''}
+                  />
                 </Stack>
               </Stack>
               {description && (
@@ -133,6 +154,22 @@ export const ShareGroupDetails = () => {
           </>
         )}
       </Grid>
+      <DeleteShareGroupDialog
+        onClose={() => {
+          setIsDeleteDialogOpen(!isDeleteDialogOpen);
+        }}
+        onSuccess={() =>
+          navigate({
+            search: (prev) => prev,
+            to: '/images/share-groups/$shareGroupsType',
+            params: {
+              shareGroupsType: 'owned-groups',
+            },
+          })
+        }
+        open={isDeleteDialogOpen}
+        shareGroupId={shareGroupId}
+      />
     </>
   );
 };
