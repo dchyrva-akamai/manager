@@ -23,6 +23,7 @@ import { eventsRouteTree } from './events';
 import { firewallsRouteTree } from './firewalls';
 import { iamRouteTree } from './IAM';
 import { imagesRouteTree } from './images';
+import { inferencePlatformRouteTree } from './inferencePlatform';
 import { kubernetesRouteTree } from './kubernetes';
 import { linodesRouteTree } from './linodes';
 import { loginHistoryRouteTree } from './loginHistory/';
@@ -40,7 +41,6 @@ import { quotasRouteTree } from './quotas';
 import { reservedIpsRouteTree } from './reservedIps';
 import { rootRoute } from './root';
 import { searchRouteTree } from './search';
-import { serverlessInferenceRouteTree } from './serverlessInference';
 import { serviceTransfersRouteTree } from './serviceTransfers';
 import { stackScriptsRouteTree } from './stackscripts';
 import { supportRouteTree } from './support';
@@ -77,6 +77,7 @@ export const routeTree = rootRoute.addChildren([
   iamRouteTree,
   firewallsRouteTree,
   imagesRouteTree,
+  inferencePlatformRouteTree,
   kubernetesRouteTree,
   linodesRouteTree,
   loginHistoryRouteTree,
@@ -92,7 +93,6 @@ export const routeTree = rootRoute.addChildren([
   quotasRouteTree,
   reservedIpsRouteTree,
   searchRouteTree,
-  serverlessInferenceRouteTree,
   serviceTransfersRouteTree,
   settingsRouteTree,
   stackScriptsRouteTree,

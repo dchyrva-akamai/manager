@@ -22,6 +22,7 @@ export default defineConfig({
     alias: {
       src: `${DIRNAME}/src`,
     },
+    conditions: ['browser'],
   },
   server: {
     allowedHosts: ['cloud.lindev.local'],

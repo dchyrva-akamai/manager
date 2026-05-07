@@ -272,6 +272,7 @@ export interface Flags {
   iam: BaseFeatureFlag;
   iamDelegation: BaseFeatureFlag;
   iamNewBadge: boolean;
+  inferencePlatform: boolean;
   ipv6Sharing: boolean;
   kubernetesBlackwellPlans: boolean;
   limitsEvolution: LimitsEvolution;
@@ -304,7 +305,6 @@ export interface Flags {
   resourceLock: ResourceLockFlag;
   secureVmCopy: SecureVMCopy;
   selfServeBetas: boolean;
-  serverlessInference: boolean;
   soldOutChips: boolean;
   supportTicketSeverity: boolean;
   taxBanner: TaxBanner;
