@@ -14,6 +14,7 @@ import {
   useIsIAMDelegationEnabled,
   useIsIAMEnabled,
 } from './hooks/useIsIAMEnabled';
+import { useIsIAMFederationEnabled } from './hooks/useIsIAMFederationEnabled';
 import { IAM_DOCS_LINK, ROLES_LEARN_MORE_LINK } from './Shared/constants';
 import { SuspenseLoader } from './Shared/SuspenseLoader/SuspenseLoader';
 
@@ -25,6 +26,7 @@ export const IdentityAccessLanding = React.memo(() => {
   const navigate = useNavigate();
   const { isParentUserType } = useDelegationRole();
   const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
+  const { isIAMFederationEnabled } = useIsIAMFederationEnabled();
 
   const { tabs, tabIndex, handleTabChange } = useTabs([
     {
@@ -39,6 +41,11 @@ export const IdentityAccessLanding = React.memo(() => {
       hide: !isIAMDelegationEnabled || !isParentUserType,
       to: `/iam/delegations`,
       title: 'Account Delegations',
+    },
+    {
+      hide: !isIAMFederationEnabled,
+      to: `/iam/login-settings`,
+      title: 'Login Settings',
     },
   ]);
 

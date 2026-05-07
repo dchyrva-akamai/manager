@@ -271,6 +271,7 @@ export interface Flags {
   hostnameEndpoints: boolean;
   iam: BaseFeatureFlag;
   iamDelegation: BaseFeatureFlag;
+  iamFederation: BaseFeatureFlag;
   iamNewBadge: boolean;
   inferencePlatform: boolean;
   ipv6Sharing: boolean;
