@@ -86,7 +86,7 @@ export const shareGroupsQueries = createQueryKeys('sharegroups', {
   tokens: {
     contextQueries: {
       paginated: (params: Params, filters: Filter) => ({
-        queryFn: () => getUserSharegroupTokens(params, filters),
+        queryFn: async () => getUserSharegroupTokens(params, filters),
         queryKey: [params, filters],
       }),
     },

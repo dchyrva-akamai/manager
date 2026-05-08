@@ -2,8 +2,11 @@ import React from 'react';
 
 import {
   SHARE_GROUPS_JOINED_TAB_PENDO_IDS,
+  SHARE_GROUPS_MEMBERSHIP_REQUESTS_TAB_PENDO_IDS,
   SHARE_GROUPS_OWNED_TAB_PENDO_IDS,
 } from 'src/features/Images/constants';
+
+import { TABLE_CELL_BASE_STYLES } from './ShareGroupTable.styles';
 
 import type { APIError } from '@linode/api-v4';
 import type { HiddenProps } from '@linode/ui';
@@ -120,11 +123,34 @@ const JOINED_GROUPS_TABLE_COLUMNS: ShareGroupsViewTableColConfig[] = [
 ];
 
 const MEMBERSHIP_REQUESTS_TABLE_COLUMNS: ShareGroupsViewTableColConfig[] = [
-  { name: 'Share Group UUID', sortableProps: { label: 'label' } },
-  { name: 'Token UUID', sortableProps: { label: 'token_uuid' } },
-  { name: 'Status', sortableProps: { label: 'status' } },
-  { name: 'Created', sortableProps: { label: 'created' }, hidden: 'mdDown' },
-  { name: 'Expiry', sortableProps: { label: 'expiry' }, hidden: 'mdDown' },
+  {
+    name: 'Share Group UUID',
+    sortableProps: { label: 'label' },
+    hidden: 'smDown',
+    style: { ...TABLE_CELL_BASE_STYLES, whiteSpace: 'nowrap', maxWidth: '35%' },
+  },
+  {
+    name: 'Token UUID',
+    sortableProps: { label: 'token_uuid' },
+    style: { ...TABLE_CELL_BASE_STYLES, whiteSpace: 'nowrap', maxWidth: '35%' },
+  },
+  {
+    name: 'Status',
+    sortableProps: { label: 'status' },
+    style: { ...TABLE_CELL_BASE_STYLES, whiteSpace: 'nowrap', maxWidth: '15%' },
+  },
+  {
+    name: 'Created',
+    sortableProps: { label: 'created' },
+    hidden: 'lgDown',
+    style: { ...TABLE_CELL_BASE_STYLES, maxWidth: '15%' },
+  },
+  {
+    name: 'Expiry',
+    sortableProps: { label: 'expiry' },
+    hidden: 'mdDown',
+    style: { ...TABLE_CELL_BASE_STYLES, maxWidth: '15%' },
+  },
 ];
 
 export const SHAREGROUPS_CONFIG: Record<
@@ -143,7 +169,7 @@ export const SHAREGROUPS_CONFIG: Record<
       </>
     ),
     docsLink: {
-      href: `https://techdocs.akamai.com/cloud-computing/docs/image-sharing`,
+      href: 'https://techdocs.akamai.com/cloud-computing/docs/image-sharing',
       label: 'Image sharing',
       pendoId: SHARE_GROUPS_OWNED_TAB_PENDO_IDS.imageSharingDocsLink,
     },
@@ -197,6 +223,20 @@ export const SHAREGROUPS_CONFIG: Record<
       </>
     ),
     columns: MEMBERSHIP_REQUESTS_TABLE_COLUMNS,
+    docsLink: {
+      href: 'https://techdocs.akamai.com/cloud-computing/docs/image-sharing',
+      label: 'Image sharing',
+      pendoId:
+        SHARE_GROUPS_MEMBERSHIP_REQUESTS_TAB_PENDO_IDS.imageSharingDocsLink,
+    },
+    buttonProps: {
+      buttonText: 'Request membership',
+      navigateTo: '/images/share-groups/membership-requests',
+      disabledToolTipText:
+        'You do not have permissions to request share group memberships',
+      pendoId:
+        SHARE_GROUPS_MEMBERSHIP_REQUESTS_TAB_PENDO_IDS.requestMembershipButton,
+    },
     emptyMessage: {
       main: 'No membership requests to display',
       instruction:

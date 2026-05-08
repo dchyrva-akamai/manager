@@ -1,6 +1,8 @@
 import { TableCell } from '@akamai/cds-components/react/Table';
 import { styled } from '@mui/material/styles';
 
+import { CopyTooltip } from 'src/components/CopyTooltip/CopyTooltip';
+
 export const StyledActionMenuWrapper = styled(TableCell, {
   label: 'StyledActionMenuWrapper',
 })(({ theme }) => ({
@@ -19,7 +21,7 @@ export const StyledActionMenuWrapper = styled(TableCell, {
   },
 }));
 
-const TABLE_CELL_BASE_STYLES: React.CSSProperties = {
+export const TABLE_CELL_BASE_STYLES: React.CSSProperties = {
   boxSizing: 'border-box',
 };
 
@@ -89,4 +91,13 @@ export const StyledShareGroupsTableContainer = styled('div', {
     maxWidth: '10%',
     ...TABLE_CELL_BASE_STYLES,
   },
+}));
+
+export const StyledCopyIcon = styled(CopyTooltip)(({ theme }) => ({
+  '& svg': {
+    height: 24,
+    top: 1,
+    width: 24,
+  },
+  marginLeft: theme.spacingFunction(4),
 }));

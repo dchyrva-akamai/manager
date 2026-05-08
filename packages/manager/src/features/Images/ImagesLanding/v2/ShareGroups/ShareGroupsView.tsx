@@ -5,6 +5,7 @@ import {
 } from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
 import { CircleProgress, ErrorState } from '@linode/ui';
+import { partition } from '@linode/utilities';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import React from 'react';
 
@@ -17,9 +18,8 @@ import { ShareGroupsTable } from './ShareGroupsTable';
 import { SHAREGROUPS_CONFIG } from './shareGroupsTabsConfig';
 
 import type { Handlers as ShareGroupHandlers } from './ShareGroupActionMenu';
-import type { Filter } from '@linode/api-v4';
+import type { Filter, SharegroupToken } from '@linode/api-v4';
 import type { ShareGroupsType } from 'src/features/Images/utils';
-
 interface Props {
   handlers?: ShareGroupHandlers;
   type: ShareGroupsType;
@@ -30,6 +30,7 @@ export const ShareGroupsView = (props: Props) => {
   const config = SHAREGROUPS_CONFIG[type];
 
   const isJoinedGroups = type === 'joined-groups';
+  const isMembershipRequests = type === 'membership-requests';
 
   const shareGroupsTypeRoute = '/images/share-groups/$shareGroupsType';
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ export const ShareGroupsView = (props: Props) => {
     }
   );
 
-  // Joined Groups
+  // Joined/Requested Groups
   const {
     data: shareGroupTokens,
     error: shareGroupTokensError,
@@ -98,13 +99,25 @@ export const ShareGroupsView = (props: Props) => {
   } = useShareGroupTokensQuery(
     { page: pagination.page, page_size: pagination.pageSize },
     { ...shareGroupsFilter },
-    isJoinedGroups
+    isJoinedGroups || isMembershipRequests
   );
 
-  const isFetching = isJoinedGroups
-    ? shareGroupTokensIsFetching
-    : shareGroupsIsFetching;
-  const error = isJoinedGroups ? shareGroupTokensError : shareGroupsError;
+  const isFetching =
+    isJoinedGroups || isMembershipRequests
+      ? shareGroupTokensIsFetching
+      : shareGroupsIsFetching;
+
+  const error =
+    isJoinedGroups || isMembershipRequests
+      ? shareGroupTokensError
+      : shareGroupsError;
+
+  const [joinedGroups, requestedGroups] = React.useMemo(() => {
+    return partition(
+      shareGroupTokens?.data ?? [],
+      (token: SharegroupToken) => token.sharegroup_uuid !== null
+    );
+  }, [shareGroupTokens]);
 
   const onSearch = (query: string) => {
     navigate({
@@ -118,7 +131,10 @@ export const ShareGroupsView = (props: Props) => {
     });
   };
 
-  if ((isJoinedGroups && shareGroupTokensLoading) || shareGroupsLoading) {
+  if (
+    ((isJoinedGroups || isMembershipRequests) && shareGroupTokensLoading) ||
+    shareGroupsLoading
+  ) {
     return <CircleProgress />;
   }
 
@@ -191,17 +207,20 @@ export const ShareGroupsView = (props: Props) => {
         pagination={{
           page: pagination.page,
           pageSize: pagination.pageSize,
-          count: isJoinedGroups
-            ? (shareGroupTokens?.results ?? 0)
-            : (shareGroups?.results ?? 0),
+          count:
+            isJoinedGroups || isMembershipRequests
+              ? (shareGroupTokens?.results ?? 0)
+              : (shareGroups?.results ?? 0),
           onPageChange: handlePageChange,
           onPageSizeChange: handlePageSizeChange,
         }}
         query={query}
         shareGroups={
           isJoinedGroups
-            ? (shareGroupTokens?.data ?? [])
-            : (shareGroups?.data ?? [])
+            ? joinedGroups
+            : isMembershipRequests
+              ? requestedGroups
+              : (shareGroups?.data ?? [])
         }
       />
     </>

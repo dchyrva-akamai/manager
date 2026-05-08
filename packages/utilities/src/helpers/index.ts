@@ -35,6 +35,7 @@ export * from './metadata';
 export * from './minute-conversion';
 export * from './mockLocalStorage';
 export * from './nullOrUndefined';
+export * from './partition';
 export * from './pathOr';
 export * from './planNotices';
 export * from './pluralize';

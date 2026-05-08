@@ -21,6 +21,7 @@ import {
   linodeStatsFactory,
   linodeTransferFactory,
   linodeTypeFactory,
+  newlyGeneratedSharegroupTokenFactory,
   nodeBalancerConfigFactory,
   nodeBalancerConfigNodeFactory,
   nodeBalancerFactory,
@@ -950,14 +951,19 @@ export const handlers = [
       status: 'revoked',
     });
 
-    const joinedGroups = [
+    const requestedGroup = newlyGeneratedSharegroupTokenFactory.build({
+      label: 'Requested',
+    });
+
+    const joinedOrRequestedGroups = [
       ...activeGroups,
       pendingGroup,
       expiredGroup,
+      requestedGroup,
       revokedGroup,
     ];
 
-    return HttpResponse.json(makeResourcePage(joinedGroups));
+    return HttpResponse.json(makeResourcePage(joinedOrRequestedGroups));
   }),
   http.post<any, UpdateImageRegionsPayload>(
     '*/v4/images/:id/regions',

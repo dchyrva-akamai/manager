@@ -55,3 +55,13 @@ export const SHARE_GROUPS_JOINED_TAB_PENDO_IDS = {
   leaveGroupButton: 'Images Groups Joined-Leave group',
   searchShareGroupsBar: 'Images Groups Joined-Search',
 };
+
+export const SHARE_GROUPS_MEMBERSHIP_REQUESTS_TAB_PENDO_IDS = {
+  imageSharingDocsLink: 'Images Groups Membership Requests-Image sharing docs',
+  requestMembershipButton:
+    'Images Groups Membership Requests-Request membership',
+  searchShareGroupsBar: 'Images Groups Membership Requests-Search',
+  shareGroupUuid: 'Images Groups Membership Requests-Share Group UUID copy',
+  tokenUuid: 'Images Groups Membership Requests-Token UUID copy',
+  cancelRequestButton: 'Images Groups Membership Requests-Cancel',
+};
