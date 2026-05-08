@@ -27,7 +27,7 @@ import {
   StyledImageTableHeader,
   StyledImageTableSubheader,
 } from '../ImageLibrary/ImagesTable.styles';
-import { JoinedGroupRow } from './JoinedGroupRow';
+import { JoinedOrRequestedGroupRow } from './JoinedOrRequestedGroupRow';
 import { ShareGroupRow } from './ShareGroupRow';
 import { StyledShareGroupsTableContainer } from './ShareGroupTable.styles';
 
@@ -226,11 +226,12 @@ export const ShareGroupsTable = (props: ShareGroupsTableProps) => {
               )}
 
               {shareGroups.map((sharegroup) => {
-                const isJoinedGroup = 'valid_for_sharegroup_uuid' in sharegroup; // If the sharegroup has the property 'valid_for_sharegroup_uuid', then it's a SharegroupToken which indicates a joined group. Otherwise, it's a Sharegroup which represents an owned group.
+                const isJoinedOrRequestedGroup =
+                  'sharegroup_uuid' in sharegroup; // If the sharegroup has the property 'sharegroup_uuid', then it's a SharegroupToken which indicates a joined or requested group. Otherwise, it's a sharegroup which represents an owned group.
 
-                if (isJoinedGroup) {
+                if (isJoinedOrRequestedGroup) {
                   return (
-                    <JoinedGroupRow
+                    <JoinedOrRequestedGroupRow
                       joinedGroup={sharegroup}
                       key={sharegroup.token_uuid}
                     />

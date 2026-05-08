@@ -5,7 +5,7 @@ import React from 'react';
 
 import { wrapWithTableBody } from 'src/utilities/testHelpers';
 
-import { JoinedGroupRow } from './JoinedGroupRow';
+import { JoinedOrRequestedGroupRow } from './JoinedOrRequestedGroupRow';
 
 import type { SharegroupToken } from '@linode/api-v4';
 
@@ -42,10 +42,12 @@ vi.mock('@akamai/compute-ui-core/datetime', () => ({
 
 const renderRow = (joinedGroup?: SharegroupToken) => {
   const group = joinedGroup ?? sharegroupTokenFactory.build();
-  return render(wrapWithTableBody(<JoinedGroupRow joinedGroup={group} />));
+  return render(
+    wrapWithTableBody(<JoinedOrRequestedGroupRow joinedGroup={group} />)
+  );
 };
 
-describe('JoinedGroupRow', () => {
+describe('Joined Group row', () => {
   describe('sharegroup label', () => {
     it('renders the label as a link button when present', () => {
       const joinedGroup = sharegroupTokenFactory.build({
@@ -169,6 +171,56 @@ describe('JoinedGroupRow', () => {
       expect(
         container.querySelector('[data-qa-joinedgroup-row="test-token-uuid"]')
       ).toBeInTheDocument();
+    });
+  });
+});
+
+describe('Membership Request row', () => {
+  const requestedGroup = sharegroupTokenFactory.build({
+    created: '2026-01-01T00:00:00',
+    expiry: '2026-01-15T00:00:00',
+    sharegroup_uuid: null as unknown as string,
+    status: 'pending',
+    token_uuid: 'test-token-uuid',
+    valid_for_sharegroup_uuid: 'abcdefg-12345',
+  });
+
+  describe('Share Group UUID', () => {
+    it('renders the Share Group UUID with a copy icon', () => {
+      const { container, getByText } = renderRow(requestedGroup);
+      expect(getByText('abcdefg-12345')).toBeVisible();
+
+      const copyIcon = container.querySelector(
+        '[data-pendo-id="Images Groups Membership Requests-Share Group UUID copy"]'
+      );
+      expect(copyIcon).toBeInTheDocument();
+    });
+  });
+
+  describe('Token UUID', () => {
+    it('renders the Token UUID with a copy icon', () => {
+      const { container, getByText } = renderRow(requestedGroup);
+      expect(getByText('test-token-uuid')).toBeVisible();
+
+      const copyIcon = container.querySelector(
+        '[data-pendo-id="Images Groups Membership Requests-Token UUID copy"]'
+      );
+      expect(copyIcon).toBeInTheDocument();
+    });
+  });
+
+  describe('Status', () => {
+    it('renders the status as "Pending"', () => {
+      const { getByText } = renderRow(requestedGroup);
+      expect(getByText('Pending')).toBeVisible();
+    });
+  });
+
+  describe('Cancel Request action', () => {
+    it('renders a "Cancel Request" button', () => {
+      const { getByRole } = renderRow(requestedGroup);
+
+      expect(getByRole('button', { name: 'Cancel' })).toBeVisible();
     });
   });
 });

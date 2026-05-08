@@ -1,4 +1,4 @@
-import { BetaChip, Notice, Stack } from '@linode/ui';
+import { BetaChip, Stack } from '@linode/ui';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import React from 'react';
 
@@ -97,9 +97,7 @@ export const ShareGroupsTabs = () => {
                   <ShareGroupsView type="joined-groups" />
                 )}
                 {tab.type === 'membership-requests' && (
-                  <Notice variant="info">
-                    Membership Requests is coming soon...
-                  </Notice>
+                  <ShareGroupsView type="membership-requests" />
                 )}
               </SafeTabPanel>
             ))}
