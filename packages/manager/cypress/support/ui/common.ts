@@ -1,7 +1,15 @@
 import { apiMatcher } from 'support/util/intercepts';
 
-import type { Method } from 'axios';
-import type { RouteMatcher } from 'support/cypress-exports';
+import type { StringMatcher } from 'support/cypress-exports';
+
+type HttpMethod =
+  | 'DELETE'
+  | 'GET'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'PATCH'
+  | 'POST'
+  | 'PUT';
 
 export const waitForAppLoad = (path = '/', withLogin = true) => {
   cy.intercept('GET', apiMatcher('account')).as('getAccount');
@@ -30,8 +38,8 @@ export const waitForAppLoad = (path = '/', withLogin = true) => {
 
 // use this if the call happens multiple times but you only want to intercept it once
 export const interceptOnce = (
-  method: Method,
-  url: RouteMatcher,
+  method: HttpMethod,
+  url: StringMatcher,
   response: {}
 ) => {
   let count = 0;

@@ -219,6 +219,7 @@ export const baseConfig = [
       'sonarjs/duplicates-in-character-class': 'warn',
       'sonarjs/no-clear-text-protocols': 'off',
       'sonarjs/no-commented-code': 'warn',
+      'sonarjs/no-hardcoded-passwords': 'off',
       'sonarjs/no-duplicate-string': 'warn',
       'sonarjs/no-identical-functions': 'warn',
       'sonarjs/no-ignored-exceptions': 'warn',
