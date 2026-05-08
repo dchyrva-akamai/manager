@@ -39,7 +39,7 @@
   "devDependencies": {
     "@linode/tsconfig": "workspace:*",
     "@testing-library/dom": "^10.1.0",
-    "@testing-library/jest-dom": "~6.4.2",
+    "@testing-library/jest-dom": "~6.9.1",
     "@testing-library/react": "~16.0.0",
     "@types/luxon": "3.4.2",
     "@types/react": "^19.1.6",
