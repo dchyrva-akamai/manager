@@ -1,9 +1,9 @@
 import { createLazyRoute } from '@tanstack/react-router';
 
-import { IdpConfigurations } from './IdpConfigurations';
+import { IdpConfigurationsLanding } from './IdpConfigurationsLanding';
 
 export const idpConfigurationsLazyRoute = createLazyRoute(
   '/iam/login-settings/sso/idp-configurations'
 )({
-  component: IdpConfigurations,
+  component: IdpConfigurationsLanding,
 });
