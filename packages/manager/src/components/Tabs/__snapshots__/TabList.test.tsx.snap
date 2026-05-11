@@ -5,7 +5,7 @@ exports[`TabList component > renders TabList correctly 1`] = `
   <div
     data-orientation="horizontal"
     data-reach-tabs=""
-    id="_r_0_"
+    id="_r_1_"
   >
     <div
       aria-orientation="horizontal"
