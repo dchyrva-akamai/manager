@@ -1,5 +1,4 @@
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { accountEntityFactory } from 'src/factories/accountEntities';
@@ -85,7 +84,7 @@ describe('Entities', () => {
       data: mockEntities,
     });
 
-    renderWithTheme(
+    const { container } = renderWithTheme(
       <EntitiesSelect
         access="entity_access"
         mode="assign-role"
@@ -96,12 +95,9 @@ describe('Entities', () => {
     );
 
     expect(screen.getByText('Entities')).toBeVisible();
-
-    // Verify comboboxes exist
-    const autocomplete = screen.getAllByRole('combobox');
-    expect(autocomplete).toHaveLength(1);
-    expect(autocomplete[0]).toBeVisible();
-    expect(autocomplete[0]).toHaveAttribute('placeholder', 'None');
+    // SelectionPanel renders a cds-search-field instead of a combobox
+    expect(container.querySelector('cds-search-field')).toBeInTheDocument();
+    // No image entities in mockEntities, so the warning link is shown
     const link = screen.getByRole('link', { name: /Create an Image Entity/i });
     expect(link).toBeVisible();
   });
@@ -111,7 +107,7 @@ describe('Entities', () => {
       data: mockEntities,
     });
 
-    renderWithTheme(
+    const { container } = renderWithTheme(
       <EntitiesSelect
         access="entity_access"
         mode="assign-role"
@@ -122,17 +118,12 @@ describe('Entities', () => {
     );
 
     expect(screen.getByText('Entities')).toBeVisible();
-
-    // Verify comboboxes exist
-    const autocomplete = screen.getAllByRole('combobox');
-    expect(autocomplete).toHaveLength(1);
-    expect(autocomplete[0]).toBeVisible();
-    expect(autocomplete[0]).toHaveAttribute('placeholder', 'None');
+    expect(container.querySelector('cds-search-field')).toBeInTheDocument();
     const link = screen.getByRole('link', { name: /Create a VPC Entity/i });
     expect(link).toBeVisible();
   });
 
-  it('renders correct options in Autocomplete dropdown when it is an entity access', async () => {
+  it('renders entity options in the table when it is an entity access', () => {
     queryMocks.useAllAccountEntities.mockReturnValue({
       data: mockEntities,
     });
@@ -148,13 +139,11 @@ describe('Entities', () => {
     );
 
     expect(screen.getByText('Entities')).toBeVisible();
-
-    const autocomplete = screen.getAllByRole('combobox')[0];
-    await userEvent.click(autocomplete);
+    // firewall-1 appears directly as a table row (no click needed)
     expect(screen.getByText('firewall-1')).toBeVisible();
   });
 
-  it('updates selected options when Autocomplete value changes when it is an entity access', async () => {
+  it('renders entity options in the table when it is an entity access', () => {
     queryMocks.useAllAccountEntities.mockReturnValue({
       data: mockEntities,
     });
@@ -169,13 +158,12 @@ describe('Entities', () => {
       />
     );
 
-    const autocomplete = screen.getAllByRole('combobox')[0];
-    await userEvent.click(autocomplete);
+    // linode appears directly as a table row
     expect(screen.getByText('linode')).toBeVisible();
   });
 
-  it('renders Autocomplete as readonly when mode is "change-role"', () => {
-    renderWithTheme(
+  it('disables interactions when mode is "change-role"', () => {
+    const { container } = renderWithTheme(
       <EntitiesSelect
         access="entity_access"
         mode="change-role"
@@ -185,9 +173,11 @@ describe('Entities', () => {
       />
     );
 
-    const autocomplete = screen.getByRole('combobox');
-    expect(autocomplete).toBeVisible();
-    expect(autocomplete).toHaveAttribute('aria-expanded', 'false');
+    // In readonly mode the search field is disabled
+    const searchField = container.querySelector<
+      HTMLElement & { disabled?: boolean }
+    >('cds-search-field');
+    expect(searchField?.disabled).toBe(true);
   });
 
   it('displays errorText when provided', () => {

@@ -159,7 +159,19 @@ export const ChangeRoleDrawer = ({ mode, onClose, open, role }: Props) => {
   };
 
   return (
-    <Drawer onClose={handleClose} open={open} title="Change Role">
+    <Drawer
+      onClose={handleClose}
+      open={open}
+      slotProps={{
+        paper: {
+          sx: {
+            maxWidth: { xs: '100% !important', sm: '600px !important' },
+          },
+        },
+      }}
+      title="Change Role"
+      wide
+    >
       {errors.root?.message && (
         <NotificationBanner text={errors.root?.message} type="error" />
       )}
