@@ -12,7 +12,6 @@ import {
   useReservedIPsQuery,
 } from '@linode/queries';
 
-import { useIsACLPLogsEnabled } from 'src/features/Delivery/deliveryUtils';
 import { useIsReserveIpEnabled } from 'src/features/ReservedIps/utils';
 import { useAllKubernetesClustersQuery } from 'src/queries/kubernetes';
 import { useObjectStorageBuckets } from 'src/queries/object-storage/queries';
@@ -48,7 +47,6 @@ interface Props {
  */
 export const useClientSideSearch = ({ enabled, query }: Props) => {
   const { isPrivateImageSharingEnabled } = useIsPrivateImageSharingEnabled();
-  const { isACLPLogsEnabled } = useIsACLPLogsEnabled();
   const { isReserveIpEnabled } = useIsReserveIpEnabled();
 
   const {
@@ -102,12 +100,12 @@ export const useClientSideSearch = ({ enabled, query }: Props) => {
     data: streams,
     error: streamsError,
     isLoading: streamsLoading,
-  } = useAllStreamsQuery({}, {}, enabled && isACLPLogsEnabled);
+  } = useAllStreamsQuery({}, {}, enabled);
   const {
     data: destinations,
     error: destinationsError,
     isLoading: destinationsLoading,
-  } = useAllDestinationsQuery({}, {}, enabled && isACLPLogsEnabled);
+  } = useAllDestinationsQuery({}, {}, enabled);
 
   const {
     data: reservedIps,
