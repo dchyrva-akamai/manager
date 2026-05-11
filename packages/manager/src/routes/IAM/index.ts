@@ -417,8 +417,8 @@ const iamLoginSettingsCatchAllRoute = createRoute({
 // ─── SSO sub-page (shell with 3 tabs) ─────────────────────────────────────────
 
 const iamSsoRoute = createRoute({
-  getParentRoute: () => iamLoginSettingsRoute,
-  path: 'sso',
+  getParentRoute: () => iamRoute,
+  path: '/login-settings/sso',
 }).lazy(() =>
   import('src/features/IAM/LoginSettings/SSO/ssoLandingLazyRoute').then(
     (m) => m.ssoLandingLazyRoute
@@ -528,20 +528,18 @@ export const iamRouteTree = iamRoute.addChildren([
     ]),
     iamUsersRoute,
     iamDelegationsRoute,
-    iamLoginSettingsRoute.addChildren([
-      iamLoginSettingsCatchAllRoute,
-      iamSsoRoute.addChildren([
-        iamSsoIndexRoute,
-        iamSsoIdpConfigurationsRoute,
-        iamSsoEnforcementSettingsRoute,
-        iamSsoCatchAllRoute,
-      ]),
-    ]),
+    iamLoginSettingsRoute.addChildren([iamLoginSettingsCatchAllRoute]),
     iamUsersCatchAllRoute,
     iamRolesCatchAllRoute,
     iamDelegationsCatchAllRoute,
   ]),
   iamCatchAllRoute,
+  iamSsoRoute.addChildren([
+    iamSsoIndexRoute,
+    iamSsoIdpConfigurationsRoute,
+    iamSsoEnforcementSettingsRoute,
+    iamSsoCatchAllRoute,
+  ]),
   iamUserNameRoute.addChildren([
     iamUserNameIndexRoute,
     iamUserNameDetailsRoute,
