@@ -1,8 +1,9 @@
+import { Breadcrumb, BreadcrumbItem } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { NewFeatureChip } from '@linode/ui';
 import { Outlet, useLocation, useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
 
-import { LandingHeader } from 'src/components/LandingHeader';
 import { TabPanels } from 'src/components/Tabs/TabPanels';
 import { Tabs } from 'src/components/Tabs/Tabs';
 import { TanStackTabLinkList } from 'src/components/Tabs/TanStackTabLinkList';
@@ -16,6 +17,8 @@ import {
 } from './hooks/useIsIAMEnabled';
 import { useIsIAMFederationEnabled } from './hooks/useIsIAMFederationEnabled';
 import { IAM_DOCS_LINK, ROLES_LEARN_MORE_LINK } from './Shared/constants';
+import { DocsLink } from './Shared/DocsLink/DocsLink';
+import { LandingHeader } from './Shared/LandingHeader/LandingHeader';
 import { SuspenseLoader } from './Shared/SuspenseLoader/SuspenseLoader';
 
 export const IdentityAccessLanding = React.memo(() => {
@@ -49,31 +52,23 @@ export const IdentityAccessLanding = React.memo(() => {
     },
   ]);
 
-  const landingHeaderProps = {
-    breadcrumbProps: {
-      pathname: '/iam',
-    },
-    docsLink: tabIndex === 0 ? IAM_DOCS_LINK : ROLES_LEARN_MORE_LINK,
-    entity: 'Identity and Access',
-    title: 'Identity and Access',
-  };
-
   if (location.pathname === '/iam') {
     navigate({ to: '/iam/users', replace: true });
   }
 
   return (
     <>
-      <LandingHeader
-        {...landingHeaderProps}
-        breadcrumbProps={{
-          labelOptions: {
-            suffixComponent: showNewBadge ? <NewFeatureChip /> : null,
-          },
-          removeCrumbX: 1,
-        }}
-        spacingBottom={4}
-      />
+      <LandingHeader spacingBottom={Spacing.S4}>
+        <Breadcrumb>
+          <BreadcrumbItem>
+            Identity and Access
+            {showNewBadge ? <NewFeatureChip /> : null}
+          </BreadcrumbItem>
+        </Breadcrumb>
+        <DocsLink
+          href={tabIndex === 0 ? IAM_DOCS_LINK : ROLES_LEARN_MORE_LINK}
+        />
+      </LandingHeader>
       <Tabs index={tabIndex} onChange={handleTabChange}>
         <TanStackTabLinkList tabs={tabs} />
         <React.Suspense fallback={<SuspenseLoader />}>
