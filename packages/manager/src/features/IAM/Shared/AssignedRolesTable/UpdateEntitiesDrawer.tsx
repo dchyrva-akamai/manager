@@ -133,7 +133,19 @@ export const UpdateEntitiesDrawer = ({ onClose, open, role }: Props) => {
   };
 
   return (
-    <Drawer onClose={handleClose} open={open} title="Update List of Entities">
+    <Drawer
+      onClose={handleClose}
+      open={open}
+      slotProps={{
+        paper: {
+          sx: {
+            maxWidth: { xs: '100% !important', sm: '600px !important' },
+          },
+        },
+      }}
+      title="Update List of Entities"
+      wide
+    >
       {errors.root?.message && (
         <NotificationBanner text={errors.root?.message} type="error" />
       )}

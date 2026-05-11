@@ -12,7 +12,9 @@ import type { ChildAccountWithDelegates, User } from '@linode/api-v4';
 beforeAll(() => mockMatchMedia());
 
 const mocks = vi.hoisted(() => ({
-  useAccountUsersInfiniteQuery: vi.fn(),
+  useAccountUsers: vi.fn(),
+  useAllAccountUsersQuery: vi.fn(),
+  usePermissions: vi.fn(),
   mockUseUpdateChildAccountDelegatesQuery: vi.fn(),
   mockMutateAsync: vi.fn(),
 }));
@@ -21,11 +23,16 @@ vi.mock('@linode/queries', async () => {
   const actual = await vi.importActual('@linode/queries');
   return {
     ...actual,
-    useAccountUsersInfiniteQuery: mocks.useAccountUsersInfiniteQuery,
+    useAccountUsers: mocks.useAccountUsers,
+    useAllAccountUsersQuery: mocks.useAllAccountUsersQuery,
     useUpdateChildAccountDelegatesQuery:
       mocks.mockUseUpdateChildAccountDelegatesQuery,
   };
 });
+
+vi.mock('src/features/IAM/hooks/usePermissions', async () => ({
+  usePermissions: mocks.usePermissions,
+}));
 
 const mockUsers: User[] = [
   {
@@ -70,9 +77,19 @@ describe('UpdateDelegationsDrawer', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mocks.useAccountUsersInfiniteQuery.mockReturnValue({
-      data: { pages: [{ data: mockUsers }] },
+    mocks.useAccountUsers.mockReturnValue({
+      data: { data: mockUsers, results: mockUsers.length },
+      error: undefined,
       isFetching: false,
+    });
+
+    mocks.useAllAccountUsersQuery.mockReturnValue({
+      isFetching: false,
+      refetch: vi.fn().mockResolvedValue({ data: mockUsers }),
+    });
+
+    mocks.usePermissions.mockReturnValue({
+      data: { update_delegate_users: true },
     });
 
     mocks.mockUseUpdateChildAccountDelegatesQuery.mockReturnValue({
@@ -85,10 +102,9 @@ describe('UpdateDelegationsDrawer', () => {
   it('renders the drawer with current delegates', () => {
     renderWithTheme(<UpdateDelegationForm {...defaultProps} />);
 
-    const companyName = screen.getByText(/test company/i);
-    expect(companyName).toBeInTheDocument();
-    const userName = screen.getByText(/user1/i);
-    expect(userName).toBeInTheDocument();
+    expect(screen.getByText(/test company/i)).toBeInTheDocument();
+    // user1 is returned by the mocked API and appears as a table row
+    expect(screen.getByText('user1')).toBeInTheDocument();
   });
 
   it('allows adding a new delegate', async () => {
@@ -96,15 +112,8 @@ describe('UpdateDelegationsDrawer', () => {
 
     const user = userEvent.setup();
 
-    const autocompleteInput = screen.getByRole('combobox');
-    await user.click(autocompleteInput);
-
-    await waitFor(async () => {
-      screen.getByRole('option', { name: 'user2' });
-    });
-
-    const user2Option = screen.getByRole('option', { name: 'user2' });
-    await user.click(user2Option);
+    // user2 is in the table (from API), click its row to select it
+    await user.click(screen.getByText('user2'));
 
     const submitButton = screen.getByRole('button', { name: /save changes/i });
     await user.click(submitButton);
@@ -122,19 +131,9 @@ describe('UpdateDelegationsDrawer', () => {
 
     const user = userEvent.setup();
 
-    // Open the autocomplete and deselect the preselected user (user1)
-    const autocompleteInput = screen.getByRole('combobox');
-    await user.click(autocompleteInput);
+    // user1 is pre-selected; click its row to deselect it
+    await user.click(screen.getByText('user1'));
 
-    await waitFor(() => {
-      // Ensure options are rendered
-      expect(screen.getByRole('option', { name: 'user1' })).toBeInTheDocument();
-    });
-
-    const user1Option = screen.getByRole('option', { name: 'user1' });
-    await user.click(user1Option); // toggles off the selected user
-
-    // Submit with no users selected
     const submitButton = screen.getByRole('button', { name: /save changes/i });
     await user.click(submitButton);
 

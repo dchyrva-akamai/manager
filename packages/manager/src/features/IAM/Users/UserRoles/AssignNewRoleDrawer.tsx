@@ -150,11 +150,19 @@ export const AssignNewRoleDrawer = ({
     <Drawer
       onClose={handleClose}
       open={open}
+      slotProps={{
+        paper: {
+          sx: {
+            maxWidth: { xs: '100% !important', sm: '600px !important' },
+          },
+        },
+      }}
       title={
         isDefaultDelegationRolesForChildAccount
           ? 'Add New Default Roles'
           : 'Assign New Roles'
       }
+      wide
     >
       <FormProvider {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
