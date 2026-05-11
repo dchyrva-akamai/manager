@@ -1,3 +1,4 @@
+import { truncate } from '@akamai/compute-ui-core/formatting';
 import { useRegionsQuery, useVPCQuery } from '@linode/queries';
 import {
   Box,
@@ -6,7 +7,6 @@ import {
   LinkButton,
   Typography,
 } from '@linode/ui';
-import { truncate } from '@linode/utilities';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import * as React from 'react';

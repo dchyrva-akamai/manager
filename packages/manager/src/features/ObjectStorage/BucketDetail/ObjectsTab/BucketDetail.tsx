@@ -1,7 +1,7 @@
+import { truncateMiddle } from '@akamai/compute-ui-core/formatting';
 import { getObjectList, getObjectURL } from '@linode/api-v4/lib/object-storage';
 import { ActionsPanel, Box } from '@linode/ui';
 import { Hidden } from '@linode/ui';
-import { truncateMiddle } from '@linode/utilities';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams, useSearch } from '@tanstack/react-router';
 import produce from 'immer';

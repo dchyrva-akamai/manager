@@ -1,3 +1,4 @@
+import { truncateEnd } from '@akamai/compute-ui-core/formatting';
 import { useAccount, useProfile } from '@linode/queries';
 import {
   Button,
@@ -8,7 +9,6 @@ import {
   Tooltip,
   Typography,
 } from '@linode/ui';
-import { truncateEnd } from '@linode/utilities';
 import { styled, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
