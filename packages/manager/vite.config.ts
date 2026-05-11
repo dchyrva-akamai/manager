@@ -22,13 +22,6 @@ export default defineConfig({
     alias: {
       src: `${DIRNAME}/src`,
     },
-    // When running under Vitest, restore 'import'/'require'/'default' alongside
-    // 'browser' so that packages like MSW can resolve correctly in jsdom.
-    // The bare ['browser'] list (needed by the Model Playground build) strips
-    // those conditions and breaks test resolution.
-    conditions: process.env.VITEST
-      ? ['browser', 'import', 'require', 'default']
-      : ['browser'],
   },
   server: {
     allowedHosts: ['cloud.lindev.local'],
