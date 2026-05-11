@@ -1,3 +1,4 @@
+import { sortByString } from '@akamai/compute-ui-core/formatting';
 import { useAccountSettings, useProfile } from '@linode/queries';
 import {
   ActionsPanel,
@@ -7,7 +8,7 @@ import {
   TextField,
   Typography,
 } from '@linode/ui';
-import { sortByString, useOpenClose } from '@linode/utilities';
+import { useOpenClose } from '@linode/utilities';
 import {
   createObjectStorageKeysSchema,
   updateObjectStorageKeysSchema,
