@@ -1,8 +1,8 @@
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { capitalize, truncateEnd } from '@akamai/compute-ui-core/formatting';
 import { usePreferences, useProfile } from '@linode/queries';
 import { Hidden, LinkButton, Tooltip } from '@linode/ui';
-import { capitalize, truncateEnd } from '@linode/utilities';
 import React from 'react';
 
 import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';

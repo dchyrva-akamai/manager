@@ -1,8 +1,8 @@
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { truncateEnd } from '@akamai/compute-ui-core/formatting';
 import { usePreferences, useProfile } from '@linode/queries';
 import { Hidden, Tooltip } from '@linode/ui';
-import { truncateEnd } from '@linode/utilities';
 import React from 'react';
 
 import { Link } from 'src/components/Link';

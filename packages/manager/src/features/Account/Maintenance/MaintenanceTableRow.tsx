@@ -1,8 +1,9 @@
 import { formatDate, parseAPIDate } from '@akamai/compute-ui-core/datetime';
+import { truncate } from '@akamai/compute-ui-core/formatting';
 import { useProfile } from '@linode/queries';
 import { Stack, Tooltip } from '@linode/ui';
 import { Hidden } from '@linode/ui';
-import { capitalize, getFormattedStatus, truncate } from '@linode/utilities';
+import { capitalize, getFormattedStatus } from '@linode/utilities';
 import * as React from 'react';
 
 import { BarPercent } from 'src/components/BarPercent';

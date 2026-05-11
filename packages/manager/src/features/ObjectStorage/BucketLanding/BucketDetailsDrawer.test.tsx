@@ -1,9 +1,9 @@
 import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { truncateMiddle } from '@akamai/compute-ui-core/formatting';
 import {
   profileFactory,
   readableBytes,
   regionFactory,
-  truncateMiddle,
 } from '@linode/utilities';
 import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
@@ -23,6 +23,12 @@ vi.mock('@linode/utilities', async () => {
   return {
     ...actual,
     readableBytes: vi.fn(),
+  };
+});
+vi.mock('@akamai/compute-ui-core/formatting', async () => {
+  const actual = await vi.importActual('@akamai/compute-ui-core/formatting');
+  return {
+    ...actual,
     truncateMiddle: vi.fn(),
   };
 });
