@@ -429,7 +429,7 @@ export const DatabaseResize = () => {
 
   return (
     <>
-      <Paper marginTop={Spacing.S16}>
+      <Paper>
         {resizeDescription}
         <Box sx={{ marginTop: 2 }}>
           <DatabaseResizeCurrentConfiguration database={database} />
