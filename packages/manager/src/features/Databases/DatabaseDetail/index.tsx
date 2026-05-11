@@ -1,4 +1,4 @@
-import { Badge, NotificationBanner } from '@akamai/cds-components/react';
+import { Badge, NotificationBanner, Tabs } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import {
   useDatabaseMutation,
@@ -16,25 +16,24 @@ import * as React from 'react';
 
 import { DocumentTitleSegment } from 'src/components/DocumentTitle';
 import { LandingHeader } from 'src/components/LandingHeader';
-import { TabPanels } from 'src/components/Tabs/TabPanels';
-import { Tabs } from 'src/components/Tabs/Tabs';
-import { TanStackTabLinkList } from 'src/components/Tabs/TanStackTabLinkList';
 import { DatabaseDetailContext } from 'src/features/Databases/DatabaseDetail/DatabaseDetailContext';
 import DatabaseLogo from 'src/features/Databases/DatabaseLanding/DatabaseLogo';
 import { useFlags } from 'src/hooks/useFlags';
 import { useIsResourceRestricted } from 'src/hooks/useIsResourceRestricted';
-import { useTabs } from 'src/hooks/useTabs';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
 import { CircleProgress } from '../shared/CircleProgress/CircleProgress';
 import { ErrorState } from '../shared/ErrorState/ErrorState';
+import { useTabs } from '../shared/hooks/useTabs';
 
+import type { TabsElement } from '@akamai/cds-components/react';
 import type { APIError } from '@linode/api-v4/lib/types';
 
 export const DatabaseDetail = () => {
   const flags = useFlags();
   const navigate = useNavigate();
   const location = useLocation();
+  const tabsRef = React.useRef<TabsElement>(null);
 
   const { databaseId, engine } = useParams({
     from: '/databases/$engine/$databaseId',
@@ -65,49 +64,52 @@ export const DatabaseDetail = () => {
 
   const settingsTabPath = `/databases/$engine/$databaseId/settings`;
 
-  const { tabs, tabIndex, handleTabChange } = useTabs([
-    {
-      to: `/databases/$engine/$databaseId/summary`,
-      title: 'Summary',
-    },
-    {
-      to: `/databases/$engine/$databaseId/metrics`,
-      title: 'Metrics',
-      hide: !isMonitorEnabled,
-      chip: flags.dbaasV2MonitorMetrics?.beta ? (
-        <Badge
-          color="neutral"
-          style={{ marginLeft: Spacing.S8 }}
-          variant="solid"
-        >
-          BETA
-        </Badge>
-      ) : null,
-    },
-    {
-      to: `/databases/$engine/$databaseId/networking`,
-      title: 'Networking',
-      hide: !isVPCEnabled,
-    },
-    {
-      to: `/databases/$engine/$databaseId/backups`,
-      title: 'Backups',
-    },
-    {
-      to: `/databases/$engine/$databaseId/resize`,
-      title: 'Resize',
-      hide: !flags.databaseResize,
-    },
-    {
-      to: settingsTabPath,
-      title: 'Settings',
-    },
-    {
-      to: `/databases/$engine/$databaseId/configs`,
-      title: 'Advanced Configuration',
-      hide: !isAdvancedConfigEnabled,
-    },
-  ]);
+  const { tabs, tabIndex, handleTabChange } = useTabs(
+    [
+      {
+        to: `/databases/$engine/$databaseId/summary`,
+        title: 'Summary',
+      },
+      {
+        to: `/databases/$engine/$databaseId/metrics`,
+        title: 'Metrics',
+        hide: !isMonitorEnabled,
+        chip: flags.dbaasV2MonitorMetrics?.beta ? (
+          <Badge
+            color="neutral"
+            style={{ marginLeft: Spacing.S8 }}
+            variant="solid"
+          >
+            BETA
+          </Badge>
+        ) : null,
+      },
+      {
+        to: `/databases/$engine/$databaseId/networking`,
+        title: 'Networking',
+        hide: !isVPCEnabled,
+      },
+      {
+        to: `/databases/$engine/$databaseId/backups`,
+        title: 'Backups',
+      },
+      {
+        to: `/databases/$engine/$databaseId/resize`,
+        title: 'Resize',
+        hide: !flags.databaseResize,
+      },
+      {
+        to: settingsTabPath,
+        title: 'Settings',
+      },
+      {
+        to: `/databases/$engine/$databaseId/configs`,
+        title: 'Advanced Configuration',
+        hide: !isAdvancedConfigEnabled,
+      },
+    ],
+    tabsRef
+  );
 
   if (error) {
     return <ErrorState errorText={error[0]?.reason} />;
@@ -189,21 +191,39 @@ export const DatabaseDetail = () => {
         spacingBottom={4}
         title={database.label}
       />
-      <Tabs index={tabIndex} onChange={handleTabChange}>
-        <TanStackTabLinkList tabs={tabs} />
-        {isDatabasesGrantReadOnly && (
-          <NotificationBanner
-            style={{ marginBottom: Spacing.S16 }}
-            text={
-              "You don't have permissions to modify this Database. Please contact an account administrator for details."
-            }
-            type="warning"
-          />
-        )}
-        <TabPanels>
-          <Outlet />
-        </TabPanels>
-      </Tabs>
+      <div style={{ overflowX: 'auto' }}>
+        <Tabs
+          border={false}
+          onTabsChange={(e) => handleTabChange(e.detail.index)}
+          ref={tabsRef}
+          tabMaxWidth={250}
+        >
+          {tabs.map((tab, i) => (
+            <cds-tab
+              active={i === tabIndex || undefined}
+              key={String(tab.to)}
+              label={tab.title}
+            >
+              {tab.chip && (
+                <span slot="tab-header">
+                  {tab.title}
+                  {tab.chip}
+                </span>
+              )}
+            </cds-tab>
+          ))}
+        </Tabs>
+      </div>
+      {isDatabasesGrantReadOnly && (
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
+          text={
+            "You don't have permissions to modify this Database. Please contact an account administrator for details."
+          }
+          type="warning"
+        />
+      )}
+      <Outlet />
       {isDefault && <DatabaseLogo />}
     </DatabaseDetailContext.Provider>
   );

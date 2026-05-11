@@ -1,4 +1,3 @@
-import { Spacing } from '@akamai/cds-tokens';
 import { Stack, Typography } from '@linode/ui';
 import { useNavigate } from '@tanstack/react-router';
 import React from 'react';
@@ -38,7 +37,7 @@ export const DatabaseNetworking = () => {
   }
 
   return (
-    <Paper marginTop={Spacing.S16}>
+    <Paper>
       <Stack divider={<Divider marginBottom={0} marginTop={0} />} spacing={3}>
         <AccessControls
           database={database}

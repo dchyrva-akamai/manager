@@ -39,7 +39,7 @@ export const DatabaseAdvancedConfiguration = () => {
   }
 
   return (
-    <Paper marginTop={Spacing.S16} paddingBottom={Spacing.S40}>
+    <Paper paddingBottom={Spacing.S40}>
       <Grid container justifyContent={'space-between'}>
         <Grid size={10}>
           <Typography variant="h2">Advanced Configuration</Typography>

@@ -186,7 +186,7 @@ export const DatabaseBackups = () => {
 
   if (isDefaultDatabase) {
     return (
-      <Paper marginTop={Spacing.S16}>
+      <Paper>
         <Typography variant="h2">Summary</Typography>
         <StyledTypography>
           Databases are automatically backed-up with full daily backups for the
