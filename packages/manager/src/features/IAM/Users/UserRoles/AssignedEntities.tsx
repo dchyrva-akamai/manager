@@ -1,6 +1,6 @@
 import { Button, Tooltip } from '@akamai/cds-components/react';
+import { sortByString } from '@akamai/compute-ui-core/formatting';
 import { Box, Chip, CloseIcon } from '@linode/ui';
-import { sortByString } from '@linode/utilities';
 import { useTheme } from '@mui/material';
 import * as React from 'react';
 
