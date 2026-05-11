@@ -21,7 +21,7 @@ import {
 } from 'src/components/PrimaryNav/constants';
 import { useIsACLPEnabled } from 'src/features/CloudPulse/Utils/utils';
 import { useIsDatabasesEnabled } from 'src/features/Databases/utilities';
-import { useIsACLPLogsEnabled } from 'src/features/Delivery/deliveryUtils';
+import { useIsACLPLogsNew } from 'src/features/Delivery/deliveryUtils';
 import { useIsIAMEnabled } from 'src/features/IAM/hooks/useIsIAMEnabled';
 import { useIsInferencePlatformEnabled } from 'src/features/InferencePlatform/utils';
 import { useIsMarketplaceV2Enabled } from 'src/features/Marketplace/shared';
@@ -126,8 +126,7 @@ export const PrimaryNav = (props: PrimaryNavProps) => {
   const isManaged = accountSettings?.managed ?? false;
 
   const { isACLPEnabled } = useIsACLPEnabled();
-  const { isACLPLogsEnabled, isACLPLogsBeta, isACLPLogsNew } =
-    useIsACLPLogsEnabled();
+  const isACLPLogsNew = useIsACLPLogsNew();
 
   const isAlertsEnabled =
     isACLPEnabled &&
@@ -302,10 +301,8 @@ export const PrimaryNav = (props: PrimaryNavProps) => {
               },
               {
                 display: 'Logs',
-                hide: !isACLPLogsEnabled,
                 to: '/logs/delivery',
-                isBeta: isACLPLogsBeta,
-                isNew: !isACLPLogsBeta && isACLPLogsNew,
+                isNew: isACLPLogsNew,
               },
               {
                 display: 'Longview',
@@ -382,9 +379,7 @@ export const PrimaryNav = (props: PrimaryNavProps) => {
         isManaged,
         isPlacementGroupsEnabled,
         isACLPEnabled,
-        isACLPLogsBeta,
         isACLPLogsNew,
-        isACLPLogsEnabled,
         isIAMEnabled,
         isMarketplaceV2FeatureEnabled,
         isNetworkLoadBalancerEnabled,
