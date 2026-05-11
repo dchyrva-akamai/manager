@@ -21,6 +21,13 @@ export default defineConfig({
   resolve: {
     alias: {
       src: `${DIRNAME}/src`,
+      // In test mode, stub out msw/browser so Vite never tries to resolve the
+      // real subpath export. `vitest related` scans the full source tree and
+      // hits mswWorkers.ts → msw/browser, which fails under Node conditions in
+      // Vite 7 + Node 22. The browser worker is never used in unit tests.
+      ...(process.env.VITEST
+        ? { 'msw/browser': `${DIRNAME}/src/mocks/mswBrowserStub.ts` }
+        : {}),
     },
   },
   server: {
