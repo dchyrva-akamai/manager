@@ -18,18 +18,18 @@ const testEmail = 'testuser@example.com';
 
 describe('CreateUserDrawer', () => {
   it('should render the drawer when open is true', () => {
-    const { getByRole } = renderWithTheme(<CreateUserDrawer {...props} />);
+    const { getByTestId } = renderWithTheme(<CreateUserDrawer {...props} />);
 
-    const dialog = getByRole('dialog');
+    const dialog = getByTestId('drawer');
     expect(dialog).toBeInTheDocument();
   });
 
   it('should allow the user to fill out the form', () => {
-    const { getByLabelText, getByRole } = renderWithTheme(
+    const { getByLabelText, getByTestId } = renderWithTheme(
       <CreateUserDrawer {...props} />
     );
 
-    const dialog = getByRole('dialog');
+    const dialog = getByTestId('drawer');
     expect(dialog).toBeInTheDocument();
 
     fireEvent.change(getByLabelText(/username/i), {
@@ -55,11 +55,11 @@ describe('CreateUserDrawer', () => {
       })
     );
 
-    const { getByLabelText, getByRole, getByTestId } = renderWithTheme(
+    const { getByLabelText, getByTestId } = renderWithTheme(
       <CreateUserDrawer {...props} />
     );
 
-    const dialog = getByRole('dialog');
+    const dialog = getByTestId('drawer');
     expect(dialog).toBeInTheDocument();
 
     fireEvent.change(getByLabelText(/username/i), {

@@ -75,7 +75,7 @@ describe('AccessSelect', () => {
         });
         await waitFor(() => {
           expect(
-            screen.getByRole('checkbox', { name: CORS_ENABLED_TEXT })
+            screen.getByRole('switch', { name: CORS_ENABLED_TEXT })
           ).toBeChecked();
         });
       } else {
@@ -112,7 +112,7 @@ describe('AccessSelect', () => {
     );
 
     // Wait for CORS toggle to appear and be checked
-    const corsToggle = await screen.findByRole('checkbox', {
+    const corsToggle = await screen.findByRole('switch', {
       name: CORS_ENABLED_TEXT,
     });
     expect(corsToggle).toBeChecked();

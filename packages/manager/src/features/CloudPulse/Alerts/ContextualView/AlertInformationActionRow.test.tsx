@@ -55,8 +55,8 @@ describe('Alert list table row', () => {
       />
     );
 
-    expect(screen.getByRole('checkbox')).toHaveProperty('checked');
-    expect(screen.getByRole('checkbox')).toBeDisabled();
+    expect(screen.getByRole('switch')).toHaveProperty('checked');
+    expect(screen.getByRole('switch')).toBeDisabled();
 
     expect(
       screen.getByLabelText(
