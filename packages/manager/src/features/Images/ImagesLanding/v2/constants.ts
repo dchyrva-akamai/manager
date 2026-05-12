@@ -37,3 +37,11 @@ export const DELETE_SHARE_GROUP_PENDO_IDS = {
   preferencesLink: 'Share Groups Delete-Preferences Link',
   xButton: 'Share Groups Delete-X Button',
 };
+
+export const EDIT_SHARE_GROUP_PENDO_IDS = {
+  label: 'Share Groups Edit-Label',
+  description: 'Share Groups Edit-Description',
+  saveButton: 'Share Groups Edit-Save Button',
+  cancelButton: 'Share Groups Edit-Cancel Button',
+  xButton: 'Share Groups Edit-X Button',
+};

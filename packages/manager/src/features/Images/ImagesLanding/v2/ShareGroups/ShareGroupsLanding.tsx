@@ -1,3 +1,4 @@
+import { useShareGroupQuery } from '@linode/queries';
 import { BetaChip, Stack } from '@linode/ui';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import React from 'react';
@@ -11,11 +12,11 @@ import { Tabs } from 'src/components/Tabs/Tabs';
 import { getSubTabIndex } from 'src/features/Images/utils';
 
 import { DeleteShareGroupDialog } from './DeleteShareGroupDialog';
+import { EditShareGroupDrawer } from './EditShareGroupDrawer';
 import { shareGroupsSubTabs as subTabs } from './shareGroupsTabsConfig';
 import { ShareGroupsView } from './ShareGroupsView';
 
 import type { Handlers as ShareGroupHandlers } from './ShareGroupActionMenu';
-import type { Sharegroup } from '@linode/api-v4';
 import type { ShareGroupAction } from 'src/routes/images';
 
 export const ShareGroupsTabs = () => {
@@ -30,6 +31,15 @@ export const ShareGroupsTabs = () => {
     from: '/images/share-groups/owned-groups/$shareGroupId/$action',
     shouldThrow: false,
   });
+
+  const {
+    data: selectedShareGroup,
+    isLoading,
+    error,
+  } = useShareGroupQuery(
+    ownedGroupsActionParams?.shareGroupId ?? '',
+    !!ownedGroupsActionParams?.shareGroupId
+  );
 
   const onTabChange = (index: number) => {
     navigate({
@@ -46,12 +56,12 @@ export const ShareGroupsTabs = () => {
   );
 
   const handleShareGroupAction = (
-    shareGroup: Sharegroup,
+    shareGroupId: string,
     action: ShareGroupAction
   ) => {
     navigate({
       params: {
-        shareGroupId: String(shareGroup.id),
+        shareGroupId,
         action,
       },
       search: (prev) => prev,
@@ -68,12 +78,17 @@ export const ShareGroupsTabs = () => {
       },
     });
 
-  const handleDelete = (shareGroup: Sharegroup) => {
-    handleShareGroupAction(shareGroup, 'delete');
+  const handleDelete = (shareGroupId: string) => {
+    handleShareGroupAction(shareGroupId, 'delete');
+  };
+
+  const handleEdit = (shareGroupId: string) => {
+    handleShareGroupAction(shareGroupId, 'edit');
   };
 
   const handlers: ShareGroupHandlers = {
     onDelete: handleDelete,
+    onEdit: handleEdit,
   };
 
   return (
@@ -109,6 +124,13 @@ export const ShareGroupsTabs = () => {
         onSuccess={handleCloseDialog}
         open={ownedGroupsActionParams?.action === 'delete'}
         shareGroupId={ownedGroupsActionParams?.shareGroupId}
+      />
+      <EditShareGroupDrawer
+        errors={error}
+        isFetching={isLoading}
+        onClose={handleCloseDialog}
+        open={ownedGroupsActionParams?.action === 'edit'}
+        shareGroup={selectedShareGroup}
       />
     </Stack>
   );

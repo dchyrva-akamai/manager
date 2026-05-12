@@ -20,6 +20,7 @@ import { getIsTableStripingEnabled } from 'src/features/Profile/Settings/TableSt
 
 import { SHARE_GROUP_DETAILS_PENDO_IDS } from '../../constants';
 import { DeleteShareGroupDialog } from '../DeleteShareGroupDialog';
+import { EditShareGroupDrawer } from '../EditShareGroupDrawer';
 import { GroupMembersTable } from './GroupMembersTable';
 import { SharedImagesTable } from './SharedImagesTable';
 
@@ -43,10 +44,11 @@ export const ShareGroupDetails = () => {
     error: shareGroupError,
     isLoading,
   } = useShareGroupQuery(shareGroupId);
-  const { label, description, uuid } = shareGroup ?? {};
+  const { label, description, uuid, id } = shareGroup ?? {};
 
   const [membersCount, setMembersCount] = React.useState(0);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [isEditDrawerOpen, setIsEditDrawerOpen] = React.useState(false);
 
   if (isLoading) {
     return <CircleProgress />;
@@ -56,6 +58,23 @@ export const ShareGroupDetails = () => {
     <>
       <DocumentTitleSegment segment={`${label} | Detail`} />
       <LandingHeader
+        breadcrumbProps={{
+          crumbOverrides: [
+            {
+              position: 1,
+              label: 'Images',
+            },
+            {
+              position: 2,
+              label: 'Share Groups',
+            },
+            {
+              position: 3,
+              label: 'Owned Groups',
+            },
+          ],
+          pathname: `/images/share-groups/owned-groups/${id}`,
+        }}
         docsLabel="Docs"
         docsLink="https://techdocs.akamai.com/cloud-computing/docs/image-sharing"
         pendoId={SHARE_GROUP_DETAILS_PENDO_IDS.landingHeader}
@@ -95,6 +114,7 @@ export const ShareGroupDetails = () => {
                     data-pendo-id={
                       SHARE_GROUP_DETAILS_PENDO_IDS.editShareGroupButton
                     }
+                    onClick={() => setIsEditDrawerOpen(true)}
                     variant="link"
                   >
                     Edit
@@ -105,9 +125,7 @@ export const ShareGroupDetails = () => {
                         SHARE_GROUP_DETAILS_PENDO_IDS.deleteShareGroupButton
                       }
                       disabled={membersCount > 0}
-                      onClick={() => {
-                        setIsDeleteDialogOpen(!isDeleteDialogOpen);
-                      }}
+                      onClick={() => setIsDeleteDialogOpen(true)}
                       style={{ marginRight: '4px' }}
                       variant="link"
                     >
@@ -169,6 +187,13 @@ export const ShareGroupDetails = () => {
         }
         open={isDeleteDialogOpen}
         shareGroupId={shareGroupId}
+      />
+      <EditShareGroupDrawer
+        errors={shareGroupError}
+        isFetching={isLoading}
+        onClose={() => setIsEditDrawerOpen(!isEditDrawerOpen)}
+        open={isEditDrawerOpen}
+        shareGroup={shareGroup}
       />
     </>
   );

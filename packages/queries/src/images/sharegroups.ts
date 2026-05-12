@@ -6,6 +6,7 @@ import {
   getSharegroupMembers,
   getSharegroups,
   getUserSharegroupTokens,
+  updateSharegroup,
 } from '@linode/api-v4';
 import { getAll } from '@linode/utilities';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
@@ -27,6 +28,7 @@ import type {
   Sharegroup,
   SharegroupMember,
   SharegroupToken,
+  UpdateSharegroupPayload,
 } from '@linode/api-v4';
 import type {
   UseMutationOptions,
@@ -210,6 +212,35 @@ export const useCreateShareGroupMutation = () => {
         queryKey: shareGroupsQueries.sharegroups._ctx.infinite._def,
       });
       queryclient.setQueryData<Sharegroup>(
+        shareGroupsQueries.sharegroups._ctx.sharegroup(shareGroup.id.toString())
+          .queryKey,
+        shareGroup,
+      );
+    },
+  });
+};
+
+export const useUpdateShareGroupMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    Sharegroup,
+    APIError[],
+    { data: UpdateSharegroupPayload; sharegroupId: string }
+  >({
+    mutationFn: ({ sharegroupId, data }) =>
+      updateSharegroup(sharegroupId, data),
+    onSuccess(shareGroup) {
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.paginated._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.all._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.infinite._def,
+      });
+      queryClient.setQueryData<Sharegroup>(
         shareGroupsQueries.sharegroups._ctx.sharegroup(shareGroup.id.toString())
           .queryKey,
         shareGroup,
