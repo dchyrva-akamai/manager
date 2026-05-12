@@ -489,3 +489,9 @@ export interface Entities {
   type: string;
   url: string;
 }
+
+export interface CloneAlertPayloadWithService
+  extends CreateAlertDefinitionPayload {
+  originalAlertId: number;
+  serviceType: CloudPulseServiceType;
+}

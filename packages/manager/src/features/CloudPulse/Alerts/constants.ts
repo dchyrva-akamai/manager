@@ -315,3 +315,11 @@ export const DELETE_CHANNEL_SUCCESS_MESSAGE =
 
 export const DELETE_CHANNEL_FAILED_MESSAGE =
   'Failed to delete the notification channel. Ensure it is not in use and try again.';
+
+export const CLONE_ALERT_NAME_SUFFIX = '_Clone 1';
+
+export const CLONE_ALERT_SUCCESS_MESSAGE =
+  'Alert definition was successfully cloned.';
+
+export const CLONE_ALERT_FAILED_MESSAGE =
+  'Failed to clone the alert definition.';

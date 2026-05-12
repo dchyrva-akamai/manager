@@ -182,6 +182,7 @@ interface AclpAlerting {
   accountMetricLimit: number;
   alertDefinitions: boolean;
   beta: boolean;
+  cloneAlertDefinition?: boolean;
   editDisabledStatuses?: AlertStatusType[];
   maxDimensionFiltersValues?: number;
   maxEmailChannelRecipients?: number;
