@@ -45,7 +45,6 @@ import { Divider } from '../../shared/Divider/Divider';
 import { Paper } from '../../shared/Paper/Paper';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import { DatabaseBackupsDialog } from './DatabaseBackupsDialog';
-import DatabaseBackupsLegacy from './legacy/DatabaseBackupsLegacy';
 
 import type { DatabaseBackupsPayload } from '@linode/api-v4';
 import type { TimeValidationError } from '@mui/x-date-pickers';
@@ -81,13 +80,7 @@ export const DatabaseBackups = () => {
     isDatabasesV2GA ? 'newest' : 'dateTime'
   );
 
-  const {
-    data: database,
-    error: databaseError,
-    isLoading: isDatabaseLoading,
-  } = useDatabaseQuery(engine, Number(databaseId));
-
-  const isDefaultDatabase = database?.platform === 'rdbms-default';
+  const { data: database } = useDatabaseQuery(engine, Number(databaseId));
 
   const oldestBackup = database?.oldest_restore_time
     ? DateTime.fromISO(`${database.oldest_restore_time}`, { zone: 'utc' }) // Backend uses UTC, so we explicitly set this as the timezone
@@ -184,179 +177,167 @@ export const DatabaseBackups = () => {
     Boolean(unableToRestoreCopy) ||
     (versionOption === 'dateTime' && (!date || !time || !!errors.time));
 
-  if (isDefaultDatabase) {
-    return (
-      <Paper>
-        <Typography variant="h2">Summary</Typography>
-        <StyledTypography>
-          Databases are automatically backed-up with full daily backups for the
-          past 14 days, and binary logs recorded continuously. Full backups are
-          version-specific binary backups, which when combined with binary logs
-          allow for consistent recovery to a specific point in time (PITR).
-        </StyledTypography>
-        <Divider marginBottom={Spacing.S24} marginTop={Spacing.S24} />
-        <Typography variant="h2">Restore a Backup</Typography>
-        <StyledTypography>
-          {isDatabasesV2GA ? (
-            <span>
-              The newest full backup plus incremental is selected by default.
-              Or, select any date and time within the last 14 days you want to
-              create a fork from.
-            </span>
-          ) : (
-            <span>
-              Select a date and time within the last 14 days you want to create
-              a fork from.
-            </span>
-          )}
-        </StyledTypography>
-        {unableToRestoreCopy && (
-          <NotificationBanner
-            style={{ marginTop: Spacing.S16, marginBottom: Spacing.S16 }}
-            text={unableToRestoreCopy}
-            type="info"
-          />
-        )}
-        <FormProvider {...form}>
-          <form>
-            {isDatabasesV2GA && (
-              <RadioGroup
-                aria-label="type"
-                name="type"
-                onChange={handleOnVersionOptionChange}
-                value={versionOption}
-              >
-                <FormControlLabel
-                  control={<Radio />}
-                  data-qa-dbaas-radio="Newest"
-                  disabled={disabled}
-                  label="Newest full backup plus incremental"
-                  value="newest"
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  data-qa-dbaas-radio="DateTime"
-                  disabled={disabled}
-                  label="Specific date & time"
-                  value="dateTime"
-                />
-              </RadioGroup>
-            )}
-            <Typography variant="h3">Date</Typography>
-            <StyledDateTimeStack>
-              <Controller
-                control={control}
-                name="date"
-                render={({ field }) => (
-                  <LocalizationProvider dateAdapter={AdapterLuxon}>
-                    <StyledDateCalendar
-                      disabled={disabled || versionOption === 'newest'}
-                      onChange={(newDate: DateTime) => {
-                        validateDateTime(newDate, time);
-                        field.onChange(newDate);
-                      }}
-                      shouldDisableDate={(date) =>
-                        isDateOutsideBackup(date, oldestBackup?.startOf('day'))
-                      }
-                      value={field.value}
-                    />
-                  </LocalizationProvider>
-                )}
-              />
-              <Controller
-                control={control}
-                name="time"
-                render={({ field, fieldState }) => (
-                  <FormControl style={{ marginTop: 0 }}>
-                    <Typography variant="h3">Time (UTC)</Typography>
-                    <TimePicker
-                      disabled={disabled || versionOption === 'newest' || !date}
-                      errorText={
-                        versionOption === 'dateTime' && date
-                          ? fieldState.error?.message
-                          : undefined
-                      }
-                      format="HH:mm:ss"
-                      key={
-                        versionOption === 'dateTime'
-                          ? 'time-picker-active'
-                          : 'time-picker-disabled'
-                      }
-                      label=""
-                      maxTime={configureMaxTime()}
-                      minTime={configureMinTime()}
-                      onChange={(newTime: DateTime) => {
-                        validateDateTime(date, newTime);
-                        field.onChange(newTime);
-                      }}
-                      onError={handleOnError}
-                      sx={{
-                        width: '220px',
-                      }}
-                      timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
-                      value={field.value}
-                      views={['hours', 'minutes', 'seconds']}
-                    />
-                  </FormControl>
-                )}
-              />
-            </StyledDateTimeStack>
-            <StyledRegionStack>
-              <Controller
-                control={control}
-                name="region"
-                render={({ field, fieldState }) => (
-                  <RegionSelect
-                    currentCapability="Managed Databases"
-                    disableClearable
-                    disabled={disabled}
-                    errorText={fieldState.error?.message}
-                    isGeckoLAEnabled={isGeckoLAEnabled}
-                    onChange={(e, region) => field.onChange(region.id)}
-                    regions={regionsData ?? []}
-                    value={region ?? null}
-                  />
-                )}
-              />
-            </StyledRegionStack>
-            <Box display="flex" justifyContent="flex-end">
-              <Tooltip
-                disabled={!unableToRestoreDisabled}
-                tooltipText={unableToRestoreCopy}
-              >
-                <Button
-                  data-qa-settings-button="restore"
-                  disabled={unableToRestoreDisabled}
-                  onClick={() => setIsRestoreDialogOpen(true)}
-                  variant="primary"
-                >
-                  Restore
-                  {unableToRestoreDisabled ? (
-                    <Icon icon="info-outline" size="m" />
-                  ) : null}
-                </Button>
-              </Tooltip>
-            </Box>
-            {database && (
-              <DatabaseBackupsDialog
-                database={database}
-                onClose={() => setIsRestoreDialogOpen(false)}
-                open={isRestoreDialogOpen}
-              />
-            )}
-          </form>
-        </FormProvider>
-      </Paper>
-    );
-  }
-
   return (
-    <DatabaseBackupsLegacy
-      database={database}
-      databaseError={databaseError}
-      disabled={disabled}
-      engine={engine}
-      isDatabaseLoading={isDatabaseLoading}
-    />
+    <Paper>
+      <Typography variant="h2">Summary</Typography>
+      <StyledTypography>
+        Databases are automatically backed-up with full daily backups for the
+        past 14 days, and binary logs recorded continuously. Full backups are
+        version-specific binary backups, which when combined with binary logs
+        allow for consistent recovery to a specific point in time (PITR).
+      </StyledTypography>
+      <Divider marginBottom={Spacing.S24} marginTop={Spacing.S24} />
+      <Typography variant="h2">Restore a Backup</Typography>
+      <StyledTypography>
+        {isDatabasesV2GA ? (
+          <span>
+            The newest full backup plus incremental is selected by default. Or,
+            select any date and time within the last 14 days you want to create
+            a fork from.
+          </span>
+        ) : (
+          <span>
+            Select a date and time within the last 14 days you want to create a
+            fork from.
+          </span>
+        )}
+      </StyledTypography>
+      {unableToRestoreCopy && (
+        <NotificationBanner
+          style={{ marginTop: Spacing.S16, marginBottom: Spacing.S16 }}
+          text={unableToRestoreCopy}
+          type="info"
+        />
+      )}
+      <FormProvider {...form}>
+        <form>
+          {isDatabasesV2GA && (
+            <RadioGroup
+              aria-label="type"
+              name="type"
+              onChange={handleOnVersionOptionChange}
+              value={versionOption}
+            >
+              <FormControlLabel
+                control={<Radio />}
+                data-qa-dbaas-radio="Newest"
+                disabled={disabled}
+                label="Newest full backup plus incremental"
+                value="newest"
+              />
+              <FormControlLabel
+                control={<Radio />}
+                data-qa-dbaas-radio="DateTime"
+                disabled={disabled}
+                label="Specific date & time"
+                value="dateTime"
+              />
+            </RadioGroup>
+          )}
+          <Typography variant="h3">Date</Typography>
+          <StyledDateTimeStack>
+            <Controller
+              control={control}
+              name="date"
+              render={({ field }) => (
+                <LocalizationProvider dateAdapter={AdapterLuxon}>
+                  <StyledDateCalendar
+                    disabled={disabled || versionOption === 'newest'}
+                    onChange={(newDate: DateTime) => {
+                      validateDateTime(newDate, time);
+                      field.onChange(newDate);
+                    }}
+                    shouldDisableDate={(date) =>
+                      isDateOutsideBackup(date, oldestBackup?.startOf('day'))
+                    }
+                    value={field.value}
+                  />
+                </LocalizationProvider>
+              )}
+            />
+            <Controller
+              control={control}
+              name="time"
+              render={({ field, fieldState }) => (
+                <FormControl style={{ marginTop: 0 }}>
+                  <Typography variant="h3">Time (UTC)</Typography>
+                  <TimePicker
+                    disabled={disabled || versionOption === 'newest' || !date}
+                    errorText={
+                      versionOption === 'dateTime' && date
+                        ? fieldState.error?.message
+                        : undefined
+                    }
+                    format="HH:mm:ss"
+                    key={
+                      versionOption === 'dateTime'
+                        ? 'time-picker-active'
+                        : 'time-picker-disabled'
+                    }
+                    label=""
+                    maxTime={configureMaxTime()}
+                    minTime={configureMinTime()}
+                    onChange={(newTime: DateTime) => {
+                      validateDateTime(date, newTime);
+                      field.onChange(newTime);
+                    }}
+                    onError={handleOnError}
+                    sx={{
+                      width: '220px',
+                    }}
+                    timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
+                    value={field.value}
+                    views={['hours', 'minutes', 'seconds']}
+                  />
+                </FormControl>
+              )}
+            />
+          </StyledDateTimeStack>
+          <StyledRegionStack>
+            <Controller
+              control={control}
+              name="region"
+              render={({ field, fieldState }) => (
+                <RegionSelect
+                  currentCapability="Managed Databases"
+                  disableClearable
+                  disabled={disabled}
+                  errorText={fieldState.error?.message}
+                  isGeckoLAEnabled={isGeckoLAEnabled}
+                  onChange={(e, region) => field.onChange(region.id)}
+                  regions={regionsData ?? []}
+                  value={region ?? null}
+                />
+              )}
+            />
+          </StyledRegionStack>
+          <Box display="flex" justifyContent="flex-end">
+            <Tooltip
+              disabled={!unableToRestoreDisabled}
+              tooltipText={unableToRestoreCopy}
+            >
+              <Button
+                data-qa-settings-button="restore"
+                disabled={unableToRestoreDisabled}
+                onClick={() => setIsRestoreDialogOpen(true)}
+                variant="primary"
+              >
+                Restore
+                {unableToRestoreDisabled ? (
+                  <Icon icon="info-outline" size="m" />
+                ) : null}
+              </Button>
+            </Tooltip>
+          </Box>
+          {database && (
+            <DatabaseBackupsDialog
+              database={database}
+              onClose={() => setIsRestoreDialogOpen(false)}
+              open={isRestoreDialogOpen}
+            />
+          )}
+        </form>
+      </FormProvider>
+    </Paper>
   );
 };

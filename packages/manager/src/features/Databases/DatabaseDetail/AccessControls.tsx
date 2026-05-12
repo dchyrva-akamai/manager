@@ -1,4 +1,10 @@
 import { Button, NotificationBanner } from '@akamai/cds-components/react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from '@akamai/cds-components/react/Table';
 import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseMutation } from '@linode/queries';
 import { ActionsPanel, Typography } from '@linode/ui';
@@ -8,10 +14,6 @@ import { makeStyles } from 'tss-react/mui';
 
 import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
 import { InlineMenuAction } from 'src/components/InlineMenuAction/InlineMenuAction';
-import { Table } from 'src/components/Table';
-import { TableBody } from 'src/components/TableBody';
-import { TableCell } from 'src/components/TableCell';
-import { TableRow } from 'src/components/TableRow';
 
 import { ManageAccessControlDrawer } from './ManageAccessControlDrawer';
 
@@ -28,9 +30,9 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
   cell: {
     alignItems: 'center',
-    borderBottom: `solid 1px ${theme.borderColors.borderTable}`,
     display: 'flex',
     justifyContent: 'space-between',
+    padding: 0,
   },
   removeButton: {
     float: 'right',
@@ -133,7 +135,12 @@ export const AccessControls = (props: Props) => {
       <Table className={classes.table} data-qa-access-controls>
         <TableBody>
           {accessControlsList.map((accessControl) => (
-            <TableRow className={classes.row} key={`${accessControl}-row`}>
+            <TableRow
+              className={classes.row}
+              hoverable
+              key={`${accessControl}-row`}
+              zebra
+            >
               <TableCell
                 className={classes.cell}
                 key={`${accessControl}-tablecell`}
