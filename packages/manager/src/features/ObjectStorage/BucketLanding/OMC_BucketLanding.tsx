@@ -1,4 +1,10 @@
-import { CircleProgress, ErrorState, Notice, Typography } from '@linode/ui';
+import {
+  Box,
+  CircleProgress,
+  ErrorState,
+  Notice,
+  Typography,
+} from '@linode/ui';
 import { readableBytes, useOpenClose } from '@linode/utilities';
 import Grid from '@mui/material/Grid';
 import * as React from 'react';
@@ -6,6 +12,7 @@ import { makeStyles } from 'tss-react/mui';
 
 import { DocumentTitleSegment } from 'src/components/DocumentTitle';
 import { Link } from 'src/components/Link';
+import { RegionMultiSelect } from 'src/components/RegionSelect/RegionMultiSelect';
 import { TypeToConfirmDialog } from 'src/components/TypeToConfirmDialog/TypeToConfirmDialog';
 import { useObjectStorageRegions } from 'src/features/ObjectStorage/hooks/useObjectStorageRegions';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
@@ -19,9 +26,13 @@ import {
 } from 'src/utilities/analytics/customEventAnalytics';
 
 import { CancelNotice } from '../CancelNotice';
+import { useIsObjectStorageGen2Enabled } from '../hooks/useIsObjectStorageGen2Enabled';
+import { EndpointMultiselect } from '../Partials/EndpointMultiselect';
+import { uniqueByKey } from '../utilities';
 import { BucketTable } from './BucketTable';
 import { useBucketDrawers } from './hooks/useBucketDrawers';
 
+import type { EndpointMultiselectValue } from '../Partials/EndpointMultiselect';
 import type { APIError, ObjectStorageBucket } from '@linode/api-v4';
 import type { Theme } from '@mui/material/styles';
 
@@ -38,6 +49,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
 export const OMC_BucketLanding = (props: Props) => {
   const { isCreateBucketDrawerOpen } = props;
   const { availableStorageRegions } = useObjectStorageRegions();
+  const { isObjectStorageGen2Enabled } = useIsObjectStorageGen2Enabled();
 
   const {
     data: objectStorageBucketsResponse,
@@ -55,6 +67,14 @@ export const OMC_BucketLanding = (props: Props) => {
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<APIError[] | undefined>(undefined);
+
+  const [selectedRegions, setSelectedRegions] = React.useState<
+    { label: string; value: string }[]
+  >([]);
+
+  const [selectedEndpoints, setSelectedEndpoints] = React.useState<
+    EndpointMultiselectValue[]
+  >([]);
 
   const [selectedBucket, setSelectedBucket] = React.useState<
     ObjectStorageBucket | undefined
@@ -129,6 +149,40 @@ export const OMC_BucketLanding = (props: Props) => {
   const totalUsage = sumBucketUsage(buckets);
   const bucketLabel = selectedBucket ? selectedBucket.label : '';
 
+  const endpointOptions = React.useMemo(
+    () =>
+      uniqueByKey(
+        buckets
+          .filter((bucket) => {
+            if (selectedRegions.length) {
+              return selectedRegions.some(
+                (region) => region.value === bucket.region
+              );
+            }
+
+            return true;
+          })
+          .map((bucket) => ({
+            label: bucket.s3_endpoint,
+          })),
+        'label'
+      ) as EndpointMultiselectValue[],
+    [buckets, selectedRegions]
+  );
+
+  React.useEffect(() => {
+    if (!selectedRegions.length) {
+      setSelectedEndpoints([]);
+      return;
+    }
+
+    setSelectedEndpoints((prev) =>
+      endpointOptions.filter((option) =>
+        prev.some(({ label }) => option.label === label)
+      )
+    );
+  }, [endpointOptions, selectedRegions]);
+
   const {
     handleOrderChange,
     order,
@@ -144,6 +198,20 @@ export const OMC_BucketLanding = (props: Props) => {
       from: '/object-storage/buckets',
     },
     preferenceKey: 'object-storage-buckets',
+  });
+
+  const filteredData = orderedData?.filter((bucket) => {
+    if (selectedEndpoints.length) {
+      return selectedEndpoints.some(
+        (endpoint) => bucket.s3_endpoint === endpoint.label
+      );
+    }
+
+    if (selectedRegions.length) {
+      return selectedRegions.some((region) => bucket.region === region.value);
+    }
+
+    return true;
   });
 
   if (bucketsErrors) {
@@ -169,16 +237,54 @@ export const OMC_BucketLanding = (props: Props) => {
   }
 
   return (
-    <React.Fragment>
+    <>
       <DocumentTitleSegment
         segment={`${isCreateBucketDrawerOpen ? 'Create a Bucket' : 'Buckets'}`}
       />
+
       {unavailableRegionLabels && unavailableRegionLabels.length > 0 && (
         <UnavailableRegionsDisplay regionLabels={unavailableRegionLabels} />
       )}
+
+      <Typography gutterBottom variant="h3">
+        Filter by
+      </Typography>
+
+      <Box
+        sx={(theme) => ({
+          display: 'flex',
+          gap: theme.spacingFunction(16),
+          marginBottom: theme.spacingFunction(16),
+        })}
+      >
+        <RegionMultiSelect
+          currentCapability="Object Storage"
+          fullWidth
+          isGeckoLAEnabled={false}
+          noMarginTop
+          onChange={(values) =>
+            setSelectedRegions(values.map((value) => ({ label: value, value })))
+          }
+          regions={availableStorageRegions.filter((r) =>
+            buckets.some((b) => b.region === r.id)
+          )}
+          selectedIds={selectedRegions.map((r) => r.value)}
+        />
+
+        {isObjectStorageGen2Enabled && (
+          <EndpointMultiselect
+            onChange={setSelectedEndpoints}
+            options={endpointOptions}
+            showLabel={true}
+            sx={{ flex: 1 }}
+            values={selectedEndpoints}
+          />
+        )}
+      </Box>
+
       <Grid size={12}>
         <BucketTable
-          data={orderedData ?? []}
+          data={filteredData ?? []}
           handleClickDetails={(bucket) =>
             openDrawer('bucket-details', bucket.region, bucket.label)
           }
@@ -197,6 +303,7 @@ export const OMC_BucketLanding = (props: Props) => {
           </Typography>
         ) : null}
       </Grid>
+
       <TypeToConfirmDialog
         entity={{
           action: 'deletion',
@@ -236,7 +343,7 @@ export const OMC_BucketLanding = (props: Props) => {
           Account Settings. */}
         {buckets.length === 1 && <CancelNotice className={classes.copy} />}
       </TypeToConfirmDialog>
-    </React.Fragment>
+    </>
   );
 };
 
