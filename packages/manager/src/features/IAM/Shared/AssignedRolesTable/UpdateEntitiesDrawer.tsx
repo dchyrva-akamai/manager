@@ -1,4 +1,5 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import {
   useGetDefaultDelegationAccessQuery,
   useUpdateDefaultDelegationAccessQuery,
@@ -175,7 +176,7 @@ export const UpdateEntitiesDrawer = ({ onClose, open, role }: Props) => {
                 key={role?.name}
                 onChange={field.onChange}
                 role={role!}
-                sx={{ marginBottom: theme.tokens.spacing.S16 }}
+                sx={{ marginBottom: Spacing.S16 }}
                 value={field.value}
               />
             )}

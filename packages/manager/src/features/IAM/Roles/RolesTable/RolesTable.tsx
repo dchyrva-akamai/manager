@@ -13,11 +13,11 @@ import {
   TableRowExpanded,
   Tooltip,
 } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { Hidden, Typography } from '@linode/ui';
 import { capitalizeAllWords } from '@linode/utilities';
 import { useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import { useLocation, useNavigate, useSearch } from '@tanstack/react-router';
 import React, { useState } from 'react';
 
@@ -34,11 +34,12 @@ import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
 import { useDelegationRole } from '../../hooks/useDelegationRole';
 import { usePermissions } from '../../hooks/usePermissions';
-import { IAM_ROLES_PENDO_IDS } from '../../Shared/constants';
 import {
+  IAM_ROLES_PENDO_IDS,
   ROLES_LEARN_MORE_LINK,
   ROLES_TABLE_PREFERENCE_KEY,
 } from '../../Shared/constants';
+import { Paper } from '../../Shared/Paper/Paper';
 
 import type { RoleView } from '../../Shared/types';
 import type { Order } from '@akamai/cds-components/react/Table';
@@ -176,15 +177,20 @@ export const RolesTable = ({ roles = [] }: Props) => {
 
   return (
     <>
-      <Paper sx={(theme) => ({ marginTop: theme.tokens.spacing.S16 })}>
+      <Paper
+        marginTop={Spacing.S16}
+        padding={Spacing.S0}
+        paddingBottom={Spacing.S0}
+        paddingTop={Spacing.S0}
+      >
         <Grid
           container
           direction="row"
           spacing={2}
-          sx={(theme) => ({
+          sx={{
             justifyContent: 'space-between',
-            marginBottom: theme.tokens.spacing.S12,
-          })}
+            marginBottom: Spacing.S12,
+          }}
         >
           <Grid
             container

@@ -1,6 +1,7 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useAccountRoles } from '@linode/queries';
-import { Paper, Typography } from '@linode/ui';
+import { Typography } from '@linode/ui';
 import React from 'react';
 
 import { RolesTable } from 'src/features/IAM/Roles/RolesTable/RolesTable';
@@ -10,6 +11,7 @@ import { mapAccountPermissionsToRoles } from 'src/features/IAM/Shared/utilities'
 import { useDelegationRole } from '../hooks/useDelegationRole';
 import { useIsIAMDelegationEnabled } from '../hooks/useIsIAMEnabled';
 import { usePermissions } from '../hooks/usePermissions';
+import { Paper } from '../Shared/Paper/Paper';
 import { DefaultRolesPanel } from './Defaults/DefaultRolesPanel';
 
 export const RolesLanding = () => {
@@ -50,7 +52,7 @@ export const RolesLanding = () => {
       {(isChildUserType || isDelegateUserType) && isIAMDelegationEnabled && (
         <DefaultRolesPanel />
       )}
-      <Paper sx={(theme) => ({ marginTop: theme.tokens.spacing.S16 })}>
+      <Paper marginTop={Spacing.S16}>
         <Typography variant="h2">Roles</Typography>
         <RolesTable roles={roles} />
       </Paper>

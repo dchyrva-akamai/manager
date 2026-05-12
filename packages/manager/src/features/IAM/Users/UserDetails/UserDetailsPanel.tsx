@@ -1,7 +1,6 @@
 import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { Color, Spacing } from '@akamai/cds-tokens';
-import { Box, Paper, Stack, Typography } from '@linode/ui';
-import { Divider } from '@mui/material';
+import { Box, Stack, Typography } from '@linode/ui';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from '@tanstack/react-router';
 import React from 'react';
@@ -10,7 +9,9 @@ import { DateTimeDisplay } from 'src/components/DateTimeDisplay';
 import { PARENT_USER } from 'src/features/Account/constants';
 
 import { useDelegationRole } from '../../hooks/useDelegationRole';
+import { Divider } from '../../Shared/Divider/Divider';
 import { MaskableText } from '../../Shared/MaskableText/MaskableText';
+import { Paper } from '../../Shared/Paper/Paper';
 import { StatusIcon } from '../../Shared/StatusIcon/StatusIcon';
 import { UserDeleteConfirmation } from '../../Shared/UserDeleteConfirmation';
 import { EditUserDetailsDrawer } from './EditUserDetailsDrawer';
@@ -204,12 +205,7 @@ export const UserDetailsPanel = ({
             </Button>
           </Tooltip>
         </Box>
-        <Divider
-          sx={(theme) => ({
-            marginTop: theme.spacingFunction(24),
-            marginBottom: theme.spacingFunction(16),
-          })}
-        />
+        <Divider spacingBottom={Spacing.S16} spacingTop={Spacing.S24} />
       </Box>
       <Grid columns={{ md: 6, sm: 4, xs: 2 }} container spacing={2}>
         {items.map((item) => (

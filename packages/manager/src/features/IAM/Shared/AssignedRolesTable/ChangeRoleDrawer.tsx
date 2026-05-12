@@ -1,4 +1,5 @@
 import { NotificationBanner, Select } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import {
   useAccountRoles,
   useGetDefaultDelegationAccessQuery,
@@ -223,7 +224,7 @@ export const ChangeRoleDrawer = ({ mode, onClose, open, role }: Props) => {
             key={selectedRole.name}
             mode={mode}
             role={selectedRole}
-            sx={{ marginBottom: theme.tokens.spacing.S16 }}
+            sx={{ marginBottom: Spacing.S16 }}
             value={formattedAssignedEntities ?? []}
           />
         )}
