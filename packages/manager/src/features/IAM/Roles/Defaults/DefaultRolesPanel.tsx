@@ -1,9 +1,10 @@
 import { Button } from '@akamai/cds-components/react';
-import { Box, Paper, Typography } from '@linode/ui';
+import { Box, Typography } from '@linode/ui';
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
 
 import { IAM_ROLES_PENDO_IDS } from '../../Shared/constants';
+import { Paper } from '../../Shared/Paper/Paper';
 
 export const DefaultRolesPanel = () => {
   const navigate = useNavigate();

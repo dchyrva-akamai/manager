@@ -1,6 +1,6 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
 import { useGetDefaultDelegationAccessQuery } from '@linode/queries';
-import { Paper, Stack, Typography } from '@linode/ui';
+import { Stack, Typography } from '@linode/ui';
 import * as React from 'react';
 
 import { ErrorState } from 'src/features/IAM/Shared/ErrorState/ErrorState';
@@ -10,6 +10,7 @@ import { AssignedEntitiesTable } from '../../Shared/AssignedEntitiesTable/Assign
 import { CircleProgress } from '../../Shared/CircleProgress/CircleProgress';
 import { NO_ASSIGNED_DEFAULT_ENTITIES_TEXT } from '../../Shared/constants';
 import { NoAssignedRoles } from '../../Shared/NoAssignedRoles/NoAssignedRoles';
+import { Paper } from '../../Shared/Paper/Paper';
 
 export const DefaultEntityAccess = () => {
   const { data: permissions, isLoading: isPermissionsLoading } = usePermissions(

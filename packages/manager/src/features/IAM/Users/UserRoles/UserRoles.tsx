@@ -1,6 +1,7 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { useAccountUser, useUserRoles } from '@linode/queries';
-import { Paper, Typography, useTheme } from '@linode/ui';
+import { Typography } from '@linode/ui';
 import { useParams } from '@tanstack/react-router';
 import React from 'react';
 
@@ -12,6 +13,7 @@ import { AssignedRolesTable } from '../../Shared/AssignedRolesTable/AssignedRole
 import { CircleProgress } from '../../Shared/CircleProgress/CircleProgress';
 import { NO_ASSIGNED_ROLES_TEXT } from '../../Shared/constants';
 import { NoAssignedRoles } from '../../Shared/NoAssignedRoles/NoAssignedRoles';
+import { Paper } from '../../Shared/Paper/Paper';
 
 export const UserRoles = () => {
   const { username } = useParams({ from: '/iam/users/$username' });
@@ -20,7 +22,6 @@ export const UserRoles = () => {
     'view_user',
     'list_user_permissions',
   ]);
-  const theme = useTheme();
 
   const {
     data: assignedRoles,
@@ -56,11 +57,11 @@ export const UserRoles = () => {
     <>
       <DocumentTitleSegment segment={`${username} - User Roles`} />
       {hasAssignedRoles ? (
-        <Paper sx={(theme) => ({ marginTop: theme.tokens.spacing.S16 })}>
+        <Paper marginTop={Spacing.S16}>
           <Typography variant="h2">Assigned Roles</Typography>
           <Typography
             sx={{
-              margin: `${theme.tokens.spacing.S12} 0 ${theme.tokens.spacing.S20}`,
+              margin: `${Spacing.S12} 0 ${Spacing.S20}`,
             }}
             variant="body1"
           >

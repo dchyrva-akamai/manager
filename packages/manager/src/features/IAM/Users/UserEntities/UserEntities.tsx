@@ -1,6 +1,7 @@
 import { NotificationBanner } from '@akamai/cds-components/react/NotificationBanner';
+import { Spacing } from '@akamai/cds-tokens';
 import { useAccountUser, useUserRoles } from '@linode/queries';
-import { Paper, Typography, useTheme } from '@linode/ui';
+import { Typography } from '@linode/ui';
 import { useParams } from '@tanstack/react-router';
 import React from 'react';
 
@@ -12,9 +13,9 @@ import { AssignedEntitiesTable } from '../../Shared/AssignedEntitiesTable/Assign
 import { CircleProgress } from '../../Shared/CircleProgress/CircleProgress';
 import { NO_ASSIGNED_ENTITIES_TEXT } from '../../Shared/constants';
 import { NoAssignedRoles } from '../../Shared/NoAssignedRoles/NoAssignedRoles';
+import { Paper } from '../../Shared/Paper/Paper';
 
 export const UserEntities = () => {
-  const theme = useTheme();
   const { username } = useParams({ from: '/iam/users/$username' });
   const { data: permissions } = usePermissions('account', [
     'view_user',
@@ -55,11 +56,11 @@ export const UserEntities = () => {
       <DocumentTitleSegment segment={`${username} - User Entities`} />
 
       {hasAssignedRoles ? (
-        <Paper sx={(theme) => ({ marginTop: theme.tokens.spacing.S16 })}>
+        <Paper marginTop={Spacing.S16}>
           <Typography variant="h2">Entity Access</Typography>
           <Typography
             sx={{
-              margin: `${theme.tokens.spacing.S12} 0 ${theme.tokens.spacing.S20}`,
+              margin: `${Spacing.S12} 0 ${Spacing.S20}`,
             }}
             variant="body1"
           >
