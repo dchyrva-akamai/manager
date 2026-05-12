@@ -1,3 +1,14 @@
+import {
+  CODE_VERIFIER,
+  EXPIRE,
+  INFINITE_PAGE_SIZE,
+  NONCE,
+  PAGE_SIZE,
+  REGION_FILTER,
+  SCOPES,
+  TOKEN,
+} from '@akamai/compute-ui-core/browser';
+
 import { ENABLE_DEV_TOOLS } from 'src/constants';
 
 import type { RegionSite } from '@linode/api-v4';
@@ -68,18 +79,10 @@ export const clearSessionStorage = (key: string) => {
   window.sessionStorage.removeItem(key);
 };
 
-const PAGE_SIZE = 'PAGE_SIZE';
-const INFINITE_PAGE_SIZE = 'INFINITE_PAGE_SIZE';
-const TOKEN = 'authentication/token';
-const NONCE = 'authentication/nonce';
-const CODE_VERIFIER = 'authentication/code-verifier';
-const SCOPES = 'authentication/scopes';
-const EXPIRE = 'authentication/expire';
 const SUPPORT = 'support';
 const TICKET = 'ticket';
 const STACKSCRIPT = 'stackscript';
 const DEV_TOOLS_ENV = 'devTools/env';
-const REGION_FILTER = 'regionFilter';
 const NODE_POOLS_EXPANDED = 'nodePoolsExpanded';
 
 export type PageSize = number;
