@@ -6,7 +6,8 @@ import type { Sharegroup } from '@linode/api-v4';
 import type { Action } from 'src/components/ActionMenu/ActionMenu';
 
 export interface Handlers {
-  onDelete?: (shareGroup: Sharegroup) => void;
+  onDelete?: (shareGroupId: string) => void;
+  onEdit?: (shareGroupId: string) => void;
 }
 
 interface Props {
@@ -17,12 +18,13 @@ interface Props {
 
 export const ShareGroupActionMenu = (props: Props) => {
   const { deleteButtonDisabled, handlers, shareGroup } = props;
-  const { onDelete } = handlers ?? {};
+  const { onDelete, onEdit } = handlers ?? {};
+  const shareGroupId = String(shareGroup.id);
 
   const actions: Action[] = [
     {
       title: 'Edit Group Details',
-      onClick: () => {},
+      onClick: () => onEdit?.(shareGroupId),
       disabled: false,
       hidden: false,
       pendoId: 'Images Groups Owned-Edit Group Details',
@@ -43,7 +45,7 @@ export const ShareGroupActionMenu = (props: Props) => {
     },
     {
       title: 'Delete',
-      onClick: () => onDelete?.(shareGroup),
+      onClick: () => onDelete?.(shareGroupId),
       disabled: deleteButtonDisabled,
       hidden: false,
       tooltip: deleteButtonDisabled

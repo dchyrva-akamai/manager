@@ -44,7 +44,6 @@ export const createSharegroupPayloadFactory =
 export const updateSharegroupPayloadFactory =
   Factory.Sync.makeFactory<UpdateSharegroupPayload>({
     description: 'An updated test sharegroup.',
-    disk_id: 1,
     label: Factory.each((id) => `updated-sharegroup-${id}`),
   });
 

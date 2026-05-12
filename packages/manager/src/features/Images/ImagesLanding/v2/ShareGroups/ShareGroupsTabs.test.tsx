@@ -9,11 +9,11 @@ vi.mock('./ShareGroupsView', () => ({
   ShareGroupsView: ({
     handlers,
   }: {
-    handlers?: { onDelete?: (shareGroup: { id: number }) => void };
+    handlers?: { onDelete?: (shareGroupId: string) => void };
   }) => (
     <div>
       <div>Mock Share Groups View</div>
-      <button onClick={() => handlers?.onDelete?.({ id: 123 })} type="button">
+      <button onClick={() => handlers?.onDelete?.('123')} type="button">
         Trigger delete
       </button>
     </div>

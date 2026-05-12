@@ -5,7 +5,7 @@ const labelSchema = string()
   .max(50, 'Label must be between 1 and 50 characters.')
   .matches(
     /^[a-zA-Z0-9,.?\-_\s']+$/,
-    'Image labels cannot contain special characters.',
+    'Labels cannot contain special characters.',
   );
 
 export const baseImageSchema = object({
@@ -62,7 +62,7 @@ export const createSharegroupSchema = object({
 });
 
 export const updateSharegroupSchema = object({
-  label: labelSchema.optional(),
+  label: labelSchema.required('Label is required.'),
   description: string().optional(),
 });
 

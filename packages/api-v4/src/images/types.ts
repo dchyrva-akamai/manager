@@ -258,7 +258,7 @@ export interface CreateSharegroupPayload {
   label: string;
 }
 
-export type UpdateSharegroupPayload = Omit<CreateImagePayload, 'images'>;
+export type UpdateSharegroupPayload = Omit<CreateSharegroupPayload, 'images'>;
 
 export interface AddSharegroupImagesPayload {
   /**
