@@ -3440,6 +3440,24 @@ export const handlers = [
       return HttpResponse.json(response);
     }
   ),
+  http.post(
+    '*/monitor/services/:service_type/alert-definitions/:id/clone',
+    async ({ params, request }) => {
+      const reqBody = await request.json();
+
+      const serviceType = params.service_type as CloudPulseServiceType;
+      const response = alertFactory.build({
+        ...(reqBody as CreateAlertDefinitionPayload),
+        created_by: 'user1',
+        id: Number(params.id) + 1000,
+        service_type: serviceType,
+        type: 'user',
+        updated_by: 'user1',
+      });
+
+      return HttpResponse.json(response);
+    }
+  ),
   http.get(
     '*/monitor/services/:serviceType/alert-definitions',
     async ({ params }) => {
