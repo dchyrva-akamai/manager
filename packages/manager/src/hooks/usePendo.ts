@@ -5,8 +5,8 @@ import {
   ONE_TRUST_COOKIE_CATEGORIES,
   transformUrl,
 } from '@akamai/compute-ui-core/analytics';
+import { loadScript } from '@akamai/compute-ui-core/browser';
 import { useAccount, useProfile } from '@linode/queries';
-import { loadScript } from '@linode/utilities'; // `loadScript` from `useScript` hook
 import React from 'react';
 
 import { PENDO_API_KEY } from 'src/constants';
