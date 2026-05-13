@@ -1,3 +1,4 @@
+import { capitalize } from '@akamai/compute-ui-core/formatting';
 import {
   type Destination,
   type DestinationDetailsPayload,
@@ -10,7 +11,6 @@ import {
 } from '@linode/api-v4';
 import { useAccount } from '@linode/queries';
 import { Box, omitProps, SelectedIcon } from '@linode/ui';
-import { capitalize } from '@linode/utilities';
 import React from 'react';
 
 import {

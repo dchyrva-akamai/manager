@@ -1,6 +1,6 @@
+import { capitalize } from '@akamai/compute-ui-core/formatting';
 import { Box } from '@linode/ui';
 import { Hidden } from '@linode/ui';
-import { capitalize } from '@linode/utilities';
 import React from 'react';
 
 import { Link } from 'src/components/Link';

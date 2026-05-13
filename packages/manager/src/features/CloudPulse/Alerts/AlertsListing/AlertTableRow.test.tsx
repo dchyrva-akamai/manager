@@ -1,4 +1,4 @@
-import { capitalize } from '@linode/utilities';
+import { capitalize } from '@akamai/compute-ui-core/formatting';
 import userEvent from '@testing-library/user-event';
 import { createMemoryHistory } from 'history';
 import * as React from 'react';

@@ -14,8 +14,8 @@ import {
   Tooltip,
 } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
+import { capitalizeAllWords } from '@akamai/compute-ui-core/formatting';
 import { Hidden, Typography } from '@linode/ui';
-import { capitalizeAllWords } from '@linode/utilities';
 import { useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useLocation, useNavigate, useSearch } from '@tanstack/react-router';

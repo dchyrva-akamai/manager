@@ -1,4 +1,5 @@
 import { formatDate, parseAPIDate } from '@akamai/compute-ui-core/datetime';
+import { capitalize } from '@akamai/compute-ui-core/formatting';
 import { acceptServiceTransfer } from '@linode/api-v4';
 import {
   entityTransfersQueryKey,
@@ -7,7 +8,7 @@ import {
   useTransferQuery,
 } from '@linode/queries';
 import { Checkbox, CircleProgress, ErrorState, Notice } from '@linode/ui';
-import { capitalize, pluralize } from '@linode/utilities';
+import { pluralize } from '@linode/utilities';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';

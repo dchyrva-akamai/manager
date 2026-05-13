@@ -1,9 +1,8 @@
 import { Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
-import { truncateEnd } from '@akamai/compute-ui-core/formatting';
+import { capitalize, truncateEnd } from '@akamai/compute-ui-core/formatting';
 import { useProfile } from '@linode/queries';
 import { Box, Chip, Stack, Typography } from '@linode/ui';
-import { capitalize } from '@linode/utilities';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
 

@@ -1,8 +1,5 @@
-import {
-  capitalize,
-  getQueryParamsFromQueryString,
-  tryCatch,
-} from '@linode/utilities';
+import { capitalize } from '@akamai/compute-ui-core/formatting';
+import { getQueryParamsFromQueryString, tryCatch } from '@linode/utilities';
 import * as Sentry from '@sentry/react';
 
 import { clearUserInput, storage } from 'src/utilities/storage';

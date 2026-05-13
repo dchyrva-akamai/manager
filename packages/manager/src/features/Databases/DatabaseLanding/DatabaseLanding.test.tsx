@@ -1,5 +1,5 @@
 import { formatDate } from '@akamai/compute-ui-core/datetime';
-import { capitalize } from '@linode/utilities';
+import { capitalize } from '@akamai/compute-ui-core/formatting';
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import { DateTime } from 'luxon';
 import * as React from 'react';
