@@ -1,3 +1,4 @@
+import { pluralize } from '@akamai/compute-ui-core/formatting';
 import { useTypeQuery } from '@linode/queries';
 import {
   ActionsPanel,
@@ -6,7 +7,7 @@ import {
   Notice,
   Typography,
 } from '@linode/ui';
-import { isNumber, pluralize } from '@linode/utilities';
+import { isNumber } from '@linode/utilities';
 import * as React from 'react';
 import { makeStyles } from 'tss-react/mui';
 

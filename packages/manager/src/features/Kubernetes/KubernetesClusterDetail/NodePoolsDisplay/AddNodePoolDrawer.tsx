@@ -1,3 +1,4 @@
+import { pluralize } from '@akamai/compute-ui-core/formatting';
 import {
   type CreateNodePoolData,
   type KubernetesTier,
@@ -8,7 +9,6 @@ import { Box, Button, Drawer, Notice, Stack, Typography } from '@linode/ui';
 import {
   isNumber,
   plansNoticesUtils,
-  pluralize,
   scrollErrorIntoView,
 } from '@linode/utilities';
 import React from 'react';

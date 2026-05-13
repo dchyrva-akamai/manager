@@ -1,9 +1,9 @@
 import { formatDate, parseAPIDate } from '@akamai/compute-ui-core/datetime';
-import { capitalize } from '@akamai/compute-ui-core/formatting';
+import { capitalize, pluralize } from '@akamai/compute-ui-core/formatting';
 import { scheduleOrQueueMigration } from '@linode/api-v4/lib/linodes';
 import { useProfile } from '@linode/queries';
 import { ActionsPanel, LinkButton, Notice, Typography } from '@linode/ui';
-import { pluralize, useDialog } from '@linode/utilities';
+import { useDialog } from '@linode/utilities';
 import { DateTime } from 'luxon';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';

@@ -1,8 +1,9 @@
 import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { pluralize } from '@akamai/compute-ui-core/formatting';
 import { useProfile } from '@linode/queries';
 import { LinkButton, Stack, TooltipIcon } from '@linode/ui';
 import { Hidden } from '@linode/ui';
-import { convertStorageUnit, pluralize } from '@linode/utilities';
+import { convertStorageUnit } from '@linode/utilities';
 import React from 'react';
 
 import CloudInitIcon from 'src/assets/icons/cloud-init.svg';

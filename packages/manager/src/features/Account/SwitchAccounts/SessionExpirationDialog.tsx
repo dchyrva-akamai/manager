@@ -1,8 +1,9 @@
 import { getStorage, setStorage } from '@akamai/compute-ui-core/browser';
 import { parseAPIDate } from '@akamai/compute-ui-core/datetime';
+import { pluralize } from '@akamai/compute-ui-core/formatting';
 import { useAccount } from '@linode/queries';
 import { ActionsPanel, Typography } from '@linode/ui';
-import { pluralize, useInterval } from '@linode/utilities';
+import { useInterval } from '@linode/utilities';
 import { useNavigate } from '@tanstack/react-router';
 import React, { useEffect } from 'react';
 
