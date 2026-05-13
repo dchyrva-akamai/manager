@@ -1,8 +1,7 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
-import { Notice, Typography } from '@linode/ui';
+import { Notice, Typography, useTheme } from '@linode/ui';
 import { useDebouncedValue } from '@linode/utilities';
-import { useTheme } from '@mui/material';
 import React from 'react';
 
 import { FormLabel } from 'src/components/FormLabel';
@@ -69,13 +68,11 @@ export const EntitiesSelect = ({
   const showSelectedOnly = isReadOnly || showSelectedOnlyState;
 
   const filteredRows = React.useMemo(() => {
-    const filtered = debouncedFilterText
-      ? entityOptions.filter((opt) =>
-          opt.label.toLowerCase().includes(debouncedFilterText.toLowerCase())
-        )
-      : entityOptions;
-    const source: EntitiesOption[] = showSelectedOnly ? value : filtered;
-    return source.map((opt, idx) => ({
+    const matchesFilter = (opt: EntitiesOption) =>
+      !debouncedFilterText ||
+      opt.label.toLowerCase().includes(debouncedFilterText.toLowerCase());
+    const source = showSelectedOnly ? value : entityOptions;
+    return source.filter(matchesFilter).map((opt, idx) => ({
       rank: idx,
       name: opt.label,
       option: opt,
@@ -116,7 +113,11 @@ export const EntitiesSelect = ({
 
   const handleClear = () => {
     const visibleValues = new Set(filteredRows.map((p) => p.option.value));
-    onChange(value.filter((v) => !visibleValues.has(v.value)));
+    const remaining = value.filter((v) => !visibleValues.has(v.value));
+    onChange(remaining);
+    if (remaining.length === 0 && showSelectedOnly) {
+      setShowSelectedOnlyState(false);
+    }
   };
 
   const handleSelectAll = () => {
