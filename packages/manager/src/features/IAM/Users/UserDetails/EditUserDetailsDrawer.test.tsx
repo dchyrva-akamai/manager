@@ -59,7 +59,7 @@ describe('EditUserDetailsDrawer', () => {
       ).toBeVisible();
     });
 
-    it("disables the username field for a proxy user", async () => {
+    it('disables the username field for a proxy user', async () => {
       const user = accountUserFactory.build({
         user_type: 'proxy',
         username: 'proxy-user-1',
@@ -139,7 +139,7 @@ describe('EditUserDetailsDrawer', () => {
       expect(getByLabelText('Email')).toBeDisabled();
     });
 
-    it("disables the email field for a proxy user", async () => {
+    it('disables the email field for a proxy user', async () => {
       const user = accountUserFactory.build({
         user_type: 'proxy',
         username: 'proxy-user-1',
@@ -170,9 +170,7 @@ describe('EditUserDetailsDrawer', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-      expect(
-        screen.getByText(/invalid email address/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/invalid email address/i)).toBeInTheDocument();
     });
 
     it('disables the email field when the active user is not the logged-in user', async () => {
