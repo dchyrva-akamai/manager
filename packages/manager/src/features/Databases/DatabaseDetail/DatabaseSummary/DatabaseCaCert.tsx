@@ -1,7 +1,7 @@
 import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
+import { downloadFile } from '@akamai/compute-ui-core/browser';
 import { getSSLFields } from '@linode/api-v4/lib/databases/databases';
-import { downloadFile } from '@linode/utilities';
 import { styled } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';

@@ -11,7 +11,10 @@ import {
 
 import { ENABLE_DEV_TOOLS } from 'src/constants';
 
-import type { RegionSite } from '@linode/api-v4';
+import type {
+  AuthGetAndSet,
+  RegionFilter,
+} from '@akamai/compute-ui-core/browser';
 import type { StackScriptPayload } from '@linode/api-v4/lib/stackscripts/types';
 import type { SupportTicketFormFields } from 'src/features/Support/SupportTickets/SupportTicketDialog';
 
@@ -86,13 +89,6 @@ const DEV_TOOLS_ENV = 'devTools/env';
 const NODE_POOLS_EXPANDED = 'nodePoolsExpanded';
 
 export type PageSize = number;
-export type RegionFilter = 'all' | RegionSite;
-
-interface AuthGetAndSet {
-  clear: () => void;
-  get: () => string | undefined;
-  set: (value: string) => void;
-}
 
 interface TicketReply {
   text: string;
