@@ -8,6 +8,7 @@ import {
   TableRow,
 } from '@akamai/cds-components/react/Table';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { capitalize } from '@akamai/compute-ui-core/formatting';
 import { useProfile, useShareGroupsMembersQuery } from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
 import {
@@ -21,7 +22,6 @@ import {
   useTheme,
   ZeroStateSearchNarrowIcon,
 } from '@linode/ui';
-import { capitalize } from '@linode/utilities';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import * as React from 'react';
 

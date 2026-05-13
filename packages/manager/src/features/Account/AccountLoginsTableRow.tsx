@@ -1,7 +1,7 @@
 import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { capitalize } from '@akamai/compute-ui-core/formatting';
 import { useProfile } from '@linode/queries';
 import { Hidden } from '@linode/ui';
-import { capitalize } from '@linode/utilities';
 import * as React from 'react';
 
 import { Link } from 'src/components/Link';

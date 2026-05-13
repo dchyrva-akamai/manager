@@ -1,4 +1,8 @@
-import { capitalize, capitalizeAllWords, partition } from '@linode/utilities';
+import {
+  capitalize,
+  capitalizeAllWords,
+} from '@akamai/compute-ui-core/formatting';
+import { partition } from '@linode/utilities';
 import type { CSSProperties } from 'react';
 
 import {

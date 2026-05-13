@@ -5,7 +5,6 @@ export * from './arePropsEqual';
 export * from './arrayToList';
 export * from './betaUtils';
 export * from './breakpoints';
-export * from './capitalize';
 export * from './createDevicesFromStrings';
 export * from './createStringsFromDevices';
 export * from './deepStringTransform';

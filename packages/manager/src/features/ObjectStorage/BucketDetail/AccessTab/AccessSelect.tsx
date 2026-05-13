@@ -1,3 +1,4 @@
+import { capitalize } from '@akamai/compute-ui-core/formatting';
 import {
   ActionsPanel,
   Autocomplete,
@@ -6,7 +7,7 @@ import {
   Toggle,
   Typography,
 } from '@linode/ui';
-import { capitalize, useOpenClose } from '@linode/utilities';
+import { useOpenClose } from '@linode/utilities';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 

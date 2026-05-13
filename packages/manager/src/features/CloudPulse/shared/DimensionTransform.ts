@@ -1,4 +1,4 @@
-import { capitalize } from '@linode/utilities';
+import { capitalize } from '@akamai/compute-ui-core/formatting';
 
 import type { TransformFunction, TransformFunctionMap } from './types';
 import type { CloudPulseServiceType } from '@linode/api-v4';
