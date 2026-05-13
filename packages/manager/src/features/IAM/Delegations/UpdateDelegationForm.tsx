@@ -153,14 +153,17 @@ export const UpdateDelegationForm = ({
     option: UserOption;
     rank: number;
   }> => {
+    const normalizedFilter = debouncedFilterText.trim().toLowerCase();
+    const matchesFilter = (u: UserOption) =>
+      !normalizedFilter || u.label.toLowerCase().includes(normalizedFilter);
     const source: UserOption[] = showSelectedOnly
-      ? selectedUsers
+      ? selectedUsers.filter(matchesFilter)
       : (currentPageData ?? []).map((u) => ({
           label: u.username,
           value: u.username,
         }));
     return source.map((u, idx) => ({ rank: idx, name: u.label, option: u }));
-  }, [currentPageData, selectedUsers, showSelectedOnly]);
+  }, [currentPageData, debouncedFilterText, selectedUsers, showSelectedOnly]);
 
   const isSearching =
     filterText.length > 0 && debouncedFilterText !== filterText;
@@ -194,19 +197,14 @@ export const UpdateDelegationForm = ({
   }, [displayedUserRows, selectedUsers]);
 
   const displayedSelectedUsers = React.useMemo(() => {
-    if (showSelectedOnly) {
-      return selectedUsers;
-    }
-
     const normalizedFilter = debouncedFilterText.trim().toLowerCase();
     if (!normalizedFilter) {
       return selectedUsers;
     }
-
     return selectedUsers.filter((user) =>
       user.label.toLowerCase().includes(normalizedFilter)
     );
-  }, [debouncedFilterText, selectedUsers, showSelectedOnly]);
+  }, [debouncedFilterText, selectedUsers]);
 
   const clearDisabled = displayedSelectedUsers.length === 0;
 
@@ -214,10 +212,11 @@ export const UpdateDelegationForm = ({
     const visibleValues = new Set(
       displayedSelectedUsers.map((user) => user.value)
     );
-    setValue(
-      'users',
-      selectedUsers.filter((u) => !visibleValues.has(u.value))
-    );
+    const remaining = selectedUsers.filter((u) => !visibleValues.has(u.value));
+    setValue('users', remaining);
+    if (remaining.length === 0 && showSelectedOnly) {
+      setShowSelectedOnly(false);
+    }
   };
 
   const handleSelectAll = () => {

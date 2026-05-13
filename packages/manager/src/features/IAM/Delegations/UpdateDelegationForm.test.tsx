@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { vi } from 'vitest';
@@ -8,6 +8,13 @@ import { mockMatchMedia, renderWithTheme } from 'src/utilities/testHelpers';
 import { UpdateDelegationForm } from './UpdateDelegationForm';
 
 import type { ChildAccountWithDelegates, User } from '@linode/api-v4';
+
+// Remove the debounce delay so filter changes take effect synchronously.
+vi.mock('@linode/utilities', async () => {
+  const actual = await vi.importActual('@linode/utilities');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return { ...actual, useDebouncedValue: (value: any) => value };
+});
 
 beforeAll(() => mockMatchMedia());
 
@@ -142,6 +149,71 @@ describe('UpdateDelegationsDrawer', () => {
         euuid: mockChildAccountWithDelegates.euuid,
         users: [],
       });
+    });
+  });
+
+  it('filters selected users by search text when the toggle is active', async () => {
+    const { container } = renderWithTheme(
+      <UpdateDelegationForm
+        {...defaultProps}
+        formattedCurrentUsers={[
+          { label: 'user1', value: 'user1' },
+          { label: 'user2', value: 'user2' },
+        ]}
+      />
+    );
+
+    // Enable "Show selected only"
+    const showSelectedOnlyCheckbox = container.querySelector<
+      HTMLElement & { checked?: boolean }
+    >('cds-checkbox');
+    showSelectedOnlyCheckbox!.dispatchEvent(
+      new CustomEvent('change', { bubbles: true, detail: true })
+    );
+
+    // Wait for state to propagate
+    await waitFor(() => expect(showSelectedOnlyCheckbox?.checked).toBe(true));
+
+    // Both selected users visible before any filter
+    expect(screen.getByText('user1')).toBeInTheDocument();
+    expect(screen.getByText('user2')).toBeInTheDocument();
+
+    // Type a filter targeting only user1
+    const searchField = container.querySelector('cds-search-field');
+    fireEvent.change(searchField!, { target: { value: 'user1' } });
+
+    // With useDebouncedValue mocked as pass-through, filter applies immediately
+    await waitFor(() => {
+      expect(screen.getByText('user1')).toBeInTheDocument();
+      expect(screen.queryByText('user2')).not.toBeInTheDocument();
+    });
+  });
+
+  it('deactivates the toggle when "Clear all" empties the selection', async () => {
+    const { container } = renderWithTheme(
+      <UpdateDelegationForm {...defaultProps} />
+    );
+
+    // Enable "Show selected only" (user1 is pre-selected)
+    const showSelectedOnlyCheckbox = container.querySelector<
+      HTMLElement & { checked?: boolean }
+    >('cds-checkbox');
+    showSelectedOnlyCheckbox!.dispatchEvent(
+      new CustomEvent('change', { bubbles: true, detail: true })
+    );
+
+    await waitFor(() => expect(showSelectedOnlyCheckbox?.checked).toBe(true));
+
+    // Click "Clear all" — removes user1 from the selection
+    fireEvent.click(screen.getByText('Clear all'));
+
+    // The toggle must be automatically deactivated because selection is now empty
+    await waitFor(() => expect(showSelectedOnlyCheckbox?.checked).toBeFalsy());
+
+    // Both API users should be visible again in the unrestricted list
+    await waitFor(() => {
+      expect(screen.getByText('user1')).toBeInTheDocument();
+      expect(screen.getByText('user2')).toBeInTheDocument();
     });
   });
 });

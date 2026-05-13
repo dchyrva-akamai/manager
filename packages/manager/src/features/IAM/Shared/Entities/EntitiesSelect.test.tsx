@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { accountEntityFactory } from 'src/factories/accountEntities';
@@ -7,6 +7,13 @@ import { renderWithTheme } from 'src/utilities/testHelpers';
 import { EntitiesSelect } from './EntitiesSelect';
 
 import type { EntitiesOption } from '../types';
+
+// Remove the debounce delay so filter changes take effect synchronously.
+vi.mock('@linode/utilities', async () => {
+  const actual = await vi.importActual('@linode/utilities');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return { ...actual, useDebouncedValue: (value: any) => value };
+});
 
 const queryMocks = vi.hoisted(() => ({
   useAllAccountEntities: vi.fn().mockReturnValue({}),
@@ -31,6 +38,15 @@ const mockEntities = [
     label: 'firewall-1',
     type: 'firewall',
   }),
+];
+
+const linodeEntities = [
+  accountEntityFactory.build({ id: 1, label: 'linode-1', type: 'linode' }),
+  accountEntityFactory.build({ id: 2, label: 'linode-2', type: 'linode' }),
+];
+const bothSelected: EntitiesOption[] = [
+  { label: 'linode-1', value: 1 },
+  { label: 'linode-2', value: 2 },
 ];
 
 const mockOnChange = vi.fn();
@@ -196,5 +212,75 @@ describe('Entities', () => {
 
     // Verify that the error message is displayed
     expect(screen.getByText(errorMessage)).toBeVisible();
+  });
+
+  it('filters visible rows by search text when the toggle is active', async () => {
+    queryMocks.useAllAccountEntities.mockReturnValue({ data: linodeEntities });
+    const { container } = renderWithTheme(
+      <EntitiesSelect
+        access="entity_access"
+        mode="assign-role"
+        onChange={mockOnChange}
+        type="linode"
+        value={bothSelected}
+      />
+    );
+
+    // Enable "Show selected only"
+    const showSelectedOnlyCheckbox = container.querySelector<
+      HTMLElement & { checked?: boolean }
+    >('cds-checkbox');
+    showSelectedOnlyCheckbox!.dispatchEvent(
+      new CustomEvent('change', { bubbles: true, detail: true })
+    );
+
+    // Wait for state to propagate
+    await waitFor(() => expect(showSelectedOnlyCheckbox?.checked).toBe(true));
+
+    // Both rows visible before any filter
+    expect(screen.getByText('linode-1')).toBeVisible();
+    expect(screen.getByText('linode-2')).toBeVisible();
+
+    // Type a filter targeting only linode-1
+    const searchField = container.querySelector('cds-search-field');
+    fireEvent.change(searchField!, { target: { value: 'linode-1' } });
+
+    // With useDebouncedValue mocked as pass-through, filter applies immediately
+    await waitFor(() => {
+      expect(screen.getByText('linode-1')).toBeVisible();
+      expect(screen.queryByText('linode-2')).not.toBeInTheDocument();
+    });
+  });
+
+  it('deactivates the toggle when "Clear all" empties the selection', async () => {
+    queryMocks.useAllAccountEntities.mockReturnValue({ data: linodeEntities });
+    const { container } = renderWithTheme(
+      <EntitiesSelect
+        access="entity_access"
+        mode="assign-role"
+        onChange={mockOnChange}
+        type="linode"
+        value={bothSelected}
+      />
+    );
+
+    // Enable "Show selected only"
+    const showSelectedOnlyCheckbox = container.querySelector<
+      HTMLElement & { checked?: boolean }
+    >('cds-checkbox');
+    showSelectedOnlyCheckbox!.dispatchEvent(
+      new CustomEvent('change', { bubbles: true, detail: true })
+    );
+
+    await waitFor(() => expect(showSelectedOnlyCheckbox?.checked).toBe(true));
+
+    // Click "Clear all" (synchronous fireEvent avoids async-act issues)
+    fireEvent.click(screen.getByText('Clear all'));
+
+    // onChange must have been called to clear the selection
+    expect(mockOnChange).toHaveBeenCalledWith([]);
+
+    // The toggle must be automatically deactivated
+    await waitFor(() => expect(showSelectedOnlyCheckbox?.checked).toBeFalsy());
   });
 });
