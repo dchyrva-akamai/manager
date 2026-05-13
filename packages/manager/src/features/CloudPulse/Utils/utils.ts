@@ -1,5 +1,6 @@
+import { roundTo } from '@akamai/compute-ui-core/formatting';
 import { useAccount, useRegionsQuery } from '@linode/queries';
-import { isFeatureEnabledV2, roundTo } from '@linode/utilities';
+import { isFeatureEnabledV2 } from '@linode/utilities';
 import React from 'react';
 
 import { convertData } from 'src/features/Longview/shared/formatters';

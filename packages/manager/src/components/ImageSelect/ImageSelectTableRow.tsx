@@ -1,5 +1,6 @@
 import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { pluralize } from '@akamai/compute-ui-core/formatting';
 import {
   FormControlLabel,
   Hidden,
@@ -7,7 +8,7 @@ import {
   Radio,
   TooltipIcon,
 } from '@linode/ui';
-import { convertStorageUnit, pluralize } from '@linode/utilities';
+import { convertStorageUnit } from '@linode/utilities';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React from 'react';
 

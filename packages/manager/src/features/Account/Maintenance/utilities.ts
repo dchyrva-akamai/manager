@@ -1,5 +1,5 @@
 import { parseAPIDate } from '@akamai/compute-ui-core/datetime';
-import { pluralize } from '@linode/utilities';
+import { pluralize } from '@akamai/compute-ui-core/formatting';
 import { DateTime } from 'luxon';
 
 import type { MaintenanceTableType } from './MaintenanceTable';

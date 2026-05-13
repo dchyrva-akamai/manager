@@ -1,4 +1,4 @@
-import { roundTo } from '@linode/utilities';
+import { roundTo } from '@akamai/compute-ui-core/formatting';
 
 const supportedUnits = {
   B: 'Bytes',

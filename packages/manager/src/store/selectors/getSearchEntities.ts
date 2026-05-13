@@ -1,4 +1,4 @@
-import { pluralize } from '@linode/utilities';
+import { pluralize } from '@akamai/compute-ui-core/formatting';
 import { readableBytes } from '@linode/utilities';
 
 import { getDatabasesDescription } from 'src/features/Databases/utilities';
