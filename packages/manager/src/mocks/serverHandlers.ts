@@ -6,6 +6,7 @@
  *
  * New handlers should be added to the CRUD baseline preset instead (ex: src/mocks/presets/crud/handlers/linodes.ts) which support a much more dynamic data mocking.
  */
+import { getStorage } from '@akamai/compute-ui-core/browser';
 import {
   acceleratedTypeFactory,
   accountAvailabilityFactory,
@@ -144,7 +145,6 @@ import { accountLoginFactory } from 'src/factories/accountLogin';
 import { accountUserFactory } from 'src/factories/accountUsers';
 import { LinodeKernelFactory } from 'src/factories/linodeKernel';
 import { objEndpointQuotaFactory } from 'src/factories/quotas';
-import { getStorage } from 'src/utilities/storage';
 
 import type { PathParams } from 'msw';
 
