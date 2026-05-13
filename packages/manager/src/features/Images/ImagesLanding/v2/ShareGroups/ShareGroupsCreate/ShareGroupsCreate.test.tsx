@@ -144,7 +144,9 @@ describe('ShareGroupsCreate', () => {
       <ShareGroupsCreate />
     );
 
-    const toggleUbuntuButton = getByRole('button', { name: /Toggle Ubuntu Base/i });
+    const toggleUbuntuButton = getByRole('button', {
+      name: /Toggle Ubuntu Base/i,
+    });
 
     await userEvent.click(toggleUbuntuButton);
 
@@ -166,7 +168,10 @@ describe('ShareGroupsCreate', () => {
       <ShareGroupsCreate />
     );
 
-    await userEvent.type(getByRole('textbox', { name: /Label/i }), shareGroupLabel);
+    await userEvent.type(
+      getByRole('textbox', { name: /Label/i }),
+      shareGroupLabel
+    );
     await userEvent.click(getByRole('button', { name: /Toggle Ubuntu Base/i }));
 
     expect(getByText('Selected images (1)')).toBeVisible();

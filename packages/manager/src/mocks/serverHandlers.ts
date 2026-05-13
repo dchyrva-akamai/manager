@@ -782,6 +782,33 @@ const premiumTypes = [
   }),
 ];
 const acceleratedType = acceleratedTypeFactory.buildList(7);
+const monthlyBillingSupportedTypes = [
+  dedicatedTypeFactory.build({
+    price: { hourly: 0.105, monthly: 75 },
+    label:
+      'Dedicated with monthly and hourly value (Monthly billing supported)',
+  }),
+  dedicatedTypeFactory.build({
+    price: { hourly: 0.105, monthly: null },
+    label: 'Dedicated with hourly value only (Monthly billing supported)',
+  }),
+];
+const hourlyBillingSupportedTypes = [
+  // Note: These types of plans should be included in LD flag ComputePricing -> activeBillingPlanMatchers
+  gpuTypeAdaFactory.build({
+    price: { hourly: 0.0879, monthly: null },
+    label: 'RTX4000 Ada (Hourly Billing Supported)',
+  }),
+  gpuTypeRtxFactory.build({
+    price: { hourly: 2.0, monthly: null },
+    label: 'Dedicated 32 GB + RTX6000 GPU (Hourly Billing Supported)',
+  }),
+  linodeTypeFactory.build({
+    id: 'g8-dedicated-256-64-hourly',
+    label: 'G8 Dedicated 256x64 (Hourly Billing Supported)',
+    price: { hourly: 1.68, monthly: null },
+  }),
+];
 
 const proxyAccountUser = accountUserFactory.build({
   email: 'partner@proxy.com',
@@ -992,6 +1019,8 @@ export const handlers = [
         ...premiumTypes,
         ...acceleratedType,
         proDedicatedType,
+        ...monthlyBillingSupportedTypes,
+        ...hourlyBillingSupportedTypes,
       ])
     );
   }),

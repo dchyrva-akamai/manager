@@ -11,12 +11,13 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import { Currency } from 'src/components/Currency';
 import { TextTooltip } from 'src/components/TextTooltip';
 import { useIsAclpSupportedRegion } from 'src/features/CloudPulse/Utils/utils';
 import { useFlags } from 'src/hooks/useFlags';
 import { useIsLinodeInterfacesEnabled } from 'src/utilities/linodes';
-import { getMonthlyBackupsPrice } from 'src/utilities/pricing/backups';
-import { renderMonthlyPriceToCorrectDecimalPlace } from 'src/utilities/pricing/dynamicPricing';
+import { getLinodeBackupPrice } from 'src/utilities/pricing/backups';
+import { useComputePricing } from 'src/utilities/pricing/useComputePricing';
 
 import { getLinodePrice } from './utilities';
 
@@ -80,6 +81,15 @@ export const Summary = ({ isAclpAlertsMode }: SummaryProps) => {
 
   const { aclpServices } = useFlags();
 
+  // Billing mode scoped to the selected plan — if the LD flag restricts the active billing
+  // to certain plan types (e.g. 'g8', 'gpu'), only those plans and their backups will
+  // reflect it; everything else stays on monthly.
+  const {
+    getPrice,
+    billing,
+    priceLabel: backupsPriceLabel,
+  } = useComputePricing(typeId);
+
   const isAclpAlertsSupportedRegionLinode = useIsAclpSupportedRegion({
     capability: 'Linodes',
     regionId,
@@ -88,11 +98,10 @@ export const Summary = ({ isAclpAlertsMode }: SummaryProps) => {
 
   const region = regions?.find((r) => r.id === regionId);
 
-  const backupsPrice = renderMonthlyPriceToCorrectDecimalPlace(
-    getMonthlyBackupsPrice({ region: regionId, type })
-  );
+  const backupsPrice = getPrice(getLinodeBackupPrice(type, regionId));
 
   const price = getLinodePrice({
+    interval: billing,
     regionId,
     types,
     stackscriptData,
@@ -158,7 +167,12 @@ export const Summary = ({ isAclpAlertsMode }: SummaryProps) => {
     },
     {
       item: {
-        details: `$${backupsPrice}/month`,
+        details: (
+          <>
+            <Currency quantity={backupsPrice} useAdaptivePrecision />
+            {`/${backupsPriceLabel}`}
+          </>
+        ),
         title: 'Backups',
       },
       show: backupsEnabled && Boolean(type),

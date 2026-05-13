@@ -220,6 +220,18 @@ interface ResourceLockFlag {
 
 interface ComputePricing {
   /**
+   * Restricts the active `billing` mode to plans whose type ID contains one of these
+   * substrings (case-insensitive). Plans that don't match fall back to `'monthly'`.
+   * Has no effect when `billing` is already `'monthly'`.
+   * Use an empty array `[]` to apply `billing` to all plans.
+   *
+   * Must be explicitly set in every LD variation to keep variations structurally
+   * consistent and avoid ambiguity between "missing" and "intentionally empty".
+   *
+   * @example ['g8', 'gpu']
+   */
+  activeBillingPlanMatchers: string[];
+  /**
    * Global banner configuration displayed only to users
    * who have at least one plan matching any of the patterns provided in `TARGET_PLAN_MATCHERS`.
    */
