@@ -13,7 +13,6 @@ import type { JSX } from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
-import { InlineMenuAction } from 'src/components/InlineMenuAction/InlineMenuAction';
 
 import { ManageAccessControlDrawer } from './ManageAccessControlDrawer';
 
@@ -32,10 +31,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'space-between',
-    padding: 0,
-  },
-  removeButton: {
-    float: 'right',
+    paddingLeft: 0,
   },
   restrictWarning: {
     width: '50%',
@@ -146,12 +142,19 @@ export const AccessControls = (props: Props) => {
                 key={`${accessControl}-tablecell`}
               >
                 {accessControl}
-                <InlineMenuAction
-                  actionText="Remove"
-                  className={classes.removeButton}
-                  disabled={disabled}
-                  onClick={() => handleClickRemove(accessControl)}
-                />
+                {disabled ? (
+                  <Button disabled={disabled} size="large" variant="primary">
+                    Remove
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => handleClickRemove(accessControl)}
+                    size="large"
+                    variant="link"
+                  >
+                    Remove
+                  </Button>
+                )}
               </TableCell>
             </TableRow>
           ))}
