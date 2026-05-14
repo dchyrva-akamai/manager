@@ -1,18 +1,18 @@
 import { Button } from '@akamai/cds-components/react';
 import { Spacing, Typography } from '@akamai/cds-tokens';
-import { Paper } from '@linode/ui';
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
 
 import { SSO_ENFORCEMENT_LINK } from '../Shared/constants';
+import { Link } from '../Shared/Link/Link';
+import { Paper } from '../Shared/Paper/Paper';
 import { StatusIcon } from '../Shared/StatusIcon/StatusIcon';
 
-// TODO: Add a Link component + Paper component;
 export const LoginSettingsLanding = () => {
   const navigate = useNavigate();
 
   return (
-    <Paper sx={{ padding: Spacing.S24 }}>
+    <Paper padding={Spacing.S24} paddingTop={Spacing.S24}>
       <h2
         style={{
           marginTop: Spacing.S0,
@@ -26,7 +26,7 @@ export const LoginSettingsLanding = () => {
         The single sign-on (SSO) enforcement enables you to configure the SSO
         login for users of your account, including identity provider (IDP)
         configuration and excluded users.{' '}
-        <a href={SSO_ENFORCEMENT_LINK}>Learn more.</a>
+        <Link to={SSO_ENFORCEMENT_LINK}>Learn more.</Link>
       </p>
       <div
         style={{

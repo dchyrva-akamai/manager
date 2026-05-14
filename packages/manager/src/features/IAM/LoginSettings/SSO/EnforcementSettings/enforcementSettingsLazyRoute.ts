@@ -1,9 +1,9 @@
 import { createLazyRoute } from '@tanstack/react-router';
 
-import { EnforcementSettings } from './EnforcementSettings';
+import { EnforcementSettingsLanding } from './EnforcementSettingsLanding';
 
 export const enforcementSettingsLazyRoute = createLazyRoute(
   '/iam/login-settings/sso/enforcement-settings'
 )({
-  component: EnforcementSettings,
+  component: EnforcementSettingsLanding,
 });

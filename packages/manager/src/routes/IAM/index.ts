@@ -388,7 +388,7 @@ const iamUserNameDelegationsRoute = createRoute({
   ).then((m) => m.userDelegationsLazyRoute)
 );
 
-// ─── Login Settings ───────────────────────────────────────────────────────────
+// ─── Settings ───────────────────────────────────────────────────────────
 
 const iamLoginSettingsRoute = createRoute({
   getParentRoute: () => iamTabsRoute,

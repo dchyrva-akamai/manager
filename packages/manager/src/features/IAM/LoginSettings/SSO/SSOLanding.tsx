@@ -62,7 +62,7 @@ export const SSOLanding = () => {
           <BreadcrumbItem
             onCdsBreadcrumbClick={() => navigate({ to: '/iam/login-settings' })}
           >
-            Login Settings
+            Settings
           </BreadcrumbItem>
           <BreadcrumbItem>Manage SSO Enforcement</BreadcrumbItem>
         </Breadcrumb>
