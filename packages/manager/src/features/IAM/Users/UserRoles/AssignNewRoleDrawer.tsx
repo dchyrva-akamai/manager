@@ -16,7 +16,6 @@ import { enqueueSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 
-import { Link } from 'src/components/Link';
 import { AssignSingleRole } from 'src/features/IAM/Users/UserRoles/AssignSingleRole';
 
 import { useIsDefaultDelegationRolesForChildAccount } from '../../hooks/useDelegationRole';
@@ -25,6 +24,7 @@ import {
   INTERNAL_ERROR_NO_CHANGES_SAVED,
   ROLES_LEARN_MORE_LINK,
 } from '../../Shared/constants';
+import { Link } from '../../Shared/Link/Link';
 import {
   getAllRoles,
   isAccountRole,

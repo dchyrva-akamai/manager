@@ -8,7 +8,6 @@ import React from 'react';
 
 import { Avatar } from 'src/components/Avatar/Avatar';
 import { DateTimeDisplay } from 'src/components/DateTimeDisplay';
-import { Link } from 'src/components/Link';
 import { TableCell } from 'src/components/TableCell';
 import { TableRow } from 'src/components/TableRow';
 
@@ -20,6 +19,7 @@ import {
   IAM_DELEGATE_USERS_PENDO_IDS,
   IAM_PARENT_USERS_PENDO_IDS,
 } from '../../Shared/constants';
+import { Link } from '../../Shared/Link/Link';
 import { MaskableText } from '../../Shared/MaskableText/MaskableText';
 import { StatusIcon } from '../../Shared/StatusIcon/StatusIcon';
 import { UsersActionMenu } from './UsersActionMenu';

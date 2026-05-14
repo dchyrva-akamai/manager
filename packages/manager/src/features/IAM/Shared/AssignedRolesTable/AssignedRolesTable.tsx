@@ -12,7 +12,6 @@ import React from 'react';
 
 import { CollapsibleTable } from 'src/components/CollapsibleTable/CollapsibleTable';
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField';
-import { Link } from 'src/components/Link';
 import { PaginationFooter } from 'src/components/PaginationFooter/PaginationFooter';
 import { PAGE_SIZES } from 'src/components/PaginationFooter/PaginationFooter.constants';
 import { TableCell } from 'src/components/TableCell';
@@ -32,6 +31,7 @@ import {
   IAM_ROLES_PENDO_IDS,
   ROLES_LEARN_MORE_LINK,
 } from '../constants';
+import { Link } from '../Link/Link';
 import { Permissions } from '../Permissions/Permissions';
 import { RemoveAssignmentConfirmationDialog } from '../RemoveAssignmentConfirmationDialog/RemoveAssignmentConfirmationDialog';
 import {

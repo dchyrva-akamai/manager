@@ -14,11 +14,10 @@ import { enqueueSnackbar } from 'notistack';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import { Link } from 'src/components/Link';
-
 import { useIsDefaultDelegationRolesForChildAccount } from '../../hooks/useDelegationRole';
 import { AssignedPermissionsPanel } from '../AssignedPermissionsPanel/AssignedPermissionsPanel';
 import { ROLES_LEARN_MORE_LINK } from '../constants';
+import { Link } from '../Link/Link';
 import {
   changeUserRole,
   getAllRoles,
