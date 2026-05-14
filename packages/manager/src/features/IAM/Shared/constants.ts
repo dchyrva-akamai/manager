@@ -52,6 +52,9 @@ export const IAM_ROLES_PENDO_IDS = {
 };
 // Various constants for the IAM package
 
+// Display limits
+export const EMAIL_MAX_LENGTH = 40;
+
 // Labels
 export const IAM_LABEL = 'Identity and Access';
 
