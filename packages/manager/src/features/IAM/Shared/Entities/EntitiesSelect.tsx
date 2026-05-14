@@ -5,9 +5,9 @@ import { useDebouncedValue } from '@linode/utilities';
 import React from 'react';
 
 import { FormLabel } from 'src/components/FormLabel';
-import { Link } from 'src/components/Link';
 import { useAllAccountEntities } from 'src/queries/entities/entities';
 
+import { Link } from '../Link/Link';
 import { SelectionPanel } from '../SelectionPanel/SelectionPanel';
 import { getFormattedEntityType } from '../utilities';
 import { getCreateLinkForEntityType, getPlaceholder } from './utils';

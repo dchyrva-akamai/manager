@@ -13,7 +13,6 @@ import { enqueueSnackbar } from 'notistack';
 import React, { useCallback, useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 
-import { Link } from 'src/components/Link';
 import { AssignSingleSelectedRole } from 'src/features/IAM/Roles/RolesTable/AssignSingleSelectedRole';
 
 import { usePermissions } from '../../hooks/usePermissions';
@@ -22,6 +21,7 @@ import {
   INTERNAL_ERROR_NO_CHANGES_SAVED,
 } from '../../Shared/constants';
 import { DelegateUserChip } from '../../Shared/DelegateUserChip';
+import { Link } from '../../Shared/Link/Link';
 import { mergeAssignedRolesIntoExistingRoles } from '../../Shared/utilities';
 
 import type { AssignNewRoleFormValues } from '../../Shared/utilities';

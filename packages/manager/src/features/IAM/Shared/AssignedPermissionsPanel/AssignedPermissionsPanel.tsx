@@ -1,10 +1,9 @@
 import { Spacing } from '@akamai/cds-tokens';
 import * as React from 'react';
 
-import { Link } from 'src/components/Link';
-
 import { ROLES_LEARN_MORE_LINK } from '../constants';
 import { EntitiesSelect } from '../Entities/EntitiesSelect';
+import { Link } from '../Link/Link';
 import { Paper } from '../Paper/Paper';
 import { Permissions } from '../Permissions/Permissions';
 import { type ExtendedRole, getFacadeRoleDescription } from '../utilities';

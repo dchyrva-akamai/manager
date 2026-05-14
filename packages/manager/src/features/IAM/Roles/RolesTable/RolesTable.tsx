@@ -22,7 +22,6 @@ import { useLocation, useNavigate, useSearch } from '@tanstack/react-router';
 import React, { useState } from 'react';
 
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField';
-import { Link } from 'src/components/Link';
 import { AssignSelectedRolesDrawer } from 'src/features/IAM/Roles/RolesTable/AssignSelectedRolesDrawer';
 import { RolesTableActionMenu } from 'src/features/IAM/Roles/RolesTable/RolesTableActionMenu';
 import { RolesTableExpandedRow } from 'src/features/IAM/Roles/RolesTable/RolesTableExpandedRow';
@@ -39,6 +38,7 @@ import {
   ROLES_LEARN_MORE_LINK,
   ROLES_TABLE_PREFERENCE_KEY,
 } from '../../Shared/constants';
+import { Link } from '../../Shared/Link/Link';
 import { Paper } from '../../Shared/Paper/Paper';
 
 import type { RoleView } from '../../Shared/types';
