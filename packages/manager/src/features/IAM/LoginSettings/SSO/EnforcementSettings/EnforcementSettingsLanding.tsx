@@ -7,9 +7,9 @@ import { CircleProgress } from 'src/features/IAM/Shared/CircleProgress/CirclePro
 import { ErrorState } from 'src/features/IAM/Shared/ErrorState/ErrorState';
 import { NoIDPConfiguration } from 'src/features/IAM/Shared/NoIDPConfiguration/NoIDPConfiguration';
 
-import { IdpConfigurations } from './IdpConfigurations';
+import { EnforcementSettings } from './EnforcementSettings';
 
-export const IdpConfigurationsLanding = () => {
+export const EnforcementSettingsLanding = () => {
   // TODO - UIE-11305 replace with actual permissions check for creating IDP configurations
   const { data: permissions, error: permissionsError } = usePermissions(
     'account',
@@ -29,9 +29,9 @@ export const IdpConfigurationsLanding = () => {
 
   return (
     <>
-      <DocumentTitleSegment segment="IDP Configuration" />
+      <DocumentTitleSegment segment="SSO Enforcement" />
       {hasIdpConfig ? (
-        <IdpConfigurations />
+        <EnforcementSettings />
       ) : (
         <NoIDPConfiguration permissions={permissions} />
       )}
