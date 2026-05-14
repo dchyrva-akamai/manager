@@ -1,5 +1,9 @@
 import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
-import { Color, Spacing } from '@akamai/cds-tokens';
+import {
+  Color,
+  Spacing,
+  Typography as TypographyTokens,
+} from '@akamai/cds-tokens';
 import { Box, Stack, Typography } from '@linode/ui';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from '@tanstack/react-router';
@@ -9,10 +13,12 @@ import { DateTimeDisplay } from 'src/components/DateTimeDisplay';
 import { PARENT_USER } from 'src/features/Account/constants';
 
 import { useDelegationRole } from '../../hooks/useDelegationRole';
+import { EMAIL_MAX_LENGTH } from '../../Shared/constants';
 import { Divider } from '../../Shared/Divider/Divider';
 import { MaskableText } from '../../Shared/MaskableText/MaskableText';
 import { Paper } from '../../Shared/Paper/Paper';
 import { StatusIcon } from '../../Shared/StatusIcon/StatusIcon';
+import { truncateEnd } from '../../Shared/truncate';
 import { UserDeleteConfirmation } from '../../Shared/UserDeleteConfirmation';
 import { EditUserDetailsDrawer } from './EditUserDetailsDrawer';
 import { getTotalAssignedRoles } from './utils';
@@ -49,6 +55,11 @@ export const UserDetailsPanel = ({
     profileUserName === activeUser.username ||
     isProxyOrDelegateUserType;
 
+  const isEditUserDisabled =
+    profileUserName !== activeUser.username ? !permissions.update_user : false;
+
+  const editTooltipText = 'You do not have permission to edit this user.';
+
   let deleteTooltipText: string | undefined;
   if (!permissions?.delete_user) {
     deleteTooltipText = 'You do not have permission to delete this user.';
@@ -65,11 +76,32 @@ export const UserDetailsPanel = ({
   const items = [
     {
       label: 'Username',
-      value: <MaskableText isToggleable text={activeUser.username} />,
+      value: (
+        <MaskableText
+          isToggleable
+          styleTypography={{ font: TypographyTokens.Body.Bold }}
+          text={activeUser.username}
+        />
+      ),
     },
     {
-      label: 'Email',
-      value: <MaskableText isToggleable text={activeUser.email} />,
+      label: 'E-mail',
+      value: (
+        <Tooltip
+          disabled={activeUser.email.length <= EMAIL_MAX_LENGTH}
+          tooltipPlacement="top"
+          tooltipText={activeUser.email}
+        >
+          <MaskableText
+            isToggleable
+            styleTypography={{
+              font: TypographyTokens.Body.Bold,
+              margin: Spacing.S0,
+            }}
+            text={truncateEnd(activeUser.email, EMAIL_MAX_LENGTH)}
+          />
+        </Tooltip>
+      ),
     },
     {
       label: 'Assigned roles',
@@ -82,13 +114,7 @@ export const UserDetailsPanel = ({
     {
       label: 'Last login status',
       value: (
-        <Stack direction="row" spacing={1}>
-          <Typography
-            sx={(theme) => ({ font: theme.font.bold })}
-            textTransform="capitalize"
-          >
-            {activeUser.last_login?.status ?? 'N/A'}
-          </Typography>
+        <Stack direction="row">
           {activeUser.last_login && (
             <StatusIcon
               status={
@@ -98,6 +124,12 @@ export const UserDetailsPanel = ({
               }
             />
           )}
+          <Typography
+            sx={(theme) => ({ font: theme.font.bold })}
+            textTransform="capitalize"
+          >
+            {activeUser.last_login?.status ?? 'N/A'}
+          </Typography>
         </Stack>
       ),
     },
@@ -124,11 +156,17 @@ export const UserDetailsPanel = ({
       ),
     },
     {
-      label: '2FA',
+      label: 'Two-factor authentication',
       value: (
-        <Typography sx={(theme) => ({ font: theme.font.bold })}>
-          {activeUser.tfa_enabled ? 'Enabled' : 'Disabled'}
-        </Typography>
+        <Stack direction="row">
+          <StatusIcon
+            status={activeUser.tfa_enabled ? 'active' : 'inactive'}
+            style={{ alignSelf: 'center' }}
+          />
+          <Typography sx={(theme) => ({ font: theme.font.bold })}>
+            {activeUser.tfa_enabled ? 'Enabled' : 'Disabled'}
+          </Typography>
+        </Stack>
       ),
     },
     {
@@ -136,6 +174,7 @@ export const UserDetailsPanel = ({
       value: (
         <MaskableText
           isToggleable
+          styleTypography={{ font: TypographyTokens.Body.Bold }}
           text={activeUser.verified_phone_number ?? 'None'}
         />
       ),
@@ -152,6 +191,7 @@ export const UserDetailsPanel = ({
               <p
                 style={{
                   marginRight: Spacing.S0,
+                  marginTop: Spacing.S0,
                   color: Color.Brand[90],
                   cursor: 'pointer',
                   textDecoration: 'underline dotted ' + Color.Brand[90],
@@ -182,13 +222,18 @@ export const UserDetailsPanel = ({
           <Typography sx={{ flex: 1 }} variant="h2">
             User Details
           </Typography>
-          <Button
-            disabled={!permissions?.update_user}
-            onClick={() => setIsEditDrawerOpen(true)}
-            variant="link"
-          >
-            Edit Details
-          </Button>
+          <Tooltip disabled={!isEditUserDisabled} tooltipText={editTooltipText}>
+            <Button
+              disabled={isEditUserDisabled}
+              onClick={() => setIsEditDrawerOpen(true)}
+              variant="link"
+            >
+              Edit Details
+              {isEditUserDisabled ? (
+                <Icon icon="info-outline" size="m" />
+              ) : null}
+            </Button>
+          </Tooltip>
           <Tooltip
             disabled={!isDeleteUserDisabled}
             tooltipText={deleteTooltipText}

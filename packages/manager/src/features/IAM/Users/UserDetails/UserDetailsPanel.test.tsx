@@ -44,7 +44,7 @@ describe('UserDetailsPanel', () => {
     expect(getByText(/Username/)).toBeVisible();
     expect(getByText(user.username)).toBeVisible();
 
-    expect(getByText(/Email/)).toBeVisible();
+    expect(getByText(/E-mail/)).toBeVisible();
     expect(getByText(user.email)).toBeVisible();
   });
 
@@ -153,15 +153,19 @@ describe('UserDetailsPanel', () => {
       />
     );
 
-    expect(getByText(/2FA/)).toBeVisible();
+    expect(getByText(/Two-factor authentication/)).toBeVisible();
     expect(getByText('Enabled')).toBeVisible();
   });
 });
 
 describe('UserDetailsPanel – Delete User button', () => {
   const assignedRoles = { account_access: [], entity_access: [] };
-  const getDeleteUserButton = (container: HTMLElement) =>
-    container.querySelector('cds-tooltip > cds-button');
+  const getDeleteUserButton = (container: HTMLElement) => {
+    const buttons = container.querySelectorAll('cds-tooltip > cds-button');
+    return Array.from(buttons).find((btn) =>
+      btn.textContent?.includes('Delete User')
+    );
+  };
 
   it('disables the Delete User button for proxy users', () => {
     queryMocks.useProfile.mockReturnValue({
