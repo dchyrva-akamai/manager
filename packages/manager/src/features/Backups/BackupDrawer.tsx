@@ -1,4 +1,4 @@
-import { pluralize } from '@akamai/compute-ui-core/formatting';
+import { isNumber, pluralize } from '@akamai/compute-ui-core/formatting';
 import {
   useAccountSettings,
   useAllLinodesQuery,
@@ -13,7 +13,6 @@ import {
   Stack,
   Typography,
 } from '@linode/ui';
-import { isNumber } from '@linode/utilities';
 import { styled } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';

@@ -1,4 +1,4 @@
-import { isNumber } from '@linode/utilities';
+import { isNumber } from '@akamai/compute-ui-core/formatting';
 import * as React from 'react';
 
 import { getAdaptiveDecimalPlacesCount } from 'src/utilities/pricing/priceInterval';
