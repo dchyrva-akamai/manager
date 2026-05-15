@@ -67,7 +67,7 @@ export const updateSharegroupSchema = object({
 });
 
 export const addSharegroupMemberSchema = object({
-  token: string().required('Token is required.'),
+  token: string().required('Token is required.').trim(),
   label: labelSchema.required('Label is required.'),
 });
 
