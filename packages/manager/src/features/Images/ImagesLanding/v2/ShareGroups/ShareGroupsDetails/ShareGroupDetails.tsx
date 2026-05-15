@@ -21,6 +21,7 @@ import { getIsTableStripingEnabled } from 'src/features/Profile/Settings/TableSt
 import { SHARE_GROUP_DETAILS_PENDO_IDS } from '../../constants';
 import { DeleteShareGroupDialog } from '../DeleteShareGroupDialog';
 import { EditShareGroupDrawer } from '../EditShareGroupDrawer';
+import { AddMembersDrawer } from './AddMembersDrawer';
 import { GroupMembersTable } from './GroupMembersTable';
 import { SharedImagesTable } from './SharedImagesTable';
 
@@ -48,6 +49,8 @@ export const ShareGroupDetails = () => {
 
   const [membersCount, setMembersCount] = React.useState(0);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [isAddMembersDrawerOpen, setIsAddMembersDrawerOpen] =
+    React.useState(false);
   const [isEditDrawerOpen, setIsEditDrawerOpen] = React.useState(false);
 
   if (isLoading) {
@@ -165,6 +168,9 @@ export const ShareGroupDetails = () => {
               shareGroupId={shareGroupId}
             />
             <GroupMembersTable
+              handleAddMembersClick={() => {
+                setIsAddMembersDrawerOpen(!isAddMembersDrawerOpen);
+              }}
               isTableStripingEnabled={isTableStripingEnabled}
               setMembersCount={setMembersCount}
               shareGroupId={shareGroupId}
@@ -194,6 +200,14 @@ export const ShareGroupDetails = () => {
         onClose={() => setIsEditDrawerOpen(!isEditDrawerOpen)}
         open={isEditDrawerOpen}
         shareGroup={shareGroup}
+      />
+      <AddMembersDrawer
+        onClose={() => {
+          setIsAddMembersDrawerOpen(!isAddMembersDrawerOpen);
+        }}
+        onSuccess={() => setIsAddMembersDrawerOpen(!isAddMembersDrawerOpen)}
+        open={isAddMembersDrawerOpen}
+        shareGroupId={shareGroupId}
       />
     </>
   );

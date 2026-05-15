@@ -13,6 +13,7 @@ import { getSubTabIndex } from 'src/features/Images/utils';
 
 import { DeleteShareGroupDialog } from './DeleteShareGroupDialog';
 import { EditShareGroupDrawer } from './EditShareGroupDrawer';
+import { AddMembersDrawer } from './ShareGroupsDetails/AddMembersDrawer';
 import { shareGroupsSubTabs as subTabs } from './shareGroupsTabsConfig';
 import { ShareGroupsView } from './ShareGroupsView';
 
@@ -69,25 +70,38 @@ export const ShareGroupsTabs = () => {
     });
   };
 
-  const handleCloseDialog = () =>
-    navigate({
-      search: (prev) => prev,
-      to: '/images/share-groups/$shareGroupsType',
-      params: {
-        shareGroupsType: 'owned-groups',
-      },
-    });
-
   const handleDelete = (shareGroupId: string) => {
     handleShareGroupAction(shareGroupId, 'delete');
+  };
+
+  const handleAddMembers = (shareGroupId: string) => {
+    handleShareGroupAction(shareGroupId, 'add-members');
   };
 
   const handleEdit = (shareGroupId: string) => {
     handleShareGroupAction(shareGroupId, 'edit');
   };
 
+  const goToOwnedGroupsTab = () =>
+    navigate({
+      to: '/images/share-groups/$shareGroupsType',
+      params: {
+        shareGroupsType: 'owned-groups',
+      },
+    });
+
+  const goToShareGroupDetails = () =>
+    navigate({
+      search: (prev) => prev,
+      to: '/images/share-groups/owned-groups/$shareGroupId',
+      params: {
+        shareGroupId: ownedGroupsActionParams?.shareGroupId ?? '',
+      },
+    });
+
   const handlers: ShareGroupHandlers = {
     onDelete: handleDelete,
+    onAddMembers: handleAddMembers,
     onEdit: handleEdit,
   };
 
@@ -120,17 +134,23 @@ export const ShareGroupsTabs = () => {
         </React.Suspense>
       </Tabs>
       <DeleteShareGroupDialog
-        onClose={handleCloseDialog}
-        onSuccess={handleCloseDialog}
+        onClose={goToOwnedGroupsTab}
+        onSuccess={goToOwnedGroupsTab}
         open={ownedGroupsActionParams?.action === 'delete'}
         shareGroupId={ownedGroupsActionParams?.shareGroupId}
       />
       <EditShareGroupDrawer
         errors={error}
         isFetching={isLoading}
-        onClose={handleCloseDialog}
+        onClose={goToOwnedGroupsTab}
         open={ownedGroupsActionParams?.action === 'edit'}
         shareGroup={selectedShareGroup}
+      />
+      <AddMembersDrawer
+        onClose={goToOwnedGroupsTab}
+        onSuccess={goToShareGroupDetails}
+        open={ownedGroupsActionParams?.action === 'add-members'}
+        shareGroupId={ownedGroupsActionParams?.shareGroupId}
       />
     </Stack>
   );

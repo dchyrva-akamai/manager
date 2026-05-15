@@ -45,3 +45,11 @@ export const EDIT_SHARE_GROUP_PENDO_IDS = {
   cancelButton: 'Share Groups Edit-Cancel Button',
   xButton: 'Share Groups Edit-X Button',
 };
+
+export const ADD_MEMBERS_DRAWER_PENDO_IDS = {
+  label: 'Share Groups Add Members-Label',
+  token: 'Share Groups Add Members-Token',
+  saveButton: 'Share Groups Add Members-Save Button',
+  cancelButton: 'Share Groups Add Members-Cancel Button',
+  xButton: 'Share Groups Add Members-X Button',
+};

@@ -1,4 +1,5 @@
 import {
+  addMembersToSharegroup,
   createSharegroup,
   deleteSharegroup,
   getSharegroup,
@@ -19,6 +20,7 @@ import {
 } from '@tanstack/react-query';
 
 import type {
+  AddSharegroupMemberPayload,
   APIError,
   CreateSharegroupPayload,
   Filter,
@@ -197,21 +199,21 @@ export const useShareGroupsMembersQuery = (
   });
 
 export const useCreateShareGroupMutation = () => {
-  const queryclient = useQueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation<Sharegroup, APIError[], CreateSharegroupPayload>({
     mutationFn: createSharegroup,
     onSuccess(shareGroup) {
-      queryclient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: shareGroupsQueries.sharegroups._ctx.paginated._def,
       });
-      queryclient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: shareGroupsQueries.sharegroups._ctx.all._def,
       });
-      queryclient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: shareGroupsQueries.sharegroups._ctx.infinite._def,
       });
-      queryclient.setQueryData<Sharegroup>(
+      queryClient.setQueryData<Sharegroup>(
         shareGroupsQueries.sharegroups._ctx.sharegroup(shareGroup.id.toString())
           .queryKey,
         shareGroup,
@@ -245,6 +247,43 @@ export const useUpdateShareGroupMutation = () => {
           .queryKey,
         shareGroup,
       );
+    },
+  });
+};
+
+export const useShareGroupsAddMembersMutation = (
+  options: UseMutationOptions<
+    Sharegroup,
+    APIError[],
+    { data: AddSharegroupMemberPayload; sharegroupId: number }
+  >,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    Sharegroup,
+    APIError[],
+    { data: AddSharegroupMemberPayload; sharegroupId: number }
+  >({
+    mutationFn: ({ sharegroupId, data }) =>
+      addMembersToSharegroup(sharegroupId, data),
+    ...options,
+    onSuccess(shareGroup, variables, context) {
+      options.onSuccess?.(shareGroup, variables, context);
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.members(
+          String(variables.sharegroupId),
+        ).queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.paginated._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.all._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.infinite._def,
+      });
     },
   });
 };

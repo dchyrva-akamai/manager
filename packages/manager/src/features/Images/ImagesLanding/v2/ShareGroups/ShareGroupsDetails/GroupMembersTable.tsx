@@ -37,6 +37,7 @@ import {
 } from '../../constants';
 
 interface Props {
+  handleAddMembersClick: () => void;
   isTableStripingEnabled: boolean;
   setMembersCount?: (count: number) => void;
   shareGroupId: string;
@@ -50,7 +51,12 @@ const MEMBERS_COLUMNS = [
 ];
 
 export const GroupMembersTable = (props: Props) => {
-  const { isTableStripingEnabled, shareGroupId, setMembersCount } = props;
+  const {
+    isTableStripingEnabled,
+    shareGroupId,
+    setMembersCount,
+    handleAddMembersClick,
+  } = props;
   const theme = useTheme();
   const { data: profile } = useProfile();
   const navigate = useNavigate();
@@ -184,6 +190,7 @@ export const GroupMembersTable = (props: Props) => {
         </Stack>
         <Button
           data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.addMembersButton}
+          onClick={handleAddMembersClick}
           style={{ marginLeft: 0 }}
           variant="primary"
         >
