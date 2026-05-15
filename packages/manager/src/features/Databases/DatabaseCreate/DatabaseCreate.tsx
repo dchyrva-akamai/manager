@@ -37,6 +37,7 @@ import { typeLabelDetails } from 'src/features/Linodes/presentation';
 import { useFlags } from 'src/hooks/useFlags';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
 
+import { PREMIUM_CPU_PLANS_RENAME } from '../constants';
 import { CircleProgress } from '../shared/CircleProgress/CircleProgress';
 import { Divider } from '../shared/Divider/Divider';
 import { ErrorState } from '../shared/ErrorState/ErrorState';
@@ -153,7 +154,12 @@ export const DatabaseCreate = () => {
     if (!dbtypes) {
       return [];
     }
-    return dbtypes.map((type) => {
+    // Only display plans that support the selected engine
+    const _dbtypes = dbtypes.filter((type) =>
+      Boolean(type.engines[selectedEngine])
+    );
+
+    return _dbtypes.map((type) => {
       const { label } = type;
       const formattedLabel = formatStorageUnits(label);
       const singleNodePricing = type.engines[selectedEngine]?.find(
@@ -264,6 +270,23 @@ export const DatabaseCreate = () => {
     types: dbtypes,
   });
 
+  const disabledTabsConfig = React.useMemo(() => {
+    if (shouldDisablePremiumPlansTab) {
+      return {
+        disabledTabs: [
+          {
+            tab: 'premium',
+            copy: PREMIUM_CPU_PLANS_RENAME,
+          },
+        ],
+      };
+    }
+
+    return {
+      disabledTabs: [],
+    };
+  }, [shouldDisablePremiumPlansTab]);
+
   if (regionsLoading || !regionsData || enginesLoading || typesLoading) {
     return <CircleProgress />;
   }
@@ -327,9 +350,7 @@ export const DatabaseCreate = () => {
                   <StyledPlansPanel
                     data-qa-select-plan
                     disabled={isRestricted}
-                    disabledTabs={
-                      shouldDisablePremiumPlansTab ? ['premium'] : undefined
-                    }
+                    disabledTabs={disabledTabsConfig.disabledTabs}
                     error={fieldState.error?.message}
                     flow="database"
                     handleTabChange={handleTabChange}
@@ -339,11 +360,6 @@ export const DatabaseCreate = () => {
                     regionsData={regionsData}
                     selectedId={field.value}
                     selectedRegionID={region}
-                    tabDisabledMessage={
-                      shouldDisablePremiumPlansTab
-                        ? 'Premium CPUs are now called G7 Dedicated plans.'
-                        : undefined
-                    }
                     types={displayTypes}
                   />
                 )}

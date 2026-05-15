@@ -193,6 +193,7 @@ export const alertStatusOptions: Item<string, AlertStatusType>[] =
 export const engineTypeMap: Record<string, string> = {
   mysql: 'MySQL',
   postgresql: 'PostgreSQL',
+  valkey: 'Valkey',
 };
 
 export const CREATE_ALERT_ERROR_FIELD_MAP: Record<

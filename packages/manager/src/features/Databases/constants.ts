@@ -41,6 +41,9 @@ export const RESIZE_DISABLED_DEDICATED_SHARED_PLAN_TABS_TEXT =
 export const RESIZE_DISABLED_NON_G7_DEDICATED_SHARED_PLAN_TABS_TEXT =
   'Resizing to a Shared CPU or a non-G7 Dedicated CPU plan is not available for database clusters on a Premium CPU plan.';
 
+export const PREMIUM_CPU_PLANS_RENAME =
+  'Premium CPUs are now called G7 Dedicated plans.';
+
 export const BACKUPS_MAX_TIME_EXCEEDED_VALIDATON_TEXT =
   'Select a time from the past.';
 

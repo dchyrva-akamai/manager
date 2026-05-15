@@ -166,6 +166,5 @@ export const useIsGenerationalPlansEnabled = (
     isGenerationalPlansEnabled:
       isFlagEnabled && !shouldDisableDueToUnavailability,
     allowedPlans: flags.generationalPlansv2?.allowedPlans || [],
-    hasG7DedicatedPlans,
   };
 };
