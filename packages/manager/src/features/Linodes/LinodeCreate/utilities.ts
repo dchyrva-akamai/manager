@@ -114,7 +114,11 @@ export const getLinodeCreatePayload = (
         getLinodeInterfacePayload
       );
       values.firewall_id = undefined;
+      values.private_ip = undefined;
     } else {
+      // Preserve private_ip when using legacy interfaces in the new networking UI.
+      values.private_ip = Boolean(formValues.private_ip);
+
       values.interfaces = formValues.backup_id
         ? undefined
         : formValues.linodeInterfaces.map((linodeInterface) =>
