@@ -32,7 +32,15 @@ const isProd = branch === "master";
 
 if (isDev || isStage) {
   console.log("Publishing develop:", pkg.version);
+  // Publish to the Amazon S3 bucket
   pkg.version = `${pkg.version.split("-")[0]}-${env}-${currentDate}-${gitHash}`;
+  fs.writeFileSync(pathToPackage, JSON.stringify(pkg, null, 2));
+  execSync("pnpm publish --no-git-checks", {
+    cwd: path.join(__dirname, "../packages/manager"),
+    stdio: "inherit",
+  });
+  // Change the package name to publish the same artifacts to the new Azure bucket
+  pkg.name = "@linode/cloud-manager-monolith"
   fs.writeFileSync(pathToPackage, JSON.stringify(pkg, null, 2));
   execSync("pnpm publish --no-git-checks", {
     cwd: path.join(__dirname, "../packages/manager"),
@@ -40,6 +48,14 @@ if (isDev || isStage) {
   });
 } else if (isProd) {
   console.log("Publishing master:", pkg.version);
+  // Publish to the Amazon S3 bucket
+  execSync("pnpm publish --no-git-checks", {
+    cwd: path.join(__dirname, "../packages/manager"),
+    stdio: "inherit",
+  });
+  // Change the package name to publish the same artifacts to the new Azure bucket
+  pkg.name = "@linode/cloud-manager-monolith"
+  fs.writeFileSync(pathToPackage, JSON.stringify(pkg, null, 2));
   execSync("pnpm publish --no-git-checks", {
     cwd: path.join(__dirname, "../packages/manager"),
     stdio: "inherit",
