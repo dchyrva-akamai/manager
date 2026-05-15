@@ -295,7 +295,7 @@ describe('useIsGenerationalPlansEnabled', () => {
       flags: { generationalPlansv2: { enabled: true, allowedPlans: [] } },
     };
 
-    const plans = [G7_PREMIUM_PLAN, { id: 'g6-premium-2' }]; // Premium plans but no dedicated G7/G8
+    const plans = [G7_PREMIUM_PLAN, { id: 'g6-premium-2' }]; // Premium plans but no G7/G8 Dedicated
 
     const { result } = renderHook(
       () => useIsGenerationalPlansEnabled(plans, 'premium'),

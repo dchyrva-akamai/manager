@@ -416,12 +416,19 @@ const databases = [
   }),
 
   http.get('*/databases/engines', () => {
-    const engine1 = databaseEngineFactory.buildList(3);
-    const engine2 = databaseEngineFactory.buildList(3, {
+    const mysqlEngines = databaseEngineFactory.buildList(3);
+    const postgresEngines = databaseEngineFactory.buildList(3, {
       engine: 'postgresql',
     });
+    const valkeyEngines = databaseEngineFactory.buildList(3, {
+      engine: 'valkey',
+    });
 
-    const combinedList = [...engine1, ...engine2];
+    const combinedList = [
+      ...mysqlEngines,
+      ...postgresEngines,
+      ...valkeyEngines,
+    ];
 
     return HttpResponse.json(makeResourcePage(combinedList));
   }),

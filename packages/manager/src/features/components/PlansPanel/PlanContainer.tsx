@@ -116,8 +116,10 @@ export const PlanContainer = (props: PlanContainerProps) => {
   } = props;
   const location = useLocation();
   const flags = useFlags();
-  const { isGenerationalPlansEnabled, hasG7DedicatedPlans } =
-    useIsGenerationalPlansEnabled(plans, planType);
+  const { isGenerationalPlansEnabled } = useIsGenerationalPlansEnabled(
+    plans,
+    planType
+  );
 
   // Show the Transfer column if, for any plan, the api returned data and we're not in the Database Create flow
   const showTransfer =
@@ -135,8 +137,7 @@ export const PlanContainer = (props: PlanContainerProps) => {
     location.pathname;
 
   const shouldDisplayNoRegionSelectedMessage = Boolean(
-    (!selectedRegionId && !isDatabaseCreateFlow) ||
-      (isDatabaseCreateFlow && hasG7DedicatedPlans && !selectedRegionId)
+    !selectedRegionId && !isDatabaseResizeFlow && isGenerationalPlansEnabled
   );
 
   const isDatabaseGA =

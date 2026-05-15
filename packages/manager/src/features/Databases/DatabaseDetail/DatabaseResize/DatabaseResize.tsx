@@ -30,6 +30,7 @@ import { useFlags } from 'src/hooks/useFlags';
 import { useIsGenerationalPlansEnabled } from 'src/utilities/linodes';
 
 import {
+  PREMIUM_CPU_PLANS_RENAME,
   RESIZE_DISABLED_DEDICATED_SHARED_PLAN_TABS_TEXT,
   RESIZE_DISABLED_NON_G7_DEDICATED_SHARED_PLAN_TABS_TEXT,
   RESIZE_DISABLED_PREMIUM_PLAN_TAB_TEXT,
@@ -116,10 +117,7 @@ export const DatabaseResize = () => {
     currentPlanType?.class
   );
 
-  const disabledTabsConfig: {
-    disabledTabs: string[];
-    disabledTabsCopy: string;
-  } = React.useMemo(() => {
+  const disabledTabsConfig = React.useMemo(() => {
     if (
       !flags.databaseRestrictPlanResize ||
       (flags.databaseResizeGenerationalPlans &&
@@ -127,22 +125,32 @@ export const DatabaseResize = () => {
     ) {
       return {
         disabledTabs: [],
-        disabledTabsCopy: '',
       };
     }
 
     if (!isGenerationalPlansEnabled && currentPlanType?.class === 'premium') {
       return {
-        disabledTabs: ['shared', 'dedicated'],
-        disabledTabsCopy: RESIZE_DISABLED_DEDICATED_SHARED_PLAN_TABS_TEXT,
+        disabledTabs: [
+          {
+            tab: 'shared',
+            copy: RESIZE_DISABLED_DEDICATED_SHARED_PLAN_TABS_TEXT,
+          },
+          {
+            tab: 'dedicated',
+            copy: RESIZE_DISABLED_DEDICATED_SHARED_PLAN_TABS_TEXT,
+          },
+        ],
       };
     }
 
     if (isGenerationalPlansEnabled && currentPlanType?.class === 'premium') {
       return {
-        disabledTabs: ['shared'],
-        disabledTabsCopy:
-          RESIZE_DISABLED_NON_G7_DEDICATED_SHARED_PLAN_TABS_TEXT,
+        disabledTabs: [
+          {
+            tab: 'shared',
+            copy: RESIZE_DISABLED_NON_G7_DEDICATED_SHARED_PLAN_TABS_TEXT,
+          },
+        ],
       };
     }
 
@@ -152,14 +160,22 @@ export const DatabaseResize = () => {
       currentPlanType?.class !== 'premium'
     ) {
       return {
-        disabledTabs: ['premium'],
-        disabledTabsCopy: 'Premium CPUs are now called G7 Dedicated plans.',
+        disabledTabs: [
+          {
+            tab: 'premium',
+            copy: PREMIUM_CPU_PLANS_RENAME,
+          },
+        ],
       };
     }
 
     return {
-      disabledTabs: ['premium'],
-      disabledTabsCopy: RESIZE_DISABLED_PREMIUM_PLAN_TAB_TEXT,
+      disabledTabs: [
+        {
+          tab: 'premium',
+          copy: RESIZE_DISABLED_PREMIUM_PLAN_TAB_TEXT,
+        },
+      ],
     };
   }, [
     currentPlanType?.class,
@@ -285,7 +301,11 @@ export const DatabaseResize = () => {
       return [];
     }
 
-    return dbTypes.map((type: DatabaseType) => {
+    const _dbtypes = dbTypes.filter((type) =>
+      Boolean(type.engines[selectedEngine])
+    );
+
+    return _dbtypes.map((type: DatabaseType) => {
       const { label } = type;
       const formattedLabel = formatStorageUnits(label);
 
@@ -459,7 +479,6 @@ export const DatabaseResize = () => {
           regionsData={shouldProvideRegions ? regionsData : undefined}
           selectedId={selectedPlanId}
           selectedRegionID={databaseRegion}
-          tabDisabledMessage={disabledTabsConfig.disabledTabsCopy}
           types={displayTypes}
         />
         {isNewDatabaseGA && (
