@@ -100,23 +100,27 @@ export function useTabs<T extends Tab>(
     [visibleTabs, navigate, matchRoute]
   );
 
-  // Preload route bundles when a tab is about to be activated (on mousedown),
-  // restoring the prefetch behaviour of TanStack <Link preload="intent">.
+  // Preload route bundles on hover, restoring the prefetch behaviour of
+  // TanStack <Link preload="intent">. CDS renders tab header buttons inside
+  // its shadow DOM, so we use event delegation on the shadow root (which
+  // persists for the element lifetime) rather than attaching to individual
+  // buttons (which Lit may replace on re-render).
   React.useEffect(() => {
-    const el = tabsRef?.current;
-    if (!el) return;
+    const shadowRoot = tabsRef?.current?.shadowRoot;
+    if (!shadowRoot) return;
 
-    const handleBeforeActivate = (e: Event) => {
-      const index = (e as CustomEvent<{ index: number }>).detail?.index;
+    const handleMouseOver = (e: Event) => {
+      const buttons = Array.from(shadowRoot.querySelectorAll('button'));
+      const index = buttons.indexOf(e.target as HTMLButtonElement);
       const tab = visibleTabs[index];
       if (tab) {
         router.preloadRoute({ to: tab.to }).catch(() => undefined);
       }
     };
 
-    el.addEventListener('before-activate', handleBeforeActivate);
+    shadowRoot.addEventListener('mouseover', handleMouseOver);
     return () => {
-      el.removeEventListener('before-activate', handleBeforeActivate);
+      shadowRoot.removeEventListener('mouseover', handleMouseOver);
     };
   }, [visibleTabs, router, tabsRef]);
 
