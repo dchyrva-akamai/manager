@@ -106,6 +106,39 @@ describe('LinodeInterface (Linode Interfaces)', () => {
     await findByDisplayValue(firewall.label);
   });
 
+  it('keeps selected Firewall when toggling VPC to VLAN and back to VPC', async () => {
+    const firewallSettings = firewallSettingsFactory.build({
+      default_firewall_ids: {
+        vpc_interface: 5,
+      },
+    });
+
+    const firewall = firewallFactory.build({ id: 5 });
+
+    server.use(
+      http.get('*/networking/firewalls/settings', () => {
+        return HttpResponse.json(firewallSettings);
+      }),
+      http.get('*/networking/firewalls', () => {
+        return HttpResponse.json(makeResourcePage([firewall]));
+      })
+    );
+
+    const { getByText, findByDisplayValue } =
+      renderWithThemeAndHookFormContext<LinodeCreateFormValues>({
+        component: <LinodeInterface index={0} />,
+        useFormOptions: { defaultValues: { interface_generation: 'linode' } },
+      });
+
+    await userEvent.click(getByText('VPC'));
+    await findByDisplayValue(firewall.label);
+
+    await userEvent.click(getByText('VLAN'));
+    await userEvent.click(getByText('VPC'));
+
+    await findByDisplayValue(firewall.label);
+  });
+
   it('renders IP Address selection if "Public Internet" is selected for new Linode interface', async () => {
     const { getByText } =
       renderWithThemeAndHookFormContext<LinodeCreateFormValues>({

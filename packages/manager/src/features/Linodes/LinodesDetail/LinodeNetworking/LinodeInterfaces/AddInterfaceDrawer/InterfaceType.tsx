@@ -27,14 +27,30 @@ export const InterfaceType = (props: Props) => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { setValue, getFieldState } =
+  const { setValue, getFieldState, getValues } =
     useFormContext<CreateInterfaceFormValues>();
+  const firewallsByPurpose = React.useRef<
+    Partial<Record<InterfacePurpose, number | undefined>>
+  >({});
 
   const { field, fieldState } = useController<CreateInterfaceFormValues>({
     name: 'purpose',
   });
 
   const onChange = async (value: InterfacePurpose) => {
+    const previousPurpose = field.value as InterfacePurpose | undefined;
+    const currentFirewallId = getValues('firewall_id');
+
+    // Preserve firewall selections for non-VLAN purposes independently.
+    if (
+      previousPurpose &&
+      previousPurpose !== 'vlan' &&
+      typeof currentFirewallId === 'number' &&
+      currentFirewallId !== -1
+    ) {
+      firewallsByPurpose.current[previousPurpose] = currentFirewallId;
+    }
+
     // Change the interface purpose (Public, VPC, VLAN)
     field.onChange(value);
 
@@ -42,6 +58,15 @@ export const InterfaceType = (props: Props) => {
     // the Firewall ID to `-1` to be safe and early return.
     if (value === 'vlan') {
       setValue('firewall_id', -1);
+      return;
+    }
+
+    // Restore a previously selected firewall for this purpose, if available.
+    if (
+      value in firewallsByPurpose.current &&
+      firewallsByPurpose.current[value] !== undefined
+    ) {
+      setValue('firewall_id', firewallsByPurpose.current[value]!);
       return;
     }
 
@@ -61,8 +86,7 @@ export const InterfaceType = (props: Props) => {
         if (defaultFirewall) {
           setValue('firewall_id', defaultFirewall);
         }
-        // eslint-disable-next-line sonarjs/no-ignored-exceptions
-      } catch (error) {
+      } catch {
         // The fetch to get Firewall Settings will fail for restricted users.
         enqueueSnackbar('Unable to retrieve default Firewall.', {
           variant: 'warning',
