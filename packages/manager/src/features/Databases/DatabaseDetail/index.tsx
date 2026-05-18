@@ -1,4 +1,9 @@
-import { Badge, NotificationBanner, Tabs } from '@akamai/cds-components/react';
+import {
+  Badge,
+  NotificationBanner,
+  Tab,
+  Tabs,
+} from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import {
   useDatabaseMutation,
@@ -199,18 +204,16 @@ export const DatabaseDetail = () => {
           tabMaxWidth={250}
         >
           {tabs.map((tab, i) => (
-            <cds-tab
+            <Tab
               active={i === tabIndex || undefined}
               key={String(tab.to)}
               label={tab.title}
             >
-              {tab.chip && (
-                <span slot="tab-header">
-                  {tab.title}
-                  {tab.chip}
-                </span>
-              )}
-            </cds-tab>
+              <span slot="tab-header">
+                {tab.title}
+                {tab.chip}
+              </span>
+            </Tab>
           ))}
         </Tabs>
       </div>
