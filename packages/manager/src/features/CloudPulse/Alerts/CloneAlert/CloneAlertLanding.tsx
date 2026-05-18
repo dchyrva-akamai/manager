@@ -1,4 +1,4 @@
-import { Box, CircleProgress, ErrorState, Paper } from '@linode/ui';
+import { Box, CircleProgress, ErrorState } from '@linode/ui';
 import { useParams } from '@tanstack/react-router';
 import React from 'react';
 
@@ -7,7 +7,9 @@ import { Breadcrumb } from 'src/components/Breadcrumb/Breadcrumb';
 import { useAlertDefinitionQuery } from 'src/queries/cloudpulse/alerts';
 
 import { StyledPlaceholder } from '../AlertsDetail/AlertDetail';
+import { CloneAlertDefinition } from './CloneAlertDefinition';
 
+import type { CloudPulseServiceType } from '@linode/api-v4';
 import type { CrumbOverridesProps } from 'src/components/Breadcrumb/Crumbs';
 
 const overrides: CrumbOverridesProps[] = [
@@ -55,8 +57,12 @@ export const CloneAlertLanding = () => {
     );
   }
 
-  // Temporary Landing page as the CloneAlert component will be part of the subsequent PR
-  return <Paper> Clone Alert </Paper>;
+  return (
+    <CloneAlertDefinition
+      alertDetails={alertDetails}
+      serviceType={serviceType as CloudPulseServiceType}
+    />
+  );
 };
 
 const CloneAlertLoadingState = ({
