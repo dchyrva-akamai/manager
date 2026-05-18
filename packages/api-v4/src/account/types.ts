@@ -90,6 +90,7 @@ export const accountCapabilities = [
   'Object Storage',
   'Placement Group',
   'SMTP Enabled',
+  'Support Live Chat',
   'Support Ticket Severity',
   'Vlans',
   'VPCs',
