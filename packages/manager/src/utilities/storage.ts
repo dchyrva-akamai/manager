@@ -72,7 +72,7 @@ export const supportTicketStorageDefaults: SupportTicketFormFields = {
   description: '',
   entityId: '',
   entityInputValue: '',
-  entityType: 'general',
+  entityType: 'none',
   selectedSeverity: undefined,
   summary: '',
   ticketType: 'general',
