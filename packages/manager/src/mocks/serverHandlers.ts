@@ -4076,8 +4076,8 @@ export const handlers = [
           label: 'Databases',
           service_type: 'dbaas',
           alert: {
-            evaluation_period_seconds: [300],
-            polling_interval_seconds: [300],
+            evaluation_period_seconds: [300, 600],
+            polling_interval_seconds: [300, 600],
           },
         }),
         serviceTypesFactory.build({
@@ -4149,8 +4149,8 @@ export const handlers = [
       service_type: `${serviceType}`,
       label: serviceTypesMap[serviceType],
       alert: serviceAlertFactory.build({
-        evaluation_period_seconds: [300],
-        polling_interval_seconds: [300],
+        evaluation_period_seconds: [300, 600],
+        polling_interval_seconds: [300, 600],
         scope:
           serviceType === 'objectstorage' || serviceType === 'blockstorage'
             ? ['entity', 'account', 'region']
