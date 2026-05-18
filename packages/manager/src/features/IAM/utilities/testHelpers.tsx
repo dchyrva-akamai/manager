@@ -72,3 +72,7 @@ export const openActionMenu = async () => {
   const trigger = menu.shadowRoot?.querySelector('cds-icon');
   await userEvent.click(trigger as HTMLElement);
 };
+
+// Helper to get the switch control inside a `cds-switch` host element.
+export const getSwitchControl = (hostEl: HTMLElement) =>
+  getShadowRootElement<HTMLButtonElement>(hostEl, 'button[role="switch"]');
