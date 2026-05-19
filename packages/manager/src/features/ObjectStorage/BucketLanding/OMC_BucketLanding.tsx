@@ -145,7 +145,10 @@ export const OMC_BucketLanding = (props: Props) => {
     return Array.from(regionMap.values());
   }, [objectStorageBucketsResponse, availableStorageRegions]);
 
-  const buckets = objectStorageBucketsResponse?.buckets ?? [];
+  const buckets = React.useMemo(
+    () => objectStorageBucketsResponse?.buckets ?? [],
+    [objectStorageBucketsResponse]
+  );
   const totalUsage = sumBucketUsage(buckets);
   const bucketLabel = selectedBucket ? selectedBucket.label : '';
 
