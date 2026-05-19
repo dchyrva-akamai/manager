@@ -28,7 +28,6 @@ import { ReserveIPDrawer } from 'src/features/ReservedIps/ReserveIPDrawer';
 import { useIsReserveIpEnabled } from 'src/features/ReservedIps/utils';
 import { useDetermineUnreachableIPs } from 'src/hooks/useDetermineUnreachableIPs';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
-import { useIsLinodeInterfacesEnabled } from 'src/utilities/linodes';
 
 import { AddIPDrawer } from './AddIPDrawer';
 import { DeleteIPDialog } from './DeleteIPDialog';
@@ -60,7 +59,6 @@ export const LinodeIPAddresses = (props: LinodeIPAddressesProps) => {
   const { data: ips, error, isLoading } = useLinodeIPsQuery(linodeID);
   const { data: linode } = useLinodeQuery(linodeID);
   const { data: regions } = useRegionsQuery();
-  const { isLinodeInterfacesEnabled } = useIsLinodeInterfacesEnabled();
   const { isReserveIpEnabled } = useIsReserveIpEnabled();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
@@ -184,8 +182,7 @@ export const LinodeIPAddresses = (props: LinodeIPAddressesProps) => {
     return null;
   }
 
-  const showAddIPButton =
-    !isLinodeInterfacesEnabled || linode?.interface_generation !== 'linode';
+  const showAddIPButton = linode?.interface_generation !== 'linode';
 
   return (
     <Box>

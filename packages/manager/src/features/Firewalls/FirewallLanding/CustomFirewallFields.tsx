@@ -16,7 +16,6 @@ import { FIREWALL_LIMITS_CONSIDERATIONS_LINK } from 'src/constants';
 import { useGetAllUserEntitiesByPermission } from 'src/features/IAM/hooks/useGetAllUserEntitiesByPermission';
 import { NodeBalancerSelect } from 'src/features/NodeBalancers/NodeBalancerSelect';
 import { sendLinodeCreateFormInputEvent } from 'src/utilities/analytics/formEventAnalytics';
-import { useIsLinodeInterfacesEnabled } from 'src/utilities/linodes';
 
 import {
   FIREWALL_HELPER_TEXT,
@@ -50,8 +49,6 @@ export const CustomFirewallFields = (props: CustomFirewallProps) => {
     open,
     userCannotAddFirewall,
   } = props;
-
-  const { isLinodeInterfacesEnabled } = useIsLinodeInterfacesEnabled();
 
   const { control } = useFormContext<CreateFirewallFormValues>();
 
@@ -195,12 +192,12 @@ export const CustomFirewallFields = (props: CustomFirewallProps) => {
           {learnMoreLink}.
         </Typography>
       </Box>
-      {isLinodeInterfacesEnabled && (
+      {
         <Notice variant="info">
           Linodes using Linode Interfaces must be assigned after firewall
           creation.
         </Notice>
-      )}
+      }
       <Controller
         control={control}
         name="devices.linodes"

@@ -43,11 +43,7 @@ import {
   sendLinodeCreateFormInputEvent,
   sendLinodeCreateFormSubmitEvent,
 } from 'src/utilities/analytics/formEventAnalytics';
-import {
-  useIsLinodeCloneFirewallEnabled,
-  useIsLinodeInterfacesEnabled,
-  useIsPasswordLessLinodesEnabled,
-} from 'src/utilities/linodes';
+import { useIsPasswordLessLinodesEnabled } from 'src/utilities/linodes';
 import { sanitizeHTML } from 'src/utilities/sanitizeHTML';
 
 import { Actions } from './Actions';
@@ -56,7 +52,6 @@ import { Addons } from './Addons/Addons';
 import { Details } from './Details/Details';
 import { LinodeCreateError } from './Error';
 import { EUAgreement } from './EUAgreement';
-import { Firewall } from './Firewall';
 import { FirewallAuthorization } from './FirewallAuthorization';
 import { Networking } from './Networking/Networking';
 import { transformLegacyInterfaceErrorsToLinodeInterfaceErrors } from './Networking/utilities';
@@ -74,8 +69,6 @@ import {
   transformPasswordLessCreateErrors,
   useHandleLinodeCreateAnalyticsFormError,
 } from './utilities';
-import { VLAN } from './VLAN/VLAN';
-import { VPC } from './VPC/VPC';
 
 import type {
   LinodeCreateFormContext,
@@ -88,10 +81,8 @@ export const LinodeCreate = () => {
     from: '/linodes/create',
   });
   const { secureVMNoticesEnabled } = useSecureVMNoticesEnabled();
-  const { isLinodeInterfacesEnabled } = useIsLinodeInterfacesEnabled();
   const { isPasswordLessLinodesEnabled } = useIsPasswordLessLinodesEnabled();
   const { data: profile } = useProfile();
-  const { isLinodeCloneFirewallEnabled } = useIsLinodeCloneFirewallEnabled();
   const { isVMHostMaintenanceEnabled } = useVMHostMaintenanceEnabled();
   const { isReserveIpEnabled } = useIsReserveIpEnabled();
   const linodeCreateType = useGetLinodeCreateType();
@@ -110,14 +101,12 @@ export const LinodeCreate = () => {
   const form = useForm<LinodeCreateFormValues, LinodeCreateFormContext>({
     context: {
       isPasswordLessLinodesEnabled,
-      isLinodeInterfacesEnabled,
       isReserveIpEnabled,
       profile,
       secureVMNoticesEnabled,
     },
     defaultValues: () =>
       defaultValues(linodeCreateType, search, queryClient, {
-        isLinodeInterfacesEnabled,
         isVMHostMaintenanceEnabled,
       }),
     mode: 'onBlur',
@@ -184,7 +173,6 @@ export const LinodeCreate = () => {
       const newLinodeCreateType = getLinodeCreateType(newTab.to);
       // Get the default values for the new tab and reset the form
       defaultValues(newLinodeCreateType, search, queryClient, {
-        isLinodeInterfacesEnabled,
         isVMHostMaintenanceEnabled,
       }).then(form.reset);
     }
@@ -193,7 +181,7 @@ export const LinodeCreate = () => {
   const onSubmit: SubmitHandler<LinodeCreateFormValues> = async (values) => {
     const payload = getLinodeCreatePayload(values, {
       isDualStackEnabled,
-      isShowingNewNetworkingUI: isLinodeInterfacesEnabled,
+      isShowingNewNetworkingUI: true,
       isAclpAlertsEnabled: aclpServices?.linode?.alerts?.enabled,
       isAclpAlertsMode: isAclpAlertsModeCreateFlow,
       isPasswordLessLinodesEnabled,
@@ -236,9 +224,7 @@ export const LinodeCreate = () => {
         });
       }
     } catch (errors) {
-      if (isLinodeInterfacesEnabled) {
-        transformLegacyInterfaceErrorsToLinodeInterfaceErrors(errors);
-      }
+      transformLegacyInterfaceErrorsToLinodeInterfaceErrors(errors);
       if (isPasswordLessLinodesEnabled) {
         transformPasswordLessCreateErrors(errors);
       }
@@ -337,17 +323,8 @@ export const LinodeCreate = () => {
           <Plan />
           <Details />
           {linodeCreateType !== 'Clone Linode' && <Security />}
-          {!isLinodeInterfacesEnabled &&
-            linodeCreateType !== 'Clone Linode' && <VPC />}
-          {!isLinodeInterfacesEnabled &&
-            (linodeCreateType !== 'Clone Linode' ||
-              isLinodeCloneFirewallEnabled) && <Firewall />}
-          {!isLinodeInterfacesEnabled &&
-            linodeCreateType !== 'Clone Linode' && <VLAN />}
           <UserData />
-          {isLinodeInterfacesEnabled && linodeCreateType !== 'Clone Linode' && (
-            <Networking />
-          )}
+          {linodeCreateType !== 'Clone Linode' && <Networking />}
           <AdditionalOptions
             isAclpAlertsMode={isAclpAlertsModeCreateFlow}
             onAlertsModeChange={handleAlertsModeChange}
