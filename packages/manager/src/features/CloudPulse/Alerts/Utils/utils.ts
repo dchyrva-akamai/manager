@@ -335,6 +335,7 @@ export const convertAlertDefinitionValues = (
     tags,
     trigger_conditions,
     regions,
+    group_by,
   }: Alert,
   serviceType: CloudPulseServiceType
 ): EditAlertPayloadWithService => {
@@ -356,6 +357,7 @@ export const convertAlertDefinitionValues = (
     tags,
     trigger_conditions,
     regions,
+    group_by,
   };
 };
 
