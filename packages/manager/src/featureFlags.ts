@@ -184,6 +184,7 @@ interface AclpAlerting {
   beta: boolean;
   cloneAlertDefinition?: boolean;
   editDisabledStatuses?: AlertStatusType[];
+  enableGroupBy?: boolean;
   maxDimensionFiltersValues?: number;
   maxEmailChannelRecipients?: number;
   new?: boolean;

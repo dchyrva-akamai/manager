@@ -234,6 +234,7 @@ export const alertFactory = Factory.Sync.makeFactory<Alert>({
     has_more_resources: true,
     url: '/v4/monitor/services/linode/alert-definitions/1/entities',
   },
+  group_by: ['entity_id'],
   scope: 'entity',
   regions: regionFactory.buildList(3).map(({ id }) => id),
   id: Factory.each((i) => i),

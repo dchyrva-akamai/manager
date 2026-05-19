@@ -215,6 +215,7 @@ export interface CreateAlertDefinitionPayload {
   channel_ids: number[];
   description?: string;
   entity_ids?: string[];
+  group_by?: string[];
   label: string;
   regions?: string[];
   rule_criteria: {
@@ -270,6 +271,7 @@ export interface Alert {
     has_more_resources: boolean;
     url: string;
   };
+  group_by: string[];
   id: number;
   label: string;
   regions?: string[];
@@ -363,6 +365,7 @@ export interface EditAlertDefinitionPayload {
   channel_ids?: number[];
   description?: string;
   entity_ids?: string[];
+  group_by?: string[];
   label?: string;
   regions?: string[];
   rule_criteria?: {

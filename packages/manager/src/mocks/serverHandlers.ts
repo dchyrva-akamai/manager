@@ -3671,6 +3671,7 @@ export const handlers = [
             rule_criteria: {
               rules: [firewallMetricRulesFactory.build()],
             },
+            group_by: ['entity_id', 'interface_id'],
           })
         );
       }
@@ -3684,6 +3685,7 @@ export const handlers = [
             rule_criteria: {
               rules: [objectStorageMetricCriteria.build()],
             },
+            group_by: ['endpoint', 'request_type'],
           })
         );
       }
@@ -3697,6 +3699,7 @@ export const handlers = [
             rule_criteria: {
               rules: [blockStorageMetricCriteria.build()],
             },
+            group_by: ['entity_id', 'linode_id'],
           })
         );
       }

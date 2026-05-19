@@ -138,7 +138,7 @@ export const CloneAlertDefinition = ({
   const onSubmit = handleSubmit(async (values) => {
     try {
       await cloneAlert({
-        ...filterFormValues(values),
+        ...filterFormValues(values, flags.aclpAlerting?.enableGroupBy),
         originalAlertId: alertDetails.id,
         serviceType,
       });
