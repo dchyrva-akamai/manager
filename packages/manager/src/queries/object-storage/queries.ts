@@ -7,6 +7,7 @@ import {
   getBucketAccess,
   getObjectACL,
   getObjectList,
+  getObjectStorageKey,
   getObjectStorageKeys,
   getObjectURL,
   getSSLCert,
@@ -78,6 +79,10 @@ export const objectStorageQueries = createQueryKeys('object-storage', {
     queryFn: () => getObjectStorageKeys(params),
     queryKey: [params],
   }),
+  accessKey: (id: number) => ({
+    queryFn: () => getObjectStorageKey(id),
+    queryKey: [id],
+  }),
   bucket: (regionId: string, bucketName: string) => ({
     contextQueries: {
       access: {
@@ -131,28 +136,29 @@ export const useObjectStorageAccessKeys = (params: Params) =>
     placeholderData: keepPreviousData,
   });
 
-// TODO: Optimize to use tanstack cache
-export const useObjectStorageAccessKey = (id: number | undefined) => {
+export const useObjectStorageAccessKey = (id: number, enabled = true) => {
   const queryClient = useQueryClient();
 
-  if (!id) {
-    return {};
-  }
+  return useQuery<ObjectStorageKey, APIError[]>({
+    ...objectStorageQueries.accessKey(id),
+    enabled,
+    initialData() {
+      const queries = queryClient.getQueriesData({
+        queryKey: objectStorageQueries.accessKeys._def,
+      });
 
-  const queries = queryClient.getQueriesData({
-    queryKey: objectStorageQueries.accessKeys._def,
+      for (const [, data] of queries) {
+        const accessKey = (data as ResourcePage<ObjectStorageKey>)?.data?.find(
+          (key) => key.id === id
+        );
+        if (accessKey) {
+          return accessKey;
+        }
+      }
+
+      return undefined;
+    },
   });
-
-  for (const [, data] of queries) {
-    const accessKey = (data as ResourcePage<ObjectStorageKey>)?.data?.find(
-      (key) => key.id === id
-    );
-    if (accessKey) {
-      return { data: accessKey };
-    }
-  }
-
-  return { data: undefined };
 };
 
 export const useCreateAccessKeyMutation = () => {
@@ -377,7 +383,8 @@ export const useUpdateObjectAccessMutation = (
   );
 
   return useMutation<{}, APIError[], ACLType>({
-    mutationFn: (data) => updateObjectACL(regionId, bucketName, objectName, data),
+    mutationFn: (data) =>
+      updateObjectACL(regionId, bucketName, objectName, data),
     onSuccess(_, acl) {
       queryClient.setQueryData(options.queryKey, (oldData) => ({
         acl,
@@ -474,7 +481,10 @@ export const useObjectBucketObjectsInfiniteQuery = (
     queryKey: getObjectBucketObjectsQueryKey(regionId, bucketName, prefix),
   });
 
-export const useCreateObjectUrlMutation = (regionId: string, bucketName: string) =>
+export const useCreateObjectUrlMutation = (
+  regionId: string,
+  bucketName: string
+) =>
   useMutation<
     ObjectStorageObjectURL,
     APIError[],

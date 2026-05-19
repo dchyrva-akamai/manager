@@ -1,26 +1,33 @@
-import { Drawer, Typography } from '@linode/ui';
+import { CircleProgress, Drawer, Typography } from '@linode/ui';
 import * as React from 'react';
+
+import { useObjectStorageAccessKey } from 'src/queries/object-storage/queries';
 
 import { BucketPermissionsTable } from './BucketPermissionsTable';
 
-import type { ObjectStorageKey } from '@linode/api-v4';
-
 export interface Props {
+  accessKeyId: number | undefined;
   isOpen: boolean;
-  objectStorageKey?: ObjectStorageKey;
   onClose: () => void;
 }
 
 export const ViewPermissionsDrawer = (props: Props) => {
-  const { onClose, isOpen, objectStorageKey } = props;
+  const { onClose, isOpen, accessKeyId } = props;
+
+  const { data: objectStorageKey, isLoading } = useObjectStorageAccessKey(
+    accessKeyId ?? -1,
+    accessKeyId !== null && accessKeyId !== undefined
+  );
 
   return (
     <Drawer
       onClose={onClose}
       open={isOpen}
-      title={`Permissions for ${objectStorageKey?.label}`}
+      title={`Permissions ${isLoading ? '' : `for ${objectStorageKey?.label}`}`}
       wide
     >
+      {isLoading && <CircleProgress />}
+
       {!objectStorageKey ? null : objectStorageKey.limited === false ? (
         <Typography>
           This key has unlimited access to all buckets on your account.
