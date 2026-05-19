@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import React from 'react';
 
 import { accountUserFactory } from 'src/factories/accountUsers';
@@ -137,6 +137,11 @@ describe('UserProfile', () => {
     expect(queryMocks.useAccountUser).toHaveBeenCalledWith('test-user', true);
     expect(queryMocks.useUserRoles).toHaveBeenCalledWith('test-user', true);
 
-    expect(screen.getByText('test-user')).toBeVisible();
+    const usernameField = screen.getByText('Username').parentElement;
+
+    expect(usernameField).not.toBeNull();
+    expect(
+      within(usernameField as HTMLElement).getByText('test-user')
+    ).toBeVisible();
   });
 });

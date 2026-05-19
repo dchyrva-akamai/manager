@@ -5,10 +5,7 @@ import React from 'react';
 import { accountRolesFactory } from 'src/factories/accountRoles';
 import { renderWithTheme } from 'src/utilities/testHelpers';
 
-import {
-  getCdsButtonByText,
-  preventCdsModalPortaling,
-} from '../../utilities/testHelpers';
+import { getCdsButtonByText } from '../../utilities/testHelpers';
 import { INTERNAL_ERROR_NO_CHANGES_SAVED } from '../constants';
 import { UnassignRoleConfirmationDialog } from './UnassignRoleConfirmationDialog';
 
@@ -74,7 +71,6 @@ vi.mock('@tanstack/react-router', async () => {
 describe('UnassignRoleConfirmationDialog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    preventCdsModalPortaling();
 
     queryMocks.useParams.mockReturnValue({
       username: 'test_user',
@@ -100,17 +96,13 @@ describe('UnassignRoleConfirmationDialog', () => {
   });
 
   it('should render', async () => {
-    const { container } = renderWithTheme(
-      <UnassignRoleConfirmationDialog {...props} />
-    );
+    renderWithTheme(<UnassignRoleConfirmationDialog {...props} />);
 
     // The title is rendered in a slot of cds-modal (light DOM)
-    expect(
-      screen.getByText('Unassign the account_admin role?')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Unassign role?')).toBeInTheDocument();
 
     // Notification banner children are in light DOM — query the paragraph directly
-    const paragraph = container
+    const paragraph = document.body
       .querySelector('cds-notification-banner')
       ?.querySelector('p');
 
@@ -121,18 +113,16 @@ describe('UnassignRoleConfirmationDialog', () => {
       /The change will be applied immediately/i
     );
 
-    expect(container.querySelectorAll('cds-button')).toHaveLength(2);
+    expect(document.body.querySelectorAll('cds-button')).toHaveLength(2);
   });
 
   it('calls the corresponding functions when buttons are clicked', async () => {
-    const { container } = renderWithTheme(
-      <UnassignRoleConfirmationDialog {...props} />
-    );
+    renderWithTheme(<UnassignRoleConfirmationDialog {...props} />);
 
-    const deleteButton = await getCdsButtonByText(container, 'Remove');
+    const deleteButton = await getCdsButtonByText(document.body, 'Remove');
     expect(deleteButton).toBeVisible();
 
-    const cancelButton = await getCdsButtonByText(container, 'Cancel');
+    const cancelButton = await getCdsButtonByText(document.body, 'Cancel');
     expect(cancelButton).toBeVisible();
     await userEvent.click(cancelButton as HTMLButtonElement);
     expect(props.onClose).toHaveBeenCalled();
@@ -165,11 +155,9 @@ describe('UnassignRoleConfirmationDialog', () => {
       reset: vi.fn(),
     });
 
-    const { container } = renderWithTheme(
-      <UnassignRoleConfirmationDialog {...props} />
-    );
+    renderWithTheme(<UnassignRoleConfirmationDialog {...props} />);
 
-    const removeButton = await getCdsButtonByText(container, 'Remove');
+    const removeButton = await getCdsButtonByText(document.body, 'Remove');
 
     await userEvent.click(removeButton as HTMLButtonElement);
 
@@ -200,11 +188,9 @@ describe('UnassignRoleConfirmationDialog', () => {
       isDefaultDelegationRolesForChildAccount: true,
     });
 
-    const { container } = renderWithTheme(
-      <UnassignRoleConfirmationDialog {...props} />
-    );
+    renderWithTheme(<UnassignRoleConfirmationDialog {...props} />);
 
-    const removeButton = await getCdsButtonByText(container, 'Remove');
+    const removeButton = await getCdsButtonByText(document.body, 'Remove');
     expect(removeButton).toBeVisible();
 
     await userEvent.click(removeButton as HTMLButtonElement);

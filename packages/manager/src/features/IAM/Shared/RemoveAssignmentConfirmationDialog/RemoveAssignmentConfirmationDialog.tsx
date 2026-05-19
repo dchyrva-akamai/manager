@@ -112,19 +112,19 @@ export const RemoveAssignmentConfirmationDialog = (props: Props) => {
       open={open}
       role="dialog"
       size={error ? 'medium' : 'small'}
-      titleMaxLength={150}
     >
       <span slot="title">
         {isDefaultDelegationRolesForChildAccount
-          ? `Remove the ${role?.entity_name} entity from the list?`
-          : `Remove the ${role?.entity_name} entity from the ${role?.role_name} role assignment?`}
+          ? `Remove entity from the list?`
+          : `Remove entity from the role assignment?`}
       </span>
       <div slot="body">
         <NotificationBanner type="warning">
           {isDefaultDelegationRolesForChildAccount ? (
             <Typography>
-              Delegate users won’t get the {role?.role_name} access on the{' '}
-              {role?.entity_name} entity by default.
+              Delegate users won’t get the <strong>{role?.role_name}</strong>{' '}
+              access on the <strong>{role?.entity_name}</strong> entity by
+              default.
             </Typography>
           ) : (
             <Typography>

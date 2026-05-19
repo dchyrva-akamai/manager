@@ -1,5 +1,5 @@
 import { profileFactory } from '@linode/utilities';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import React from 'react';
 
 import { accountUserFactory } from 'src/factories';
@@ -33,7 +33,7 @@ describe('UserDetailsPanel', () => {
     const user = accountUserFactory.build();
     const assignedRoles = { account_access: [], entity_access: [] };
 
-    const { getByText } = renderWithTheme(
+    renderWithTheme(
       <UserDetailsPanel
         activeUser={user}
         assignedRoles={assignedRoles}
@@ -41,11 +41,17 @@ describe('UserDetailsPanel', () => {
       />
     );
 
-    expect(getByText(/Username/)).toBeVisible();
-    expect(getByText(user.username)).toBeVisible();
+    const usernameField = screen.getByText(/Username/).parentElement;
+    expect(usernameField).not.toBeNull();
+    expect(
+      within(usernameField as HTMLElement).getByText(user.username)
+    ).toBeVisible();
 
-    expect(getByText(/E-mail/)).toBeVisible();
-    expect(getByText(user.email)).toBeVisible();
+    const emailField = screen.getByText(/E-mail/).parentElement;
+    expect(emailField).not.toBeNull();
+    expect(
+      within(emailField as HTMLElement).getByText(user.email)
+    ).toBeVisible();
   });
 
   it("renders '0' if the user doesn't have the assigned roles", async () => {
@@ -249,7 +255,7 @@ describe('UserDetailsPanel – Delete User button', () => {
       username: 'other_user',
     });
 
-    const { container, getByText } = renderWithTheme(
+    const { container } = renderWithTheme(
       <UserDetailsPanel
         activeUser={user}
         assignedRoles={assignedRoles}
@@ -259,7 +265,11 @@ describe('UserDetailsPanel – Delete User button', () => {
 
     fireEvent.click(getDeleteUserButton(container)!);
 
-    expect(getByText(/Deleting this User is permanent/i)).toBeInTheDocument();
+    expect(
+      screen.getByText('Delete user?').closest('cds-modal')
+    ).toHaveTextContent(
+      "Deleting other_user is permanent and can't be undone."
+    );
   });
 
   it('disables the Delete User button when delete_user permission is false', () => {
