@@ -15,7 +15,6 @@ import { Currency } from 'src/components/Currency';
 import { TextTooltip } from 'src/components/TextTooltip';
 import { useIsAclpSupportedRegion } from 'src/features/CloudPulse/Utils/utils';
 import { useFlags } from 'src/hooks/useFlags';
-import { useIsLinodeInterfacesEnabled } from 'src/utilities/linodes';
 import { getLinodeBackupPrice } from 'src/utilities/pricing/backups';
 import { useComputePricing } from 'src/utilities/pricing/useComputePricing';
 
@@ -30,7 +29,6 @@ interface SummaryProps {
 export const Summary = ({ isAclpAlertsMode }: SummaryProps) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-  const { isLinodeInterfacesEnabled } = useIsLinodeInterfacesEnabled();
 
   const { control } = useFormContext<LinodeCreateFormValues>();
 
@@ -45,8 +43,6 @@ export const Summary = ({ isAclpAlertsMode }: SummaryProps) => {
     backupsEnabled,
     privateIPEnabled,
     placementGroupId,
-    vlanLabel,
-    vpcId,
     diskEncryption,
     stackscriptData,
     clusterName,
@@ -64,8 +60,6 @@ export const Summary = ({ isAclpAlertsMode }: SummaryProps) => {
       'backups_enabled',
       'private_ip',
       'placement_group.id',
-      'interfaces.1.label',
-      'interfaces.0.vpc_id',
       'disk_encryption',
       'stackscript_data',
       'stackscript_data.cluster_name',
@@ -108,13 +102,13 @@ export const Summary = ({ isAclpAlertsMode }: SummaryProps) => {
     type,
   });
 
-  const hasVPC = isLinodeInterfacesEnabled
-    ? linodeInterfaces?.some((i) => i.purpose === 'vpc' && i.vpc?.subnet_id)
-    : vpcId;
+  const hasVPC = linodeInterfaces?.some(
+    (i) => i.purpose === 'vpc' && i.vpc?.subnet_id
+  );
 
-  const hasVLAN = isLinodeInterfacesEnabled
-    ? linodeInterfaces?.some((i) => i.purpose === 'vlan' && i.vlan?.vlan_label)
-    : vlanLabel;
+  const hasVLAN = linodeInterfaces?.some(
+    (i) => i.purpose === 'vlan' && i.vlan?.vlan_label
+  );
 
   const hasFirewall =
     interfaceGeneration === 'linode'
@@ -205,9 +199,7 @@ export const Summary = ({ isAclpAlertsMode }: SummaryProps) => {
       item: {
         title: 'Public Internet',
       },
-      show:
-        isLinodeInterfacesEnabled &&
-        linodeInterfaces?.some((i) => i.purpose === 'public'),
+      show: linodeInterfaces?.some((i) => i.purpose === 'public'),
     },
     {
       item: {

@@ -133,9 +133,7 @@ describe('FirewallRow', () => {
       });
 
       const { getByTestId, getByText } = render(
-        wrapWithTableBody(<FirewallRow {...baseProps} />, {
-          flags: { linodeInterfaces: { enabled: true } },
-        })
+        wrapWithTableBody(<FirewallRow {...baseProps} />)
       );
       getByTestId('firewall-row-1');
       getByText(firewall.label);
