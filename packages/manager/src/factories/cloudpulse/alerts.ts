@@ -424,6 +424,27 @@ export const objectStorageMetricRules: MetricDefinition[] = [
       },
     ],
   },
+  {
+    label: 'All responses',
+    metric: 'obj_responses_num',
+    unit: 'Count',
+    metric_type: 'gauge',
+    scrape_interval: '60s',
+    is_alertable: true,
+    available_aggregate_functions: ['sum'],
+    dimensions: [
+      {
+        label: 'Response type',
+        dimension_label: 'response_type',
+        values: ['2xx', 'rate_limited', 'quota_exceeded', '4xx', '5xx'],
+      },
+      {
+        label: 'Endpoint',
+        dimension_label: 'endpoint',
+        values: [],
+      },
+    ],
+  },
 ];
 
 export const blockStorageMetricRules: MetricDefinition[] = [
