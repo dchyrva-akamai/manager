@@ -3,9 +3,11 @@ import * as React from 'react';
 
 import { useObjectStorageEndpoints } from 'src/queries/object-storage/queries';
 
+import type { ObjectStorageEndpoint } from '@linode/api-v4';
 import type { SxProps, Theme } from '@linode/ui';
 
 export interface EndpointMultiselectValue {
+  endpoint: ObjectStorageEndpoint;
   label: string;
 }
 
@@ -29,11 +31,16 @@ export const EndpointMultiselect = ({
   const { data: endpoints, isFetching } = useObjectStorageEndpoints(!options);
   const multiselectOptions = React.useMemo(
     () =>
-      (endpoints ?? [])
+      ((endpoints ?? []) as ObjectStorageEndpoint[])
         .filter((endpoint) => endpoint.s3_endpoint)
-        .map((endpoint) => ({
-          label: endpoint.s3_endpoint as string,
-        })),
+        .map(
+          (endpoint) =>
+            ({
+              endpoint,
+              label: endpoint.s3_endpoint as string,
+            }) as EndpointMultiselectValue
+        )
+        .sort((a, b) => (a.label > b.label ? 1 : -1)),
     [endpoints]
   );
 
@@ -51,7 +58,13 @@ export const EndpointMultiselect = ({
           ? `Loading S3 endpoints...`
           : 'Select an Object Storage S3 endpoint'
       }
-      sx={sx}
+      sx={{
+        maxWidth: '630px',
+        '& .MuiInput-root': {
+          maxWidth: 'none',
+        },
+        ...sx,
+      }}
       value={values}
     />
   );
