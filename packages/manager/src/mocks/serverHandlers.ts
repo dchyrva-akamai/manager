@@ -4662,6 +4662,39 @@ export const handlers = [
     } else if (id === '6') {
       serviceType = 'objectstorage';
       dashboardLabel = 'Object Storage Service I/O Statistics';
+      widgets = [
+        {
+          metric: 'obj_bucket_size',
+          unit: 'Bytes',
+          label: 'Content Stored',
+          color: 'default',
+          size: 6,
+          chart_type: 'line',
+          y_label: 'obj_bucket_size',
+          aggregate_function: 'sum',
+        },
+        {
+          metric: 'obj_bucket_num_objects',
+          unit: 'Count',
+          label: 'Number of Objects',
+          color: 'default',
+          size: 6,
+          chart_type: 'line',
+          y_label: 'obj_bucket_num_objects',
+          aggregate_function: 'sum',
+        },
+        {
+          metric: 'obj_responses_num',
+          unit: 'Count',
+          label: 'Total Responses',
+          color: 'default',
+          size: 6,
+          chart_type: 'line',
+          y_label: 'obj_responses_num',
+          group_by: ['response_type'],
+          aggregate_function: 'sum',
+        },
+      ];
     } else if (id === '7') {
       serviceType = 'blockstorage';
       dashboardLabel = 'Block Storage Dashboard';
@@ -4698,6 +4731,39 @@ export const handlers = [
     } else if (id === '10') {
       serviceType = 'objectstorage';
       dashboardLabel = 'Endpoint Dashboard';
+      widgets = [
+        {
+          metric: 'obj_bucket_size',
+          unit: 'Bytes',
+          label: 'Content Stored',
+          color: 'default',
+          size: 6,
+          chart_type: 'line',
+          y_label: 'obj_bucket_size',
+          aggregate_function: 'sum',
+        },
+        {
+          metric: 'obj_bucket_num_objects',
+          unit: 'Count',
+          label: 'Number Of Objects',
+          color: 'default',
+          size: 6,
+          chart_type: 'line',
+          y_label: 'obj_bucket_num_objects',
+          aggregate_function: 'sum',
+        },
+        {
+          metric: 'obj_responses_num',
+          unit: 'Count',
+          label: 'Total Responses',
+          color: 'default',
+          size: 6,
+          chart_type: 'line',
+          y_label: 'obj_responses_num',
+          group_by: ['response_type'],
+          aggregate_function: 'sum',
+        },
+      ];
     } else if (id === '5') {
       widgets = [
         {
