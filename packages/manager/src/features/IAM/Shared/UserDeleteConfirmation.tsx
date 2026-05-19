@@ -53,13 +53,12 @@ export const UserDeleteConfirmation = (props: Props) => {
       open={open}
       role="dialog"
       size={error ? 'medium' : 'small'}
-      // titleMaxLength={150}
     >
-      <span slot="title">{`Delete user ${username}?`}</span>
+      <span slot="title">{`Delete user?`}</span>
       <div slot="body">
         <NotificationBanner type="warning">
-          <strong>Warning:</strong> Deleting this User is permanent and
-          can&apos;t be undone.
+          <strong>Warning:</strong> Deleting <strong>{username}</strong> is
+          permanent and can&apos;t be undone.
         </NotificationBanner>
         {error && <ErrorState />}
       </div>

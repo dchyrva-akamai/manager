@@ -18,24 +18,6 @@ export const expectNotificationBannerText = async (text: string) => {
 };
 
 /**
- * Prevents `cds-modal` from portaling itself to `document.body` during tests.
- * The modal moves to `document.body` when open, which breaks React's DOM
- * cleanup. Call this inside `beforeEach` and pair with `vi.restoreAllMocks()`
- * in `afterEach`.
- */
-export const preventCdsModalPortaling = () => {
-  vi.spyOn(document.body, 'appendChild').mockImplementation(function (
-    this: HTMLElement,
-    node
-  ) {
-    if (node instanceof Element && node.tagName === 'CDS-MODAL') {
-      return node as any;
-    }
-    return HTMLElement.prototype.appendChild.call(this, node);
-  });
-};
-
-/**
  * Returns the `cds-button` host element whose trimmed text content matches the
  * given label.
  */

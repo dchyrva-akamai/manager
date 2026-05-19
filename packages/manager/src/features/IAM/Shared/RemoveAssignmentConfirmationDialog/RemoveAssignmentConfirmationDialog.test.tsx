@@ -5,10 +5,7 @@ import React from 'react';
 import { accountRolesFactory } from 'src/factories/accountRoles';
 import { renderWithTheme } from 'src/utilities/testHelpers';
 
-import {
-  getCdsButtonByText,
-  preventCdsModalPortaling,
-} from '../../utilities/testHelpers';
+import { getCdsButtonByText } from '../../utilities/testHelpers';
 import { INTERNAL_ERROR_NO_CHANGES_SAVED } from '../constants';
 import { RemoveAssignmentConfirmationDialog } from './RemoveAssignmentConfirmationDialog';
 
@@ -64,7 +61,6 @@ vi.mock('@linode/queries', async () => {
 describe('RemoveAssignmentConfirmationDialog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    preventCdsModalPortaling();
     queryMocks.useUserRoles.mockReturnValue({});
     queryMocks.useGetDefaultDelegationAccessQuery.mockReturnValue({});
     queryMocks.useUpdateDefaultDelegationAccessQuery.mockReturnValue({
@@ -86,18 +82,16 @@ describe('RemoveAssignmentConfirmationDialog', () => {
   });
 
   it('should render', async () => {
-    const { container } = renderWithTheme(
+    renderWithTheme(
       <RemoveAssignmentConfirmationDialog {...props} username="test_user" />
     );
 
     expect(
-      screen.getByText(
-        'Remove the Test entity from the firewall_admin role assignment?'
-      )
+      screen.getByText('Remove entity from the role assignment?')
     ).toBeInTheDocument();
 
     // Notification banner children are slotted (light DOM) — queryable directly
-    const paragraph = container
+    const paragraph = document.body
       .querySelector('cds-notification-banner')
       ?.querySelector('p');
 
@@ -109,15 +103,13 @@ describe('RemoveAssignmentConfirmationDialog', () => {
       /This change will be applied immediately/i
     );
 
-    expect(container.querySelectorAll('cds-button')).toHaveLength(2);
+    expect(document.body.querySelectorAll('cds-button')).toHaveLength(2);
   });
 
   it('calls onClose when the cancel button is clicked', async () => {
-    const { container } = renderWithTheme(
-      <RemoveAssignmentConfirmationDialog {...props} />
-    );
+    renderWithTheme(<RemoveAssignmentConfirmationDialog {...props} />);
 
-    const cancelButton = await getCdsButtonByText(container, 'Cancel');
+    const cancelButton = await getCdsButtonByText(document.body, 'Cancel');
     expect(cancelButton).toBeVisible();
 
     await userEvent.click(cancelButton as HTMLButtonElement);
@@ -151,11 +143,9 @@ describe('RemoveAssignmentConfirmationDialog', () => {
       reset: vi.fn(),
     });
 
-    const { container } = renderWithTheme(
-      <RemoveAssignmentConfirmationDialog {...props} />
-    );
+    renderWithTheme(<RemoveAssignmentConfirmationDialog {...props} />);
 
-    const removeButton = await getCdsButtonByText(container, 'Remove');
+    const removeButton = await getCdsButtonByText(document.body, 'Remove');
     expect(removeButton).toBeVisible();
 
     await userEvent.click(removeButton as HTMLButtonElement);
@@ -172,15 +162,13 @@ describe('RemoveAssignmentConfirmationDialog', () => {
     queryMocks.useIsDefaultDelegationRolesForChildAccount.mockReturnValue({
       isDefaultDelegationRolesForChildAccount: true,
     });
-    const { container } = renderWithTheme(
-      <RemoveAssignmentConfirmationDialog {...props} />
-    );
+    renderWithTheme(<RemoveAssignmentConfirmationDialog {...props} />);
 
     expect(
-      screen.getByText('Remove the Test entity from the list?')
+      screen.getByText('Remove entity from the list?')
     ).toBeInTheDocument();
 
-    const paragraph = container
+    const paragraph = document.body
       .querySelector('cds-notification-banner')
       ?.querySelector('p');
 
@@ -203,10 +191,8 @@ describe('RemoveAssignmentConfirmationDialog', () => {
       isDefaultDelegationRolesForChildAccount: true,
     });
 
-    const { container } = renderWithTheme(
-      <RemoveAssignmentConfirmationDialog {...props} />
-    );
-    const removeButton = await getCdsButtonByText(container, 'Remove');
+    renderWithTheme(<RemoveAssignmentConfirmationDialog {...props} />);
+    const removeButton = await getCdsButtonByText(document.body, 'Remove');
     expect(removeButton).toBeVisible();
 
     await userEvent.click(removeButton as HTMLButtonElement);

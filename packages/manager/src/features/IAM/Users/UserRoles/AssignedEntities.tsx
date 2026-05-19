@@ -52,8 +52,9 @@ export const AssignedEntities = ({
       }}
     >
       <Tooltip
+        disabled={entity.name.length <= 30}
         tooltipPlacement="top"
-        tooltipText={entity.name.length > 30 ? entity.name : undefined}
+        tooltipText={entity.name}
       >
         <Chip
           data-testid="entities"

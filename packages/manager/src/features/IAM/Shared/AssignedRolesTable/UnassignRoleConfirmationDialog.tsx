@@ -108,14 +108,15 @@ export const UnassignRoleConfirmationDialog = (props: Props) => {
     >
       <span slot="title">
         {isDefaultDelegationRolesForChildAccount
-          ? `Remove the ${role?.name} role from the list?`
-          : `Unassign the ${role?.name} role?`}
+          ? `Remove role from the list?`
+          : `Unassign role?`}
       </span>
       <div slot="body">
         <NotificationBanner type="warning">
           {isDefaultDelegationRolesForChildAccount ? (
             <Typography>
-              The role won’t be added to delegate users by default.
+              The <strong>{role?.name}</strong> role won’t be added to delegate
+              users by default.
             </Typography>
           ) : (
             <Typography>
