@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { objectStorageEndpointsFactory } from 'src/factories';
 import {
   objEndpointQuotaFactory,
   quotaUsageFactory,
@@ -8,7 +9,11 @@ import { renderWithTheme } from 'src/utilities/testHelpers';
 
 import { EndpointSummaryRow } from './EndpointSummaryRow';
 
-const testEndpoint = 'us-southeast-1.linodeobjects.com';
+const objectStorageEndpointMock = objectStorageEndpointsFactory.build({
+  s3_endpoint: 'us-southeast-1.linodeobjects.com',
+});
+
+const s3Endpoint = objectStorageEndpointMock.s3_endpoint ?? '';
 
 const queryMocks = vi.hoisted(() => ({
   quotaQueries: {
@@ -41,31 +46,31 @@ vi.mock('@tanstack/react-query', async () => {
 
 const quotasMock = [
   objEndpointQuotaFactory.build({
-    quota_id: `obj-buckets-${testEndpoint}`,
+    quota_id: `obj-buckets-${s3Endpoint}`,
     quota_type: 'obj-buckets',
     quota_name: 'Number of Buckets',
     endpoint_type: 'E1',
-    s3_endpoint: testEndpoint,
+    s3_endpoint: s3Endpoint,
     description: 'Current number of buckets per account, per endpoint',
     quota_limit: 10,
     resource_metric: 'bucket',
   }),
   objEndpointQuotaFactory.build({
-    quota_id: `obj-bytes-${testEndpoint}`,
+    quota_id: `obj-bytes-${s3Endpoint}`,
     quota_type: 'obj-bytes',
     quota_name: 'Total Capacity',
     endpoint_type: 'E1',
-    s3_endpoint: testEndpoint,
+    s3_endpoint: s3Endpoint,
     description: 'Current total capacity per account, per endpoint',
     quota_limit: 2048,
     resource_metric: 'byte',
   }),
   objEndpointQuotaFactory.build({
-    quota_id: `obj-objects-${testEndpoint}`,
+    quota_id: `obj-objects-${s3Endpoint}`,
     quota_type: 'obj-objects',
     quota_name: 'Number of Objects',
     endpoint_type: 'E1',
-    s3_endpoint: testEndpoint,
+    s3_endpoint: s3Endpoint,
     description: 'Current number of objects per account, per endpoint',
     quota_limit: 10,
     resource_metric: 'object',
@@ -109,15 +114,11 @@ describe('EndpointSummaryRow', () => {
       isFetching: false,
     });
 
-    const { findByText, findAllByText } = renderWithTheme(
-      <EndpointSummaryRow endpoint={testEndpoint} />
+    const { findByText } = renderWithTheme(
+      <EndpointSummaryRow endpoint={objectStorageEndpointMock} />
     );
 
-    const cellEndpoints = await findAllByText(testEndpoint);
-    expect(cellEndpoints.length).toBe(3);
-    cellEndpoints.forEach((endpoint) => {
-      expect(endpoint).toBeVisible();
-    });
+    expect(await findByText(s3Endpoint)).toBeVisible();
     expect(await findByText('3 of 10 Buckets used')).toBeVisible();
     expect(await findByText('1 of 2 KB used')).toBeVisible();
     expect(await findByText('5 of 10 Objects used')).toBeVisible();
@@ -146,12 +147,12 @@ describe('EndpointSummaryRow', () => {
     });
 
     const { findByText } = renderWithTheme(
-      <EndpointSummaryRow endpoint={testEndpoint} />
+      <EndpointSummaryRow endpoint={objectStorageEndpointMock} />
     );
 
     expect(
       await findByText(
-        `There was an error retrieving ${testEndpoint} endpoint data.`
+        `There was an error retrieving ${s3Endpoint} endpoint data.`
       )
     ).toBeVisible();
   });
@@ -179,7 +180,7 @@ describe('EndpointSummaryRow', () => {
     });
 
     const { findAllByText } = renderWithTheme(
-      <EndpointSummaryRow endpoint={testEndpoint} />
+      <EndpointSummaryRow endpoint={objectStorageEndpointMock} />
     );
 
     const notAvailable = await findAllByText('Data not available');

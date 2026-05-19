@@ -1,24 +1,26 @@
-import { Typography, useTheme } from '@linode/ui';
+import { Box, CircleProgress, ErrorState, Typography } from '@linode/ui';
+import { Grid } from '@mui/material';
 import * as React from 'react';
 
+import { Link } from 'src/components/Link';
 import { QuotaUsageBar } from 'src/components/QuotaUsageBar/QuotaUsageBar';
-import { TableCell } from 'src/components/TableCell';
-import { TableRow } from 'src/components/TableRow';
-import { TableRowError } from 'src/components/TableRowError/TableRowError';
-import { TableRowLoading } from 'src/components/TableRowLoading/TableRowLoading';
 import { useQuotasWithUsageQuery } from 'src/features/Account/Quotas/hooks/useQuotasWithUsageQuery';
 import { objectStorageQuotaService } from 'src/features/Account/Quotas/quotaServices';
+import { useFlags } from 'src/hooks/useFlags';
 
-import type { ObjectStorageEndpointQuota } from '@linode/api-v4';
+import type {
+  ObjectStorageEndpoint,
+  ObjectStorageEndpointQuota,
+} from '@linode/api-v4';
 import type { QuotaWithUsage } from 'src/features/Account/Quotas/utils';
 
 interface Props {
-  endpoint: string;
+  endpoint: ObjectStorageEndpoint;
 }
 
 export const EndpointSummaryRow = ({ endpoint }: Props) => {
-  const theme = useTheme();
   const service = objectStorageQuotaService();
+  const { objectStorageSummaryPageLinks } = useFlags();
 
   const {
     data: quotasWithUsage,
@@ -27,7 +29,7 @@ export const EndpointSummaryRow = ({ endpoint }: Props) => {
   } = useQuotasWithUsageQuery({
     service,
     scope: 'obj-endpoint',
-    scopeValue: endpoint,
+    scopeValue: endpoint.s3_endpoint,
     enabled: Boolean(endpoint),
   });
 
@@ -35,14 +37,23 @@ export const EndpointSummaryRow = ({ endpoint }: Props) => {
     isFetchingQuotas ||
     quotasWithUsage?.some((quotaWithUsage) => quotaWithUsage.isFetchingUsage)
   ) {
-    return <TableRowLoading columns={3} />;
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <CircleProgress size="md" />
+      </Box>
+    );
   }
 
   if (isError) {
     return (
-      <TableRowError
-        colSpan={3}
-        message={`There was an error retrieving ${endpoint} endpoint data.`}
+      <ErrorState
+        compact={true}
+        errorText={`There was an error retrieving ${endpoint.s3_endpoint} endpoint data.`}
       />
     );
   }
@@ -56,35 +67,71 @@ export const EndpointSummaryRow = ({ endpoint }: Props) => {
     {} as Record<ObjectStorageEndpointQuota['quota_type'], QuotaWithUsage>
   );
 
-  const displayedTypes: ObjectStorageEndpointQuota['quota_type'][] = [
-    'obj-bytes',
-    'obj-objects',
-    'obj-buckets',
+  const displayedQuotaTypes: {
+    label: string;
+    type: ObjectStorageEndpointQuota['quota_type'];
+  }[] = [
+    { label: 'Content stored', type: 'obj-bytes' },
+    { label: 'Objects', type: 'obj-objects' },
+    { label: 'Buckets', type: 'obj-buckets' },
   ];
 
   return (
-    <TableRow>
-      {displayedTypes.map((queryType) => {
-        const quotaWithUsage = quotasByType[queryType];
-        return (
-          <TableCell
-            key={queryType}
-            sx={{ paddingY: theme.spacingFunction(8) }}
-          >
-            <Typography>{endpoint}</Typography>
+    <Box>
+      <Box
+        sx={(theme) => ({
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: theme.spacingFunction(8),
+        })}
+      >
+        <Typography
+          sx={(theme) => ({
+            font: theme.tokens.alias.Typography.Heading.Xs,
+          })}
+        >
+          {endpoint.s3_endpoint}
+        </Typography>
 
-            {quotaWithUsage && !quotaWithUsage.fetchingUsageFailed ? (
-              <QuotaUsageBar
-                limit={quotaWithUsage.quota.quota_limit}
-                resourceMetric={quotaWithUsage.quota.resource_metric}
-                usage={quotaWithUsage.usage ?? 0}
-              />
-            ) : (
-              <Typography>Data not available</Typography>
-            )}
-          </TableCell>
-        );
-      })}
-    </TableRow>
+        {objectStorageSummaryPageLinks && (
+          <Link
+            to={`/object-storage/buckets?endpoints=${endpoint.s3_endpoint}&regions=${endpoint.region}`}
+          >
+            Show buckets
+          </Link>
+        )}
+      </Box>
+
+      <Grid container spacing={8}>
+        {displayedQuotaTypes.map(({ label, type }) => {
+          const quotaWithUsage = quotasByType[type];
+
+          return (
+            <Grid key={type} size={{ sm: 4 }}>
+              <Typography
+                sx={(theme) => ({
+                  font: theme.tokens.alias.Typography.Label.Regular.S,
+                  color: theme.tokens.color.Neutrals[70],
+                  paddingY: theme.spacingFunction(2),
+                })}
+              >
+                {label}
+              </Typography>
+
+              {quotaWithUsage && !quotaWithUsage.fetchingUsageFailed ? (
+                <QuotaUsageBar
+                  limit={quotaWithUsage.quota.quota_limit}
+                  resourceMetric={quotaWithUsage.quota.resource_metric}
+                  usage={quotaWithUsage.usage ?? 0}
+                  variant="obj-summary"
+                />
+              ) : (
+                <Typography>Data not available</Typography>
+              )}
+            </Grid>
+          );
+        })}
+      </Grid>
+    </Box>
   );
 };

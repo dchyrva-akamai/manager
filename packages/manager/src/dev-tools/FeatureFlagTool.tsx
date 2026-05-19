@@ -108,6 +108,7 @@ const options: { flag: keyof Flags; label: string }[] = [
     label: 'Object Storage Contextual Metrics',
   },
   { flag: 'objSummaryPage', label: 'OBJ Summary Page' },
+  { flag: 'objectStorageSummaryPageLinks', label: 'OBJ Summary Page Links' },
   { flag: 'vpcDbaasResources', label: 'VPC DBaaS Resources' },
   { flag: 'vpcIpv6', label: 'VPC IPv6' },
   { flag: 'reserveIp', label: 'Reserve IP' },
