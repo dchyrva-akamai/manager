@@ -9,9 +9,14 @@ import {
 } from '@akamai/cds-components/react/Table';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { capitalize } from '@akamai/compute-ui-core/formatting';
-import { useProfile, useShareGroupsMembersQuery } from '@linode/queries';
+import {
+  useDeleteShareGroupMemberMutation,
+  useProfile,
+  useShareGroupsMembersQuery,
+} from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
 import {
+  ActionsPanel,
   Box,
   ErrorState,
   Hidden,
@@ -23,8 +28,10 @@ import {
   ZeroStateSearchNarrowIcon,
 } from '@linode/ui';
 import { useNavigate, useSearch } from '@tanstack/react-router';
+import { enqueueSnackbar } from 'notistack';
 import * as React from 'react';
 
+import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
 import { CopyTooltip } from 'src/components/CopyTooltip/CopyTooltip';
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField/DebouncedSearchTextField';
 import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';
@@ -33,14 +40,18 @@ import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
 import {
   DEFAULT_PAGE_SIZES,
+  REVOKE_ACCESS_DIALOG_PENDO_IDS,
   SHARE_GROUP_DETAILS_PENDO_IDS,
 } from '../../constants';
+
+import type { SharegroupMember } from '@linode/api-v4';
 
 interface Props {
   handleAddMembersClick: () => void;
   isTableStripingEnabled: boolean;
   setMembersCount?: (count: number) => void;
   shareGroupId: string;
+  shareGroupLabel?: string;
 }
 
 const MEMBERS_COLUMNS = [
@@ -54,6 +65,7 @@ export const GroupMembersTable = (props: Props) => {
   const {
     isTableStripingEnabled,
     shareGroupId,
+    shareGroupLabel,
     setMembersCount,
     handleAddMembersClick,
   } = props;
@@ -61,6 +73,9 @@ export const GroupMembersTable = (props: Props) => {
   const { data: profile } = useProfile();
   const navigate = useNavigate();
   const [showInactiveMembers, setShowInactiveMembers] = React.useState(true);
+  const [isRevokeDialogOpen, setIsRevokeDialogOpen] = React.useState(false);
+  const [selectedMember, setSelectedMember] =
+    React.useState<null | SharegroupMember>(null);
 
   const search = useSearch({
     from: '/images/share-groups/owned-groups/$shareGroupId',
@@ -133,16 +148,47 @@ export const GroupMembersTable = (props: Props) => {
     pagination.handlePageSizeChange(newSize);
   };
 
-  const getMemberStatus = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'active';
-      case 'inactive':
-        return 'inactive';
-      default:
-        return 'other';
+  const { mutateAsync: deleteSharegroupMember, isPending } =
+    useDeleteShareGroupMemberMutation();
+
+  const handleRevokeAccess = async () => {
+    try {
+      if (!selectedMember) {
+        return;
+      }
+      const { token_uuid } = selectedMember;
+      await deleteSharegroupMember({
+        shareGroupId,
+        token_uuid,
+      });
+      setIsRevokeDialogOpen(false);
+      setSelectedMember(null);
+      enqueueSnackbar("User's access to the share group was revoked", {
+        variant: 'success',
+      });
+    } catch (error) {
+      enqueueSnackbar(error, {
+        variant: 'error',
+      });
     }
   };
+
+  const actions = (
+    <ActionsPanel
+      primaryButtonProps={{
+        label: 'Revoke Access',
+        loading: isPending,
+        'data-pendo-id': REVOKE_ACCESS_DIALOG_PENDO_IDS.revokeButton,
+        onClick: handleRevokeAccess,
+      }}
+      secondaryButtonProps={{
+        label: 'Cancel',
+        'data-pendo-id': REVOKE_ACCESS_DIALOG_PENDO_IDS.cancelButton,
+        onClick: () => setIsRevokeDialogOpen(false),
+      }}
+      style={{ padding: 0 }}
+    />
+  );
 
   return (
     <Paper sx={{ mb: 4, p: 2 }}>
@@ -305,6 +351,10 @@ export const GroupMembersTable = (props: Props) => {
                     data-pendo-id={
                       SHARE_GROUP_DETAILS_PENDO_IDS.revokeAccessButton
                     }
+                    onClick={() => {
+                      setSelectedMember(member);
+                      setIsRevokeDialogOpen(true);
+                    }}
                     variant="link"
                   >
                     Revoke Access
@@ -324,8 +374,29 @@ export const GroupMembersTable = (props: Props) => {
           pageSizes={DEFAULT_PAGE_SIZES}
         />
       )}
+      <ConfirmationDialog
+        actions={actions}
+        closeIconPendoId={REVOKE_ACCESS_DIALOG_PENDO_IDS.xButton}
+        onClose={() => setIsRevokeDialogOpen(false)}
+        open={isRevokeDialogOpen}
+        title={`Revoke access to ${shareGroupLabel ?? 'this Share Group'} for ${selectedMember?.label ?? 'this member'}?`}
+      >
+        Are you sure you want to revoke access to this share group for this
+        user?
+      </ConfirmationDialog>
     </Paper>
   );
+};
+
+const getMemberStatus = (status: string) => {
+  switch (status) {
+    case 'active':
+      return 'active';
+    case 'inactive':
+      return 'inactive';
+    default:
+      return 'other';
+  }
 };
 
 const StyledCopyIcon = styled(CopyTooltip)(() => ({

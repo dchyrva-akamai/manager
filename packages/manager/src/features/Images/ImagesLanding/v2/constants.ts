@@ -53,3 +53,9 @@ export const ADD_MEMBERS_DRAWER_PENDO_IDS = {
   cancelButton: 'Share Groups Add Members-Cancel Button',
   xButton: 'Share Groups Add Members-X Button',
 };
+
+export const REVOKE_ACCESS_DIALOG_PENDO_IDS = {
+  cancelButton: 'Share Groups Revoke Access-Cancel Button',
+  revokeButton: 'Share Groups Revoke Access-Revoke Button',
+  xButton: 'Share Groups Revoke Access-X Button',
+};

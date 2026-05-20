@@ -1,3 +1,4 @@
+import { waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 
@@ -6,8 +7,10 @@ import { renderWithTheme } from 'src/utilities/testHelpers';
 import { ShareGroupDetails } from './ShareGroupDetails';
 
 const queryMocks = vi.hoisted(() => ({
+  deleteSharegroupMember: vi.fn(),
   getAPIFilterFromQuery: vi.fn(),
   navigate: vi.fn(),
+  enqueueSnackbar: vi.fn(),
   pagination: {
     handlePageChange: vi.fn(),
     handlePageSizeChange: vi.fn(),
@@ -26,6 +29,7 @@ const queryMocks = vi.hoisted(() => ({
   usePreferences: vi.fn(),
   useProfile: vi.fn(),
   useSearch: vi.fn(),
+  useDeleteShareGroupMemberMutation: vi.fn(),
   useShareGroupQuery: vi.fn(),
   useShareGroupsImagesQuery: vi.fn(),
   useShareGroupsMembersQuery: vi.fn(),
@@ -37,9 +41,19 @@ vi.mock('@linode/queries', async () => {
     ...actual,
     usePreferences: queryMocks.usePreferences,
     useProfile: queryMocks.useProfile,
+    useDeleteShareGroupMemberMutation:
+      queryMocks.useDeleteShareGroupMemberMutation,
     useShareGroupQuery: queryMocks.useShareGroupQuery,
     useShareGroupsImagesQuery: queryMocks.useShareGroupsImagesQuery,
     useShareGroupsMembersQuery: queryMocks.useShareGroupsMembersQuery,
+  };
+});
+
+vi.mock('notistack', async () => {
+  const actual = await vi.importActual('notistack');
+  return {
+    ...actual,
+    enqueueSnackbar: queryMocks.enqueueSnackbar,
   };
 });
 
@@ -139,6 +153,11 @@ describe('ShareGroupDetails', () => {
     queryMocks.useSearch.mockImplementation(() => queryMocks.search);
     queryMocks.usePreferences.mockReturnValue({ data: true });
     queryMocks.useProfile.mockReturnValue({ data: { timezone: 'UTC' } });
+    queryMocks.useDeleteShareGroupMemberMutation.mockReturnValue({
+      mutateAsync: queryMocks.deleteSharegroupMember,
+      isPending: false,
+    });
+    queryMocks.deleteSharegroupMember.mockResolvedValue({});
 
     queryMocks.getAPIFilterFromQuery.mockReturnValue({
       error: undefined,
@@ -312,5 +331,58 @@ describe('ShareGroupDetails', () => {
         "Click 'Add Images' to share your custom images with members of this group."
       )
     ).toBeVisible();
+  });
+
+  it('opens revoke confirmation dialog and closes it when canceled', async () => {
+    const user = userEvent.setup();
+    const { getAllByRole, getByTestId, getByText } = renderWithTheme(
+      <ShareGroupDetails />
+    );
+
+    await user.click(getAllByRole('button', { name: 'Revoke Access' })[0]);
+
+    expect(
+      getByText('Revoke access to Dev Team Share Group for active-member?')
+    ).toBeVisible();
+    expect(
+      getByText(
+        'Are you sure you want to revoke access to this share group for this user?'
+      )
+    ).toBeVisible();
+
+    const dialog = getByTestId('drawer');
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+
+    await waitFor(() => {
+      expect(
+        getByText('Revoke access to Dev Team Share Group for active-member?')
+      ).not.toBeVisible();
+    });
+  });
+
+  it('revokes member access from confirmation dialog', async () => {
+    const user = userEvent.setup();
+    const { getAllByRole, getByTestId } = renderWithTheme(
+      <ShareGroupDetails />
+    );
+
+    await user.click(getAllByRole('button', { name: 'Revoke Access' })[0]);
+    const dialog = getByTestId('drawer');
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Revoke Access' })
+    );
+
+    await waitFor(() => {
+      expect(queryMocks.deleteSharegroupMember).toHaveBeenCalledWith({
+        shareGroupId: 'share-group-123',
+        token_uuid: 'token-active',
+      });
+    });
+    expect(queryMocks.enqueueSnackbar).toHaveBeenCalledWith(
+      "User's access to the share group was revoked",
+      {
+        variant: 'success',
+      }
+    );
   });
 });
