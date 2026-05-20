@@ -37,7 +37,7 @@ import { RegionSelect } from 'src/components/RegionSelect/RegionSelect';
 import { TagsInput } from 'src/components/TagsInput/TagsInput';
 import { useFlags } from 'src/hooks/useFlags';
 
-import { RESERVE_IP_DESCRIPTION, RESERVED_IPS_DOCS_LINK } from './constants';
+import { RESERVE_AN_IP_DOC_LINK, RESERVE_IP_DESCRIPTION } from './constants';
 import { getReservedIPHourlyPrice } from './utils';
 
 import type { APIError, IPAddress } from '@linode/api-v4';
@@ -219,7 +219,7 @@ export const ReserveIPDrawer = (props: ReserveIPDrawerProps) => {
               <Typography variant="body1">
                 {RESERVE_IP_DESCRIPTION}
                 <br />
-                <Link to={RESERVED_IPS_DOCS_LINK}>Learn more</Link>.
+                <Link to={RESERVE_AN_IP_DOC_LINK}>Learn more</Link>.
               </Typography>
             )}
 
