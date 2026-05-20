@@ -35,6 +35,9 @@ export default defineConfig({
     port: 3000,
   },
   test: {
+    env: {
+      REACT_APP_CLIENT_ID: 'test-client-id',
+    },
     // Limit parallelism in CI to prevent resource exhaustion on shared agents.
     maxWorkers: process.env.CI ? '50%' : undefined,
     // Generous timeouts: MSW + async React state updates need room to breathe.
