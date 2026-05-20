@@ -124,7 +124,7 @@ export const DatabaseResizeCurrentConfiguration = ({ database }: Props) => {
                 <span style={{ font: theme.font.bold }}>Total Disk Size</span>{' '}
                 {database.total_disk_size_gb} GB
                 <Tooltip
-                  style={{ marginLeft: Spacing.S4 }}
+                  style={{ marginLeft: Spacing.S4, whiteSpace: 'normal' }}
                   tooltipText={STORAGE_COPY}
                 >
                   <Icon
