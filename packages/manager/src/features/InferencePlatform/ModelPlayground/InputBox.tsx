@@ -1,16 +1,32 @@
 import { Box, IconButton, InputAdornment, TextField } from '@linode/ui';
 import ArrowUpward from '@mui/icons-material/ArrowUpward';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 
+import { useInferencePlatform } from '../InferencePlatformContext';
 import { ModelPlaygroundContext } from './ModelPlaygroundContext';
 
 export const InputBox = () => {
   const { inputValue, isLoading, onInputChange, onSend } = useContext(
     ModelPlaygroundContext
   );
+  const { isModelsLoading } = useInferencePlatform();
+  const inputRef = useRef<HTMLInputElement>(null);
 
+  const isDisabled = isLoading || isModelsLoading;
   const hasInput = Boolean(inputValue.trim());
-  const canSend = hasInput && !isLoading;
+  const canSend = hasInput && !isDisabled;
+
+  useEffect(() => {
+    if (!isModelsLoading) {
+      inputRef.current?.focus();
+    }
+  }, [isModelsLoading]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      inputRef.current?.focus();
+    }
+  }, [isLoading]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && canSend) {
@@ -22,9 +38,10 @@ export const InputBox = () => {
   return (
     <Box sx={{ width: '100%' }}>
       <TextField
-        disabled={isLoading}
+        disabled={isDisabled}
         fullWidth
         hideLabel
+        inputRef={inputRef}
         label="Prompt"
         minRows={1}
         multiline
