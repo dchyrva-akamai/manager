@@ -174,6 +174,7 @@ export const ShareGroupDetails = () => {
               isTableStripingEnabled={isTableStripingEnabled}
               setMembersCount={setMembersCount}
               shareGroupId={shareGroupId}
+              shareGroupLabel={label}
             />
           </>
         )}

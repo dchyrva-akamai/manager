@@ -2240,7 +2240,8 @@ export const oneClickApps: Record<number, OCA> = {
       end: '0A76FA',
       start: '0AA6FA',
     },
-    description: 'Akamai MCP Gateway Client helps you bridge AI agents and applications with the Akamai product ecosystem. By abstracting individual product APIs into a standardized interface, your AI clients can discover and invoke capabilities through a single, unified protocol without building direct integrations.',
+    description:
+      'Akamai MCP Gateway Client helps you bridge AI agents and applications with the Akamai product ecosystem. By abstracting individual product APIs into a standardized interface, your AI clients can discover and invoke capabilities through a single, unified protocol without building direct integrations.',
     isNew: true,
     logo_url: 'akamai.svg',
     related_guides: [

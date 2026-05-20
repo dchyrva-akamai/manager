@@ -2,6 +2,7 @@ import {
   addMembersToSharegroup,
   createSharegroup,
   deleteSharegroup,
+  deleteSharegroupMember,
   getSharegroup,
   getSharegroupImages,
   getSharegroupMembers,
@@ -283,6 +284,37 @@ export const useShareGroupsAddMembersMutation = (
       });
       queryClient.invalidateQueries({
         queryKey: shareGroupsQueries.sharegroups._ctx.infinite._def,
+      });
+    },
+  });
+};
+
+export const useDeleteShareGroupMemberMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    {},
+    APIError[],
+    { shareGroupId: string; token_uuid: string }
+  >({
+    mutationFn: ({ shareGroupId, token_uuid }) =>
+      deleteSharegroupMember(shareGroupId, token_uuid),
+    onSuccess(_, variables) {
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.paginated._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.all._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.infinite._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.members(
+          variables.shareGroupId,
+          {},
+          {},
+        ).queryKey,
       });
     },
   });
