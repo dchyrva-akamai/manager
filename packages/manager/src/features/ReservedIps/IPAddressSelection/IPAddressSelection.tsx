@@ -89,7 +89,8 @@ export const IPAddressSelection = ({
   selectedIP = null,
   tooltipText = {
     auto: "A public IPv4 address automatically assigned to your Linode. \
-      Use this for standard web traffic that doesn't require a permanent, static IP.",
+      Use this for standard web traffic that doesn't require a permanent, static IP. \
+      This address is included at no additional cost but may change if the Linode is deleted.",
     reserved:
       "A reserved IPv4 address is a static public IP that can be assigned to \
       Linodes in the same region. Use it for services that require a consistent IP address. \
