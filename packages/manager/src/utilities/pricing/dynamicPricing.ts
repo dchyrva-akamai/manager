@@ -1,4 +1,4 @@
-import { UNKNOWN_PRICE } from './constants';
+import { priceIncreaseMap, UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
 
 import type { PriceType, Region, RegionPriceObject } from '@linode/api-v4';
 
@@ -46,12 +46,6 @@ export interface DataCenterPricingByTypeOptions {
    */
   type: PriceType | undefined;
 }
-
-// The key is a region id and the value is the percentage increase in price.
-export const priceIncreaseMap = {
-  'br-gru': 0.4, // Sao Paulo
-  'id-cgk': 0.2, // Jakarta
-};
 
 /**
  * This function is used to calculate the dynamic pricing for a given entity, based on potential region increased costs.

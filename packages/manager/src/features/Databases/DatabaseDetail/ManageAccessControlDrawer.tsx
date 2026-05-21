@@ -1,5 +1,9 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
+import {
+  ipFieldPlaceholder,
+  ipV6FieldPlaceholder,
+} from '@akamai/compute-ui-core/api';
 import { useDatabaseMutation } from '@linode/queries';
 import { ActionsPanel, Drawer, Typography } from '@linode/ui';
 import * as React from 'react';
@@ -17,12 +21,7 @@ import {
 } from 'src/features/Databases/constants';
 import { isDefaultDatabase } from 'src/features/Databases/utilities';
 import { enforceIPMasks } from 'src/features/Firewalls/FirewallDetail/Rules/FirewallRuleDrawer.utils';
-import {
-  ipFieldPlaceholder,
-  ipV6FieldPlaceholder,
-  stringToExtendedIP,
-  validateIPs,
-} from 'src/utilities/ipUtils';
+import { stringToExtendedIP, validateIPs } from 'src/utilities/ipUtils';
 
 import type { APIError, Database, DatabaseInstance } from '@linode/api-v4';
 import type { ExtendedIP } from 'src/utilities/ipUtils';

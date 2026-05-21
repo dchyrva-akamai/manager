@@ -1,3 +1,4 @@
+import { UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
 import { pluralize } from '@akamai/compute-ui-core/formatting';
 import { useRegionsQuery, useSpecificTypes } from '@linode/queries';
 import { CircleProgress, TooltipIcon, Typography } from '@linode/ui';
@@ -12,10 +13,7 @@ import {
   useKubernetesTypesQuery,
 } from 'src/queries/kubernetes';
 import { extendTypesQueryResult } from 'src/utilities/extendType';
-import {
-  HA_PRICE_ERROR_MESSAGE,
-  UNKNOWN_PRICE,
-} from 'src/utilities/pricing/constants';
+import { HA_PRICE_ERROR_MESSAGE } from 'src/utilities/pricing/constants';
 import { getDCSpecificPriceByType } from 'src/utilities/pricing/dynamicPricing';
 import { getTotalClusterPrice } from 'src/utilities/pricing/kubernetes';
 

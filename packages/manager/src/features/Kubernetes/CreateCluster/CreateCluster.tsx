@@ -1,3 +1,4 @@
+import { UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
 import {
   useAccountSettings,
   useAllTypes,
@@ -53,10 +54,7 @@ import { getAPIErrorOrDefault, getErrorMap } from 'src/utilities/errorUtils';
 import { extendType } from 'src/utilities/extendType';
 import { filterCurrentTypes } from 'src/utilities/filterCurrentLinodeTypes';
 import { stringToExtendedIP, validateIPs } from 'src/utilities/ipUtils';
-import {
-  DOCS_LINK_LABEL_DC_PRICING,
-  UNKNOWN_PRICE,
-} from 'src/utilities/pricing/constants';
+import { DOCS_LINK_LABEL_DC_PRICING } from 'src/utilities/pricing/constants';
 import { getDCSpecificPriceByType } from 'src/utilities/pricing/dynamicPricing';
 import { reportAgreementSigningError } from 'src/utilities/reportAgreementSigningError';
 

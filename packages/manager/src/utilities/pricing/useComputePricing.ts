@@ -1,8 +1,8 @@
+import { UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
 import { useMemo } from 'react';
 
 import { useFlags } from 'src/hooks/useFlags';
 
-import { UNKNOWN_PRICE } from './constants';
 import {
   formatPrice,
   getLabelForInterval,

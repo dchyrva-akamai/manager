@@ -1,9 +1,10 @@
+import { UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
+
 import {
   lkeHighAvailabilityTypeFactory,
   nodeBalancerTypeFactory,
   volumeTypeFactory,
 } from 'src/factories/types';
-import { UNKNOWN_PRICE } from 'src/utilities/pricing/constants';
 
 import {
   getDCSpecificPrice,

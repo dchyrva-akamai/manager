@@ -1,3 +1,4 @@
+import { IP_ERROR_MESSAGE } from '@akamai/compute-ui-core/api';
 import { capitalize } from '@akamai/compute-ui-core/formatting';
 import { within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -15,7 +16,6 @@ import {
   deriveTypeFromValuesAndIPs,
   formValueToIPs,
   getInitialIPsOrPLs,
-  IP_ERROR_MESSAGE,
   itemsToPortString,
   portStringToItems,
   validateForm,

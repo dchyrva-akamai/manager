@@ -36,6 +36,7 @@
     "url": "https://github.com/linode/manager/tree/develop/packages/validation"
   },
   "dependencies": {
+    "@akamai/compute-ui-core": "^0.0.4",
     "ipaddr.js": "^2.0.0",
     "libphonenumber-js": "^1.10.6",
     "yup": "^1.4.0"

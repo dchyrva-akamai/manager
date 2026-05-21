@@ -1,3 +1,4 @@
+import { IP_ERROR_MESSAGE } from '@akamai/compute-ui-core/api';
 import {
   CUSTOM_PORTS_ERROR_MESSAGE,
   isCustomPortsValid,
@@ -28,8 +29,6 @@ import type {
 } from '@linode/api-v4/lib/firewalls';
 import type { FirewallOptionItem } from 'src/features/Firewalls/shared';
 import type { ExtendedIP, ExtendedPL } from 'src/utilities/ipUtils';
-
-export const IP_ERROR_MESSAGE = 'Must be a valid IPv4 or IPv6 range.';
 
 /**
  * Derive the appropriate value of the "Type" field based on selected form
