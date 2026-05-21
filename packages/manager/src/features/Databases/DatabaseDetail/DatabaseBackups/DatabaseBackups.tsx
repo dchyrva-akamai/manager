@@ -2,15 +2,17 @@ import {
   Button,
   Icon,
   NotificationBanner,
+  TimePicker,
   Tooltip,
 } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseQuery, useRegionsQuery } from '@linode/queries';
 import { useIsGeckoEnabled } from '@linode/shared';
-import { Box, TimePicker, Typography } from '@linode/ui';
+import { Box, Typography } from '@linode/ui';
 import {
   FormControl,
   FormControlLabel,
+  FormHelperText,
   Radio,
   RadioGroup,
 } from '@mui/material';
@@ -47,7 +49,6 @@ import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import { DatabaseBackupsDialog } from './DatabaseBackupsDialog';
 
 import type { DatabaseBackupsPayload } from '@linode/api-v4';
-import type { TimeValidationError } from '@mui/x-date-pickers';
 
 export interface TimeOption {
   label: string;
@@ -95,46 +96,57 @@ export const DatabaseBackups = () => {
    * When the date and time selections are valid, clear any existing error messages for the time picker.
    */
   const validateDateTime = (date: DateTime | null, time: DateTime | null) => {
-    if (date && time) {
-      const isSelectedTimeInvalid = isTimeOutsideBackup(
-        time,
-        date,
-        oldestBackup!
-      );
+    if (!date || !time) {
+      return;
+    }
 
-      if (!isSelectedTimeInvalid) {
-        clearErrors('time');
-      }
+    const minTime = configureMinTime(date);
+    const maxTime = configureMaxTime(date);
+
+    if (maxTime && time > maxTime) {
+      setError('time', { message: BACKUPS_MAX_TIME_EXCEEDED_VALIDATON_TEXT });
+      return;
+    }
+
+    if (minTime && time < minTime) {
+      setError('time', { message: BACKUPS_MIN_TIME_EXCEEDED_VALIDATON_TEXT });
+      return;
+    }
+
+    const isSelectedTimeInvalid = isTimeOutsideBackup(
+      time,
+      date,
+      oldestBackup!
+    );
+    if (isSelectedTimeInvalid) {
+      setError('time', { message: BACKUPS_MIN_TIME_EXCEEDED_VALIDATON_TEXT });
+    } else {
+      clearErrors('time');
     }
   };
 
-  const handleOnError = (error: TimeValidationError) => {
-    switch (error) {
-      case 'maxTime':
-        setError('time', {
-          message: BACKUPS_MAX_TIME_EXCEEDED_VALIDATON_TEXT,
-        });
-        break;
-      case 'minTime':
-        setError('time', {
-          message: BACKUPS_MIN_TIME_EXCEEDED_VALIDATON_TEXT,
-        });
-        break;
-      case 'invalidDate':
-        setValue('time', null);
-        setError('time', { message: BACKUPS_INVALID_TIME_VALIDATON_TEXT });
-    }
+  // The CDS picker parses/displays using the browser's local timezone.
+  // We convert between UTC Luxon DateTimes and JS Dates whose *local* time
+  // components equal the UTC hour/minute/second values, so the picker always
+  // shows and accepts UTC times regardless of the user's local timezone.
+  const toPickerDate = (dt: DateTime | null | undefined): Date | undefined => {
+    if (!dt) return undefined;
+    const d = new Date();
+    d.setHours(dt.hour, dt.minute, dt.second, 0);
+    return d;
   };
 
-  const configureMinTime = () => {
-    const canApplyMinTime = !!oldestBackup && !!date;
-    const isOnMinDate = date?.day === oldestBackup?.day;
+  const configureMinTime = (forDate?: DateTime | null) => {
+    const d = forDate !== undefined ? forDate : date;
+    const canApplyMinTime = !!oldestBackup && !!d;
+    const isOnMinDate = d?.day === oldestBackup?.day;
     return canApplyMinTime && isOnMinDate ? oldestBackup : undefined;
   };
 
-  const configureMaxTime = () => {
+  const configureMaxTime = (forDate?: DateTime | null) => {
+    const d = forDate !== undefined ? forDate : date;
     const today = DateTime.utc();
-    const isOnMaxDate = today.day === date?.day;
+    const isOnMaxDate = today.day === d?.day;
     return isOnMaxDate ? today : undefined;
   };
 
@@ -262,33 +274,46 @@ export const DatabaseBackups = () => {
                 <FormControl style={{ marginTop: 0 }}>
                   <Typography variant="h3">Time (UTC)</Typography>
                   <TimePicker
+                    dateTime={toPickerDate(field.value) ?? null}
                     disabled={disabled || versionOption === 'newest' || !date}
-                    errorText={
-                      versionOption === 'dateTime' && date
-                        ? fieldState.error?.message
-                        : undefined
-                    }
-                    format="HH:mm:ss"
+                    error={!!fieldState.error}
+                    hourStep={1}
                     key={
                       versionOption === 'dateTime'
                         ? 'time-picker-active'
                         : 'time-picker-disabled'
                     }
-                    label=""
-                    maxTime={configureMaxTime()}
-                    minTime={configureMinTime()}
-                    onChange={(newTime: DateTime) => {
+                    minuteStep={15}
+                    noMeridian
+                    onChange={(e: CustomEvent<Date | null>) => {
+                      const newDate = e.detail;
+                      if (newDate === null) {
+                        setError('time', {
+                          message: BACKUPS_INVALID_TIME_VALIDATON_TEXT,
+                        });
+                        field.onChange(null);
+                        return;
+                      }
+                      // Read local time components (what the user typed/selected)
+                      // and store them as UTC hours in the Luxon DateTime.
+                      const newTime = DateTime.utc().set({
+                        hour: newDate.getHours(),
+                        minute: newDate.getMinutes(),
+                        second: newDate.getSeconds(),
+                      });
                       validateDateTime(date, newTime);
                       field.onChange(newTime);
                     }}
-                    onError={handleOnError}
-                    sx={{
-                      width: '220px',
-                    }}
-                    timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
-                    value={field.value}
-                    views={['hours', 'minutes', 'seconds']}
+                    seconds
+                    style={{ width: '220px' }}
                   />
+                  {versionOption === 'dateTime' &&
+                    date &&
+                    fieldState.error?.message && (
+                      <FormHelperText error sx={{ marginLeft: 0 }}>
+                        {fieldState.error.message}
+                      </FormHelperText>
+                    )}
                 </FormControl>
               )}
             />
@@ -313,7 +338,7 @@ export const DatabaseBackups = () => {
           </StyledRegionStack>
           <Box display="flex" justifyContent="flex-end">
             <Tooltip
-              disabled={!unableToRestoreDisabled}
+              disabled={!unableToRestoreCopy}
               tooltipText={unableToRestoreCopy}
             >
               <Button
@@ -323,7 +348,7 @@ export const DatabaseBackups = () => {
                 variant="primary"
               >
                 Restore
-                {unableToRestoreDisabled ? (
+                {unableToRestoreCopy ? (
                   <Icon icon="info-outline" size="m" />
                 ) : null}
               </Button>
