@@ -51,10 +51,11 @@ export const InterfaceType = ({ disabled, index }: Props) => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { control, getFieldState, getValues, setValue } =
+  const { control, getFieldState, getValues, setValue, resetField } =
     useFormContext<LinodeCreateFormValues>();
+  // Store the firewall selection for each purpose, including null for "no firewall".
   const firewallsByPurpose = React.useRef<
-    Partial<Record<InterfacePurpose, null | number | undefined>>
+    Partial<Record<InterfacePurpose, null | number>>
   >({});
 
   const { field } = useController({
@@ -67,13 +68,12 @@ export const InterfaceType = ({ disabled, index }: Props) => {
     const previousPurpose = field.value;
     const currentFirewallId = getValues(firewallFieldName);
 
-    // Preserve firewall selections for non-VLAN purposes independently.
-    if (
-      previousPurpose &&
-      previousPurpose !== 'vlan' &&
-      currentFirewallId !== -1
-    ) {
-      firewallsByPurpose.current[previousPurpose] = currentFirewallId;
+    // Save the firewall selection for the previous purpose (including null for no firewall selected)
+    // Firewall will be saved individually for each purpose, so switching back and forth between purposes
+    // will restore the last selected firewall for that purpose.
+    if (previousPurpose && previousPurpose !== 'vlan') {
+      firewallsByPurpose.current[previousPurpose] =
+        typeof currentFirewallId === 'number' ? currentFirewallId : null;
     }
 
     // Change the interface purpose (Public, VPC, VLAN)
@@ -87,10 +87,20 @@ export const InterfaceType = ({ disabled, index }: Props) => {
     }
 
     // Restore a previously selected firewall for this purpose, if available.
-    if (value in firewallsByPurpose.current) {
-      setValue(firewallFieldName, firewallsByPurpose.current[value]);
+    if (
+      Object.prototype.hasOwnProperty.call(firewallsByPurpose.current, value)
+    ) {
+      const saved = firewallsByPurpose.current[value];
+      if (typeof saved === 'number') {
+        setValue(firewallFieldName, saved);
+      } else {
+        resetField(firewallFieldName);
+      }
       return;
     }
+    // No saved value exists for this purpose yet. Reset so values from another
+    // purpose are not carried over.
+    resetField(firewallFieldName);
 
     // If the user has not touched the Firewall field...
     if (!getFieldState(firewallFieldName).isTouched) {
