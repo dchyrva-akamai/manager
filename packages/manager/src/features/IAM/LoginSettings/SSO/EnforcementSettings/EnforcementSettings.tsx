@@ -19,6 +19,7 @@ import { Divider } from 'src/features/IAM/Shared/Divider/Divider';
 import { ErrorState } from 'src/features/IAM/Shared/ErrorState/ErrorState';
 import { Paper } from 'src/features/IAM/Shared/Paper/Paper';
 
+import { hasNoValidCertificates } from '../utilities';
 import { ActivationStatus } from './ActivationStatus';
 
 import type { APIError } from '@linode/api-v4/lib/types';
@@ -51,6 +52,10 @@ export const EnforcementSettings = () => {
     error,
     isLoading,
   } = useGetIdpConfigQuery(euuid ?? '');
+
+  // We need to disabled Activation Status toggles if there are no valid certificates ans sso is disabled.
+  // If sso is enabled, no action needed.
+  const isConfigInvalid = idpConfig ? hasNoValidCertificates(idpConfig) : false;
 
   const { mutateAsync: updateActivationStatus } = useUpdateIdpConfigMutation(
     euuid ?? ''
@@ -129,7 +134,7 @@ export const EnforcementSettings = () => {
           padding={Spacing.S24}
           paddingTop={Spacing.S24}
         >
-          <ActivationStatus />
+          <ActivationStatus isConfigInvalid={isConfigInvalid} />
           <Divider spacingBottom={Spacing.S16} spacingTop={Spacing.S16} />
         </Paper>
 

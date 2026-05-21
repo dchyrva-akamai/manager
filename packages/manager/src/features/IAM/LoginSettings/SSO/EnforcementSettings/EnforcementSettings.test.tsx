@@ -34,6 +34,21 @@ const mockIdpConfig = {
   id: 'euuid-123',
   enabled: false,
   enforce: false,
+  saml: {
+    entity_id: 'entity-id',
+    identity_element: 'NAME_ID',
+    idp_url: 'https://idp.example.com',
+    public_certificates: [
+      {
+        certificate: 'cert',
+        created: '2024-01-01T00:00:00.000Z',
+        created_by: 'user',
+        id: 'cert-id',
+        not_after: '2099-01-01T00:00:00.000Z',
+        not_before: '2024-01-01T00:00:00.000Z',
+      },
+    ],
+  },
 };
 
 describe('EnforcementSettings', () => {

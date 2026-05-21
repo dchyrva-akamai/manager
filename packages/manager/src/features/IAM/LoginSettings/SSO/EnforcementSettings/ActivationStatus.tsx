@@ -5,7 +5,11 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import type { EnforcementSettingsFormValues } from './EnforcementSettings';
 
-export const ActivationStatus = () => {
+interface Props {
+  isConfigInvalid: boolean;
+}
+
+export const ActivationStatus = ({ isConfigInvalid }: Props) => {
   const { control, setValue, watch } =
     useFormContext<EnforcementSettingsFormValues>();
 
@@ -29,6 +33,7 @@ export const ActivationStatus = () => {
         render={({ field }) => (
           <Switch
             checked={field.value}
+            disabled={!isSSOEnabled && isConfigInvalid}
             onChange={(e) => {
               field.onChange(e.detail);
               if (!e.detail) {
@@ -36,7 +41,21 @@ export const ActivationStatus = () => {
               }
             }}
           >
-            Enable SSO
+            <span
+              style={{ display: 'flex', alignItems: 'center', gap: Spacing.S6 }}
+            >
+              Enable SSO
+              {!isSSOEnabled && isConfigInvalid && (
+                <Tooltip
+                  key="sso-enforce-tooltip"
+                  style={{ textAlign: 'left', whiteSpace: 'normal' }}
+                  tooltipPlacement="bottom"
+                  tooltipText="To enable SSO, the IDP configuration needs to have a valid certificate."
+                >
+                  <Icon icon="info-outline" size="m" />
+                </Tooltip>
+              )}
+            </span>
           </Switch>
         )}
       />
