@@ -54,10 +54,12 @@ export const SummaryLanding = () => {
           </Typography>
         </Box>
 
-        <EndpointMultiselect
-          onChange={setSelectedEndpoints}
-          values={selectedEndpoints}
-        />
+        <Box sx={{ maxWidth: '630px' }}>
+          <EndpointMultiselect
+            onChange={setSelectedEndpoints}
+            values={selectedEndpoints}
+          />
+        </Box>
 
         {!!selectedEndpoints.length && (
           <EndpointSummaryTable

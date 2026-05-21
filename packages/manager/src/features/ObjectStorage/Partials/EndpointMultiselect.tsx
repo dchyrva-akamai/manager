@@ -59,7 +59,7 @@ export const EndpointMultiselect = ({
           : 'Select an Object Storage S3 endpoint'
       }
       sx={{
-        maxWidth: '630px',
+        maxWidth: '100%',
         '& .MuiInput-root': {
           maxWidth: 'none',
         },
