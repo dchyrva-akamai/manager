@@ -1,19 +1,10 @@
 import React from 'react';
 
-import { cssPropertyVariablesFromMapping } from '../utilities';
-import styles from './paper.module.css';
+import { StyledPaper } from './Paper.styles';
 
 import type { Spacing } from '@akamai/cds-tokens';
 
 export type PaperSpacing = (typeof Spacing)[keyof typeof Spacing];
-
-const PAPER_SPACING_CSS_PROPERTY_VARIABLES = {
-  marginBottom: '--paper-margin-bottom',
-  marginTop: '--paper-margin-top',
-  padding: '--paper-padding',
-  paddingTop: '--paper-padding-top',
-  paddingBottom: '--paper-padding-bottom',
-} as const;
 
 export interface PaperProps {
   children: React.ReactNode;
@@ -38,18 +29,18 @@ export const Paper = ({
   sx,
   outlined,
 }: PaperProps) => {
-  const style = cssPropertyVariablesFromMapping(
-    { marginBottom, marginTop, padding, paddingTop, paddingBottom },
-    PAPER_SPACING_CSS_PROPERTY_VARIABLES
-  );
-
   return (
-    <div
-      className={`${styles.paper} ${outlined ? styles.outlined : ''}`}
+    <StyledPaper
       data-testid={dataTestId ?? 'data-qa-paper'}
-      style={{ ...style, ...sx }}
+      marginBottom={marginBottom}
+      marginTop={marginTop}
+      outlined={outlined}
+      padding={padding}
+      paddingBottom={paddingBottom}
+      paddingTop={paddingTop}
+      style={sx}
     >
       {children}
-    </div>
+    </StyledPaper>
   );
 };
