@@ -166,6 +166,7 @@ export const ShareGroupDetails = () => {
             <SharedImagesTable
               isTableStripingEnabled={isTableStripingEnabled}
               shareGroupId={shareGroupId}
+              shareGroupLabel={label}
             />
             <GroupMembersTable
               handleAddMembersClick={() => {

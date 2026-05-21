@@ -59,3 +59,9 @@ export const REVOKE_ACCESS_DIALOG_PENDO_IDS = {
   revokeButton: 'Share Groups Revoke Access-Revoke Button',
   xButton: 'Share Groups Revoke Access-X Button',
 };
+
+export const REMOVE_IMAGE_DIALOG_PENDO_IDS = {
+  cancelButton: 'Share Groups Details Remove Image-Cancel Button',
+  removeButton: 'Share Groups Details Remove Image-Remove Button',
+  xButton: 'Share Groups Details Remove Image-X Button',
+};

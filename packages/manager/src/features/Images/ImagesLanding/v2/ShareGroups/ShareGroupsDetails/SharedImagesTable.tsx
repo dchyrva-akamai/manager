@@ -9,9 +9,14 @@ import {
   TableRow,
 } from '@akamai/cds-components/react/Table';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
-import { useProfile, useShareGroupsImagesQuery } from '@linode/queries';
+import {
+  useDeleteShareGroupImageMutation,
+  useProfile,
+  useShareGroupsImagesQuery,
+} from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
 import {
+  ActionsPanel,
   Box,
   ErrorState,
   Paper,
@@ -21,24 +26,29 @@ import {
   ZeroStateSearchNarrowIcon,
 } from '@linode/ui';
 import { useNavigate, useSearch } from '@tanstack/react-router';
+import { enqueueSnackbar } from 'notistack';
 import * as React from 'react';
 
 import { ActionMenu } from 'src/components/ActionMenu/ActionMenu';
+import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField/DebouncedSearchTextField';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
+import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
 import {
   DEFAULT_PAGE_SIZES,
+  REMOVE_IMAGE_DIALOG_PENDO_IDS,
   SHARE_GROUP_DETAILS_PENDO_IDS,
 } from '../../constants';
 import { StyledActionMenuWrapper } from '../ShareGroupTable.styles';
 
-import type { Filter } from '@linode/api-v4';
+import type { Filter, Image } from '@linode/api-v4';
 
 interface Props {
   isTableStripingEnabled: boolean;
   shareGroupId: string;
+  shareGroupLabel?: string;
 }
 
 const IMAGES_COLUMNS = [
@@ -48,10 +58,12 @@ const IMAGES_COLUMNS = [
 ];
 
 export const SharedImagesTable = (props: Props) => {
-  const { isTableStripingEnabled, shareGroupId } = props;
+  const { isTableStripingEnabled, shareGroupId, shareGroupLabel } = props;
   const theme = useTheme();
   const { data: profile } = useProfile();
   const navigate = useNavigate();
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = React.useState(false);
+  const [selectedImage, setSelectedImage] = React.useState<Image | null>(null);
 
   const search = useSearch({
     from: '/images/share-groups/owned-groups/$shareGroupId',
@@ -104,6 +116,12 @@ export const SharedImagesTable = (props: Props) => {
     { ...filter }
   );
 
+  const {
+    mutateAsync: deleteShareGroupImage,
+    error: imageDeletionError,
+    isPending,
+  } = useDeleteShareGroupImageMutation();
+
   const onSearch = (query: string) => {
     navigate({
       search: (prev) => ({
@@ -124,6 +142,43 @@ export const SharedImagesTable = (props: Props) => {
     const newSize = event.detail.pageSize;
     pagination.handlePageSizeChange(newSize);
   };
+
+  const handleRemoveImage = async () => {
+    try {
+      if (!selectedImage) {
+        return;
+      }
+      await deleteShareGroupImage({
+        imageId: selectedImage.id,
+        shareGroupId,
+      });
+      setIsRemoveDialogOpen(false);
+      setSelectedImage(null);
+      enqueueSnackbar('Image removed from share group', {
+        variant: 'success',
+      });
+    } catch (error) {
+      enqueueSnackbar(error[0]?.reason, {
+        variant: 'error',
+      });
+    }
+  };
+
+  const actions = (
+    <ActionsPanel
+      primaryButtonProps={{
+        label: 'Remove Image',
+        loading: isPending,
+        'data-pendo-id': REMOVE_IMAGE_DIALOG_PENDO_IDS.removeButton,
+        onClick: handleRemoveImage,
+      }}
+      secondaryButtonProps={{
+        label: 'Cancel',
+        'data-pendo-id': REMOVE_IMAGE_DIALOG_PENDO_IDS.cancelButton,
+        onClick: () => setIsRemoveDialogOpen(false),
+      }}
+    />
+  );
 
   return (
     <Paper sx={{ mb: 4, p: 2 }}>
@@ -254,7 +309,10 @@ export const SharedImagesTable = (props: Props) => {
                     },
                     {
                       title: 'Remove from the Group',
-                      onClick: () => {},
+                      onClick: () => {
+                        setSelectedImage(image);
+                        setIsRemoveDialogOpen(true);
+                      },
                       pendoId:
                         SHARE_GROUP_DETAILS_PENDO_IDS.removeFromGroupButton,
                       disabled: false,
@@ -278,6 +336,21 @@ export const SharedImagesTable = (props: Props) => {
           pageSizes={DEFAULT_PAGE_SIZES}
         />
       )}
+      <ConfirmationDialog
+        actions={actions}
+        closeIconPendoId={REMOVE_IMAGE_DIALOG_PENDO_IDS.xButton}
+        error={
+          getAPIErrorOrDefault(
+            imageDeletionError ?? [],
+            'Unable to remove the image from the group'
+          )[0]?.reason
+        }
+        onClose={() => setIsRemoveDialogOpen(false)}
+        open={isRemoveDialogOpen}
+        title={`Remove ${selectedImage?.label ?? 'this image'} from ${shareGroupLabel ?? 'Share Group'}`}
+      >
+        Are you sure you want to remove this image from this share group?
+      </ConfirmationDialog>
     </Paper>
   );
 };
