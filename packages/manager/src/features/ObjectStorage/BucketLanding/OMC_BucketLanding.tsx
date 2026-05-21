@@ -1,10 +1,4 @@
-import {
-  Box,
-  CircleProgress,
-  ErrorState,
-  Notice,
-  Typography,
-} from '@linode/ui';
+import { CircleProgress, ErrorState, Notice, Typography } from '@linode/ui';
 import { readableBytes, useOpenClose } from '@linode/utilities';
 import Grid from '@mui/material/Grid';
 import * as React from 'react';
@@ -253,37 +247,41 @@ export const OMC_BucketLanding = (props: Props) => {
         Filter by
       </Typography>
 
-      <Box
-        sx={(theme) => ({
-          display: 'flex',
-          gap: theme.spacingFunction(16),
-          marginBottom: theme.spacingFunction(16),
-        })}
+      <Grid
+        container
+        spacing={3}
+        sx={(theme) => ({ marginBottom: theme.spacingFunction(16) })}
       >
-        <RegionMultiSelect
-          currentCapability="Object Storage"
-          fullWidth
-          isGeckoLAEnabled={false}
-          noMarginTop
-          onChange={(values) =>
-            setSelectedRegions(values.map((value) => ({ label: value, value })))
-          }
-          regions={availableStorageRegions.filter((r) =>
-            buckets.some((b) => b.region === r.id)
-          )}
-          selectedIds={selectedRegions.map((r) => r.value)}
-        />
+        <Grid size={{ sm: 4 }}>
+          <RegionMultiSelect
+            currentCapability="Object Storage"
+            fullWidth
+            isGeckoLAEnabled={false}
+            noMarginTop
+            onChange={(values) =>
+              setSelectedRegions(
+                values.map((value) => ({ label: value, value }))
+              )
+            }
+            regions={availableStorageRegions.filter((r) =>
+              buckets.some((b) => b.region === r.id)
+            )}
+            selectedIds={selectedRegions.map((r) => r.value)}
+          />
+        </Grid>
 
         {isObjectStorageGen2Enabled && (
-          <EndpointMultiselect
-            onChange={setSelectedEndpoints}
-            options={endpointOptions}
-            showLabel={true}
-            sx={{ flex: 1 }}
-            values={selectedEndpoints}
-          />
+          <Grid size={{ sm: 4 }}>
+            <EndpointMultiselect
+              onChange={setSelectedEndpoints}
+              options={endpointOptions}
+              showLabel={true}
+              sx={{ flex: 1 }}
+              values={selectedEndpoints}
+            />
+          </Grid>
         )}
-      </Box>
+      </Grid>
 
       <Grid size={12}>
         <BucketTable
