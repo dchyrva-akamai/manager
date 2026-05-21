@@ -10,6 +10,7 @@ import {
 } from './priceInterval';
 
 import type { PriceObject } from '@linode/api-v4';
+import type { PlanWithAvailability } from 'src/features/components/PlansPanel/types';
 
 /**
  * Returns pricing helpers bound to the active billing interval from the `computePricing` LD flag.
@@ -54,6 +55,29 @@ export const useComputePricing = (planTypeId?: null | string) => {
   return {
     /** Active billing mode (e.g. `'monthly'`, `'hourly'`). Scoped to the plan when `planTypeId` is provided. */
     billing,
+    /**
+     * Returns true if any plan in the list is billed hourly (i.e. would show "N/A"
+     * in the Monthly column). Pass the full tab plan list (not paginated/filtered) -
+     * so the result stays consistent across page and filter changes.
+     *
+     * It always checks against the base billing mode and it's not affected by `planTypeId` even ifprovided.
+     */
+    hasHourlyEligiblePlans: (planList: PlanWithAvailability[]): boolean => {
+      if (baseBilling !== 'hourly') {
+        return false;
+      }
+      const matchers: string[] =
+        computePricing?.activeBillingPlanMatchers ?? [];
+      if (matchers.length === 0) {
+        // No matchers - every plan uses hourly billing.
+        return planList.length > 0;
+      }
+      return planList.some((plan) =>
+        matchers.some((matcher) =>
+          plan.id.toLowerCase().includes(matcher.toLowerCase())
+        )
+      );
+    },
     /**
      * Returns the price value for the active billing interval from a PriceObject,
      * or `UNKNOWN_PRICE` (`'--.--'`) if the price is unavailable.

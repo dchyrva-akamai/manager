@@ -9,6 +9,7 @@ import { PaginationFooter } from 'src/components/PaginationFooter/PaginationFoot
 import { useFlags } from 'src/hooks/useFlags';
 import { useIsGenerationalPlansEnabled } from 'src/utilities/linodes';
 import { PLAN_SELECTION_NO_REGION_SELECTED_MESSAGE } from 'src/utilities/pricing/constants';
+import { useComputePricing } from 'src/utilities/pricing/useComputePricing';
 
 import {
   PLAN_FILTER_NO_RESULTS_MESSAGE,
@@ -120,6 +121,10 @@ export const PlanContainer = (props: PlanContainerProps) => {
     plans,
     planType
   );
+
+  // No planTypeId is provided because this check is for the entire plan list in the tab, not scoped to a specific plan.
+  // Not affected by planTypeId even if it's provided.
+  const { hasHourlyEligiblePlans } = useComputePricing();
 
   // Show the Transfer column if, for any plan, the api returned data and we're not in the Database Create flow
   const showTransfer =
@@ -349,6 +354,9 @@ export const PlanContainer = (props: PlanContainerProps) => {
                         shouldDisplayNoRegionSelectedMessage={
                           shouldDisplayNoRegionSelectedMessage
                         }
+                        showMonthlyColumnHourlyOnlyTooltip={hasHourlyEligiblePlans(
+                          filteredPlans
+                        )}
                         showNetwork={showNetwork}
                         showTransfer={showTransfer}
                       />
@@ -364,6 +372,9 @@ export const PlanContainer = (props: PlanContainerProps) => {
                   shouldDisplayNoRegionSelectedMessage={
                     shouldDisplayNoRegionSelectedMessage
                   }
+                  showMonthlyColumnHourlyOnlyTooltip={hasHourlyEligiblePlans(
+                    plans
+                  )}
                   showNetwork={showNetwork}
                   showTransfer={showTransfer}
                   showUsableStorage={
@@ -462,6 +473,11 @@ export const PlanContainer = (props: PlanContainerProps) => {
                     shouldDisplayNoRegionSelectedMessage={
                       shouldDisplayNoRegionSelectedMessage
                     }
+                    // Use the full `plans` prop (pre-pagination, pre-filter) so the tooltip
+                    // is stable across all pages and is not affected by active filters.
+                    showMonthlyColumnHourlyOnlyTooltip={hasHourlyEligiblePlans(
+                      plans
+                    )}
                     showNetwork={showNetwork}
                     showTransfer={showTransfer}
                     showUsableStorage={
