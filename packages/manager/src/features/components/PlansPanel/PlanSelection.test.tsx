@@ -35,6 +35,7 @@ const mockMonthlyBilling = () =>
     formatPrice: (p: null | PriceObject | undefined) =>
       String(p?.monthly ?? '--.--'),
     getPrice: (p: null | PriceObject | undefined) => p?.monthly ?? '--.--',
+    hasHourlyEligiblePlans: () => false,
     priceLabel: 'month',
   });
 
@@ -44,6 +45,7 @@ const mockHourlyBilling = () =>
     formatPrice: (p: null | PriceObject | undefined) =>
       String(p?.hourly ?? '--.--'),
     getPrice: (p: null | PriceObject | undefined) => p?.hourly ?? '--.--',
+    hasHourlyEligiblePlans: () => true,
     priceLabel: 'hour',
   });
 
