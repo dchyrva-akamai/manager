@@ -1,6 +1,6 @@
 {
   "name": "@linode/utilities",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "Linode Utility functions library",
   "main": "src/index.ts",
   "module": "src/index.ts",
@@ -33,7 +33,6 @@
   "dependencies": {
     "@akamai/compute-ui-core": "^0.0.4",
     "@linode/api-v4": "workspace:*",
-    "@akamai/compute-ui-core": "^0.0.4",
     "luxon": "3.4.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
