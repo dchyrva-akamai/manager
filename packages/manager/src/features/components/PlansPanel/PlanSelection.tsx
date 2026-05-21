@@ -1,8 +1,7 @@
-import { UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
+import { convertMegabytesTo, UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
 import { useLinodeQuery } from '@linode/queries';
 import { Chip, FormControlLabel, Radio } from '@linode/ui';
 import { Hidden } from '@linode/ui';
-import { convertMegabytesTo } from '@linode/utilities';
 import * as React from 'react';
 
 import { Currency } from 'src/components/Currency';

@@ -1,5 +1,6 @@
+import { readableBytes } from '@akamai/compute-ui-core/api';
 import { CircleProgress, ErrorState, Notice, Typography } from '@linode/ui';
-import { readableBytes, useOpenClose } from '@linode/utilities';
+import { useOpenClose } from '@linode/utilities';
 import Grid from '@mui/material/Grid';
 import * as React from 'react';
 import { makeStyles } from 'tss-react/mui';

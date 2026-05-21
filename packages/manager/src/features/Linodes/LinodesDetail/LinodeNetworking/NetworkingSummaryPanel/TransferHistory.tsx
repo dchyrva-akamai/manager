@@ -1,3 +1,4 @@
+import { readableBytes } from '@akamai/compute-ui-core/api';
 import {
   STATS_NOT_READY_API_MESSAGE,
   STATS_NOT_READY_MESSAGE,
@@ -6,7 +7,6 @@ import {
   useProfile,
 } from '@linode/queries';
 import { Box, CircleProgress, ErrorState, Typography } from '@linode/ui';
-import { readableBytes } from '@linode/utilities';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { IconButton } from '@mui/material';

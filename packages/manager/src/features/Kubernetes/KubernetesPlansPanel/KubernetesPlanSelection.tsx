@@ -1,7 +1,6 @@
-import { UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
+import { convertMegabytesTo, UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
 import { Box, Button, Chip } from '@linode/ui';
 import { Hidden } from '@linode/ui';
-import { convertMegabytesTo } from '@linode/utilities';
 import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';

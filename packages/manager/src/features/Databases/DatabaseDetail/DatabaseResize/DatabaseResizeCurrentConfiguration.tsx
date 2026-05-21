@@ -1,8 +1,9 @@
 import { Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
+import { convertMegabytesTo } from '@akamai/compute-ui-core/api';
 import { useDatabaseTypesQuery, useRegionsQuery } from '@linode/queries';
 import { Box } from '@linode/ui';
-import { convertMegabytesTo, formatStorageUnits } from '@linode/utilities';
+import { formatStorageUnits } from '@linode/utilities';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 

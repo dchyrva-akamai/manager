@@ -1,5 +1,5 @@
+import { readableBytes } from '@akamai/compute-ui-core/api';
 import { capitalize } from '@akamai/compute-ui-core/formatting';
-import { readableBytes } from '@linode/utilities';
 import { object, string } from 'yup';
 
 import type { QuotaIncreaseFormFields } from './QuotasPanel/QuotasIncreaseForm';

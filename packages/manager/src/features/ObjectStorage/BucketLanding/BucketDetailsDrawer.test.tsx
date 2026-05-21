@@ -1,10 +1,7 @@
+import { readableBytes } from '@akamai/compute-ui-core/api';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { truncateMiddle } from '@akamai/compute-ui-core/formatting';
-import {
-  profileFactory,
-  readableBytes,
-  regionFactory,
-} from '@linode/utilities';
+import { profileFactory, regionFactory } from '@linode/utilities';
 import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { vi } from 'vitest';
@@ -18,8 +15,8 @@ import { renderWithThemeAndHookFormContext } from 'src/utilities/testHelpers';
 import { BucketDetailsDrawer } from './BucketDetailsDrawer';
 
 // Mock utility functions
-vi.mock('@linode/utilities', async () => {
-  const actual = await vi.importActual('@linode/utilities');
+vi.mock('@akamai/compute-ui-core/api', async () => {
+  const actual = await vi.importActual('@akamai/compute-ui-core/api');
   return {
     ...actual,
     readableBytes: vi.fn(),

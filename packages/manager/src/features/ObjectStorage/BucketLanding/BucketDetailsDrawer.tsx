@@ -1,8 +1,8 @@
+import { readableBytes } from '@akamai/compute-ui-core/api';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { pluralize, truncateMiddle } from '@akamai/compute-ui-core/formatting';
 import { useProfile, useRegionQuery } from '@linode/queries';
 import { Divider, Drawer, Typography } from '@linode/ui';
-import { readableBytes } from '@linode/utilities';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
 
