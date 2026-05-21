@@ -5,6 +5,7 @@ import { getRestrictedResourceText } from 'src/features/Account/utils';
 import { usePermissions } from 'src/features/IAM/hooks/usePermissions';
 
 import type { SHARED_WITH_ME_IMAGES_TAB_PENDO_IDS } from '../constants';
+import type { JOINED_GROUP_DETAILS_PENDO_IDS } from './v2/constants';
 import type { Event, Image } from '@linode/api-v4';
 import type { Action } from 'src/components/ActionMenu/ActionMenu';
 
@@ -23,7 +24,9 @@ interface Props {
   handlers: Handlers;
   image: Image;
   isSharedImageRow?: boolean;
-  pendoIDs?: typeof SHARED_WITH_ME_IMAGES_TAB_PENDO_IDS;
+  pendoIDs?:
+    | typeof JOINED_GROUP_DETAILS_PENDO_IDS
+    | typeof SHARED_WITH_ME_IMAGES_TAB_PENDO_IDS;
 }
 
 export const ImagesActionMenu = (props: Props) => {
@@ -143,6 +146,7 @@ export const ImagesActionMenu = (props: Props) => {
     onEdit,
     image,
     onManageRegions,
+    onView,
     onDeploy,
     onRebuild,
     onDelete,

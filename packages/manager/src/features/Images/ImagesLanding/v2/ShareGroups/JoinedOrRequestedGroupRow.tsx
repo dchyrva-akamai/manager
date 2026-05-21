@@ -3,6 +3,7 @@ import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { capitalize, truncateEnd } from '@akamai/compute-ui-core/formatting';
 import { usePreferences, useProfile } from '@linode/queries';
 import { Hidden, LinkButton, Tooltip } from '@linode/ui';
+import { useNavigate } from '@tanstack/react-router';
 import React from 'react';
 
 import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';
@@ -34,6 +35,8 @@ const statusIconMap: Record<SharegroupToken['status'], Status> = {
 export const JoinedOrRequestedGroupRow = (props: Props) => {
   const { joinedGroup } = props;
   const { data: profile } = useProfile();
+
+  const navigate = useNavigate();
 
   const {
     created,
@@ -174,7 +177,14 @@ export const JoinedOrRequestedGroupRow = (props: Props) => {
         >
           {sharegroup_label ? (
             <LinkButton
-              onClick={() => {}}
+              onClick={() => {
+                navigate({
+                  to: '/images/share-groups/joined-groups/$tokenUuid',
+                  params: {
+                    tokenUuid: token_uuid,
+                  },
+                });
+              }}
               sx={{
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',

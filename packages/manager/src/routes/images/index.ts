@@ -47,6 +47,10 @@ type ShareGroupDetailsRouteParams = {
   shareGroupId: string;
 };
 
+type JoinedGroupDetailsRouteParams = {
+  tokenUuid: string;
+};
+
 interface ShareGroupActionRouteParams extends ShareGroupDetailsRouteParams {
   action: ShareGroupAction;
 }
@@ -392,6 +396,24 @@ const shareGroupDetailsRoute = createRoute({
   ).then((m) => m.shareGroupDetailsLazyRoute)
 );
 
+const joinedGroupDetailsRoute = createRoute({
+  getParentRoute: () => imagesRoute,
+  params: {
+    parse: ({ tokenUuid }: JoinedGroupDetailsRouteParams) => ({
+      tokenUuid,
+    }),
+    stringify: ({ tokenUuid }: JoinedGroupDetailsRouteParams) => ({
+      tokenUuid,
+    }),
+  },
+  path: 'share-groups/joined-groups/$tokenUuid',
+  validateSearch: (search: ShareGroupDetailsSearchParams) => search,
+}).lazy(() =>
+  import(
+    'src/features/Images/ImagesLanding/v2/ShareGroups/JoinedGroupsDetails/JoinedGroupDetailsLazyRoute'
+  ).then((m) => m.joinedGroupDetailsLazyRoute)
+);
+
 export const imagesRouteTree = imagesRoute.addChildren([
   imagesIndexRoute.addChildren([imageActionRoute]),
   imageLibraryLandingRoute.addChildren([
@@ -404,6 +426,7 @@ export const imagesRouteTree = imagesRoute.addChildren([
     shareGroupsCreateRoute,
     shareGroupActionRoute,
     shareGroupDetailsRoute,
+    joinedGroupDetailsRoute,
   ]),
   imagesCreateRoute.addChildren([
     imagesCreateIndexRoute,

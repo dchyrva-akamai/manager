@@ -1,3 +1,4 @@
+import { TableCell, TableRow } from '@akamai/cds-components/react/Table';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { pluralize } from '@akamai/compute-ui-core/formatting';
 import { useProfile, useRegionsQuery } from '@linode/queries';
@@ -13,9 +14,8 @@ import { convertStorageUnit } from '@linode/utilities';
 import React from 'react';
 
 import CloudInitIcon from 'src/assets/icons/cloud-init.svg';
+import { TABLE_CELL_BASE_STYLE } from 'src/components/ImageSelect/constants';
 import { getRegionListItem } from 'src/components/ImageSelect/utilities';
-import { TableCell } from 'src/components/TableCell';
-import { TableRow } from 'src/components/TableRow';
 import {
   PlanTextTooltip,
   StyledFormattedRegionList,
@@ -23,18 +23,19 @@ import {
 import { ImagesActionMenu } from 'src/features/Images/ImagesLanding/ImagesActionMenu';
 
 import type { Event, Image, ImageRegion } from '@linode/api-v4';
-import type { SHARED_WITH_ME_IMAGES_TAB_PENDO_IDS } from 'src/features/Images/constants';
 import type { Handlers } from 'src/features/Images/ImagesLanding/ImagesActionMenu';
+import type { JOINED_GROUP_DETAILS_PENDO_IDS } from 'src/features/Images/ImagesLanding/v2/constants';
 
 interface Props {
   event?: Event;
   handlers: Handlers;
   image: Image;
-  pendoIDs: typeof SHARED_WITH_ME_IMAGES_TAB_PENDO_IDS;
+  isTableStripingEnabled?: boolean;
+  pendoIDs: typeof JOINED_GROUP_DETAILS_PENDO_IDS;
 }
 
 export const SharedImageRow = (props: Props) => {
-  const { event, image, pendoIDs } = props;
+  const { event, image, isTableStripingEnabled, pendoIDs } = props;
 
   const {
     capabilities,
@@ -98,10 +99,16 @@ export const SharedImageRow = (props: Props) => {
   );
 
   return (
-    <TableRow data-qa-image-cell={id} key={id}>
+    <TableRow
+      data-qa-image-cell={id}
+      key={id}
+      rowborder={!isTableStripingEnabled}
+      zebra={isTableStripingEnabled}
+    >
       <TableCell
         data-pendo-id={`${pendoIDs.sharedImageLabel} ${label}`}
         data-qa-image-label
+        style={{ ...TABLE_CELL_BASE_STYLE, flex: '0 1 25%' }}
       >
         <Stack
           alignItems="center"
@@ -128,14 +135,13 @@ export const SharedImageRow = (props: Props) => {
           </Stack>
         </Stack>
       </TableCell>
-      <TableCell>
-        {image.image_sharing?.shared_by?.sharegroup_label ?? '-'}
-      </TableCell>
       <Hidden smDown>
         <TableCell
           data-pendo-id={pendoIDs.replicatedRegionPopover}
           style={{
+            ...TABLE_CELL_BASE_STYLE,
             whiteSpace: 'nowrap',
+            flex: '0 1 25%',
           }}
         >
           {imageRegions.length > 0 ? (
@@ -148,20 +154,30 @@ export const SharedImageRow = (props: Props) => {
           )}
         </TableCell>
       </Hidden>
-      <TableCell data-qa-image-size>
+      <TableCell
+        data-qa-image-size
+        style={{ ...TABLE_CELL_BASE_STYLE, flex: '0 1 10%' }}
+      >
         {getSizeForImage(size, status, event?.status)}
       </TableCell>
       <Hidden mdDown>
-        <TableCell data-qa-image-date>
+        <TableCell
+          data-qa-image-date
+          style={{ ...TABLE_CELL_BASE_STYLE, flex: '0 1 15%' }}
+        >
           {formatDate(created, {
             timezone: profile?.timezone,
           })}
         </TableCell>
       </Hidden>
       <Hidden mdDown>
-        <TableCell>{id}</TableCell>
+        <TableCell style={{ ...TABLE_CELL_BASE_STYLE, flex: '0 1 15%' }}>
+          {id}
+        </TableCell>
       </Hidden>
-      <TableCell actionCell>
+      <TableCell
+        style={{ padding: 0, marginRight: '-12px', justifyContent: 'flex-end' }}
+      >
         <ImagesActionMenu {...props} isSharedImageRow />
       </TableCell>
     </TableRow>

@@ -46,6 +46,24 @@ export const EDIT_SHARE_GROUP_PENDO_IDS = {
   xButton: 'Share Groups Edit-X Button',
 };
 
+export const JOINED_GROUP_DETAILS_PENDO_IDS = {
+  searchImagesBar: 'Images Groups Joined Group Details-Search',
+  metadataSupportedIcon: 'Images Groups Joined Group Details-Cloud-init',
+  replicatedRegionPopover: 'Images Groups Joined Group Details-Replicated in',
+  sharedImageLabel: 'Images Groups Joined Group Details-Image',
+  viewDetails: {
+    xButton: 'Images Groups Joined Group Details View-X button',
+    copyImageIdIcon: 'Images Groups Joined Group Details View-Copy image ID',
+    closeButton: 'Images Groups Joined Group Details View-Close button',
+  },
+  actionMenu: {
+    viewImageDetails: 'Images Groups Joined Group Details-View Details',
+    deployNewLinode: 'Images Groups Joined Group Details-Deploy to New Linode',
+    rebuildLinode:
+      'Images Groups Joined Group Details-Rebuild an Existing Linode',
+  },
+};
+
 export const ADD_MEMBERS_DRAWER_PENDO_IDS = {
   label: 'Share Groups Add Members-Label',
   token: 'Share Groups Add Members-Token',

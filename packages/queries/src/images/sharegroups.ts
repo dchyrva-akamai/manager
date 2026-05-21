@@ -5,9 +5,12 @@ import {
   deleteSharegroupImage,
   deleteSharegroupMember,
   getSharegroup,
+  getSharegroupFromToken,
   getSharegroupImages,
+  getSharegroupImagesFromToken,
   getSharegroupMembers,
   getSharegroups,
+  getUserSharegroupToken,
   getUserSharegroupTokens,
   updateSharegroup,
 } from '@linode/api-v4';
@@ -91,9 +94,25 @@ export const shareGroupsQueries = createQueryKeys('sharegroups', {
   },
   tokens: {
     contextQueries: {
+      token: (tokenUuid: string) => ({
+        queryFn: async () => getUserSharegroupToken(tokenUuid),
+        queryKey: [tokenUuid],
+      }),
       paginated: (params: Params, filters: Filter) => ({
         queryFn: async () => getUserSharegroupTokens(params, filters),
         queryKey: [params, filters],
+      }),
+      sharegroup: (tokenUuid: string) => ({
+        queryFn: async () => getSharegroupFromToken(tokenUuid),
+        queryKey: [tokenUuid],
+      }),
+      sharegroupImages: (
+        tokenUuid: string,
+        params: Params = {},
+        filters: Filter = {},
+      ) => ({
+        queryFn: () => getSharegroupImagesFromToken(tokenUuid, params, filters),
+        queryKey: [tokenUuid, 'sharegroupImagesFromToken', params, filters],
       }),
     },
     queryKey: null,
@@ -358,5 +377,35 @@ export const useShareGroupTokensQuery = (
 ) =>
   useQuery<ResourcePage<SharegroupToken>, APIError[]>({
     ...shareGroupsQueries.tokens._ctx.paginated(params, filters),
+    enabled,
+  });
+
+export const useShareGroupTokenQuery = (tokenUuid: string, enabled = true) =>
+  useQuery<SharegroupToken, APIError[]>({
+    ...shareGroupsQueries.tokens._ctx.token(tokenUuid),
+    enabled,
+  });
+
+export const useShareGroupFromTokenQuery = (
+  tokenUuid: string,
+  enabled = true,
+) =>
+  useQuery<Sharegroup, APIError[]>({
+    ...shareGroupsQueries.tokens._ctx.sharegroup(tokenUuid),
+    enabled,
+  });
+
+export const useShareGroupImagesFromTokenQuery = (
+  tokenUuid: string,
+  params: Params = {},
+  filters: Filter = {},
+  enabled = true,
+) =>
+  useQuery<ResourcePage<Image>, APIError[]>({
+    ...shareGroupsQueries.tokens._ctx.sharegroupImages(
+      tokenUuid,
+      params,
+      filters,
+    ),
     enabled,
   });

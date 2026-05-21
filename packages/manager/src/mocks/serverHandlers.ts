@@ -33,6 +33,7 @@ import {
   regionAvailabilityFactory,
   regions,
   securityQuestionsFactory,
+  sharegroupFactory,
   sharegroupTokenFactory,
 } from '@linode/utilities';
 import { DateTime } from 'luxon';
@@ -994,6 +995,12 @@ export const handlers = [
     ];
 
     return HttpResponse.json(makeResourcePage(joinedOrRequestedGroups));
+  }),
+  http.get('*/images/sharegroups/tokens/:token', () => {
+    return HttpResponse.json(sharegroupTokenFactory.build());
+  }),
+  http.get('*/images/sharegroups/tokens/:token/sharegroup', () => {
+    return HttpResponse.json(sharegroupFactory.build());
   }),
   http.post<any, UpdateImageRegionsPayload>(
     '*/v4/images/:id/regions',

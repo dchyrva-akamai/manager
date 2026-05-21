@@ -145,14 +145,13 @@ export const getSharegroup = (sharegroupId: string) =>
  *
  * @param token_uuid {string} Token UUID of the user
  */
-export const getSharegroupFromToken = (token_uuid: string) => {
+export const getSharegroupFromToken = (token_uuid: string) =>
   Request<Sharegroup>(
     setURL(
       `${BETA_API_ROOT}/images/sharegroups/tokens/${encodeURIComponent(token_uuid)}/sharegroup`,
     ),
     setMethod('GET'),
   );
-};
 
 /**
  * Get a paginated list of Images present in a Sharegroup
@@ -182,16 +181,15 @@ export const getSharegroupImagesFromToken = (
   token_uuid: string,
   params: Params = {},
   filters: Filter = {},
-) => {
+) =>
   Request<Page<Image>>(
     setURL(
-      `${BETA_API_ROOT}/images/sharegroups/tokens/${encodeURIComponent(token_uuid)}/sharegroups/images`,
+      `${BETA_API_ROOT}/images/sharegroups/tokens/${encodeURIComponent(token_uuid)}/sharegroup/images`,
     ),
     setMethod('GET'),
     setParams(params),
     setXFilter(filters),
   );
-};
 
 /**
  * Get a paginated list of members part of the Sharegroup
@@ -250,14 +248,13 @@ export const getUserSharegroupTokens = (
  *
  * @param token_uuid Token UUID of the user to look up
  */
-export const getUserSharegroupToken = (token_uuid: string) => {
+export const getUserSharegroupToken = (token_uuid: string) =>
   Request<SharegroupToken>(
     setURL(
       `${BETA_API_ROOT}/images/sharegroups/tokens/${encodeURIComponent(token_uuid)}`,
     ),
     setMethod('GET'),
   );
-};
 
 /**
  * Update a Sharegroup.
