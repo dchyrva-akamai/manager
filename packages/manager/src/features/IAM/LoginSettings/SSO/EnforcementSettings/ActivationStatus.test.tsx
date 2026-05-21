@@ -17,9 +17,12 @@ const defaultValues: EnforcementSettingsFormValues = {
   ssoEnforced: false,
 };
 
-const renderComponent = (values: Partial<EnforcementSettingsFormValues> = {}) =>
+const renderComponent = (
+  values: Partial<EnforcementSettingsFormValues> = {},
+  isConfigInvalid = false
+) =>
   renderWithThemeAndHookFormContext<EnforcementSettingsFormValues>({
-    component: <ActivationStatus />,
+    component: <ActivationStatus isConfigInvalid={isConfigInvalid} />,
     useFormOptions: { defaultValues: { ...defaultValues, ...values } },
   });
 
@@ -41,6 +44,16 @@ describe('ActivationStatus', () => {
     expect(
       screen.getByText(/Enforces SSO for all users of the account/i)
     ).toBeVisible();
+  });
+
+  it('disables the "Enable SSO" switch when SSO is disabled and config has no valid certificates', async () => {
+    renderComponent({ ssoEnabled: false }, true);
+
+    const enableHost = screen
+      .getByText('Enable SSO')
+      .closest('cds-switch') as HTMLElement;
+    const enableControl = await getSwitchControl(enableHost);
+    expect(enableControl).toBeDisabled();
   });
 
   it('disables the "Enforce SSO" switch when SSO is not enabled', async () => {
