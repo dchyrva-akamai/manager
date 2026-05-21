@@ -1,4 +1,4 @@
-import react from '@vitejs/plugin-react-swc';
+import react from '@vitejs/plugin-react';
 import { URL } from 'url';
 import svgr from 'vite-plugin-svgr';
 import { defineConfig } from 'vitest/config';
@@ -21,6 +21,13 @@ export default defineConfig({
   resolve: {
     alias: {
       src: `${DIRNAME}/src`,
+      // In test mode, stub out msw/browser so Vite never tries to resolve the
+      // real subpath export. `vitest related` scans the full source tree and
+      // hits mswWorkers.ts → msw/browser, which fails under Node conditions in
+      // Vite 7 + Node 22. The browser worker is never used in unit tests.
+      ...(process.env.VITEST
+        ? { 'msw/browser': `${DIRNAME}/src/mocks/mswBrowserStub.ts` }
+        : {}),
     },
   },
   server: {
@@ -28,6 +35,9 @@ export default defineConfig({
     port: 3000,
   },
   test: {
+    env: {
+      REACT_APP_CLIENT_ID: 'test-client-id',
+    },
     // Limit parallelism in CI to prevent resource exhaustion on shared agents.
     maxWorkers: process.env.CI ? '50%' : undefined,
     // Generous timeouts: MSW + async React state updates need room to breathe.
