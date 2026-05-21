@@ -10,7 +10,7 @@ import { NoIDPConfiguration } from './NoIDPConfiguration';
 const mockNavigate = vi.fn();
 
 const queryMocks = vi.hoisted(() => ({
-  useLocation: vi.fn().mockReturnValue({ pathname: '/iam/login-settings/sso' }),
+  useLocation: vi.fn().mockReturnValue({ pathname: '/iam/settings/sso' }),
   useNavigate: vi.fn(() => mockNavigate),
 }));
 
@@ -23,13 +23,13 @@ vi.mock('@tanstack/react-router', async () => {
   };
 });
 
-const IDP_CONFIGURATIONS_PATH = '/iam/login-settings/sso/idp-configurations';
+const IDP_CONFIGURATIONS_PATH = '/iam/settings/sso/idp-configurations';
 
 describe('NoIDPConfiguration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     queryMocks.useLocation.mockReturnValue({
-      pathname: '/iam/login-settings/sso',
+      pathname: '/iam/settings/sso',
     });
     queryMocks.useNavigate.mockReturnValue(mockNavigate);
   });

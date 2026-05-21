@@ -42,9 +42,7 @@ export const LoginSettingsLanding = () => {
         </p>
       </div>
       <Button
-        onClick={() =>
-          navigate({ to: '/iam/login-settings/sso/idp-configurations' })
-        }
+        onClick={() => navigate({ to: '/iam/settings/sso/idp-configurations' })}
         variant="secondary"
       >
         Manage SSO Enforcement

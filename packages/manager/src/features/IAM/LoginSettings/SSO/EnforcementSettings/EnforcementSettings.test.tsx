@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 
@@ -14,10 +14,16 @@ import { renderWithTheme } from 'src/utilities/testHelpers';
 
 import { EnforcementSettings } from './EnforcementSettings';
 
+const mockEnqueueSnackbar = vi.fn();
+
 const queryMocks = vi.hoisted(() => ({
   useGetIdpConfigsQuery: vi.fn().mockReturnValue({}),
   useGetIdpConfigQuery: vi.fn().mockReturnValue({}),
+  useGetIdpConfigUsersIncludedQuery: vi.fn().mockReturnValue({}),
   useUpdateIdpConfigMutation: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+  useUpdateIdpConfigUsersIncludedMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() }),
 }));
 
 vi.mock('@linode/queries', async () => {
@@ -26,7 +32,11 @@ vi.mock('@linode/queries', async () => {
     ...actual,
     useGetIdpConfigsQuery: queryMocks.useGetIdpConfigsQuery,
     useGetIdpConfigQuery: queryMocks.useGetIdpConfigQuery,
+    useGetIdpConfigUsersIncludedQuery:
+      queryMocks.useGetIdpConfigUsersIncludedQuery,
     useUpdateIdpConfigMutation: queryMocks.useUpdateIdpConfigMutation,
+    useUpdateIdpConfigUsersIncludedMutation:
+      queryMocks.useUpdateIdpConfigUsersIncludedMutation,
   };
 });
 
@@ -63,9 +73,20 @@ describe('EnforcementSettings', () => {
       error: null,
       isLoading: false,
     });
-    queryMocks.useUpdateIdpConfigMutation.mockReturnValue({
-      mutateAsync: vi.fn(),
+    queryMocks.useGetIdpConfigUsersIncludedQuery.mockReturnValue({
+      data: { data: [], results: 0 },
+      error: null,
+      isLoading: false,
     });
+    queryMocks.useUpdateIdpConfigMutation.mockReturnValue({
+      mutateAsync: vi.fn().mockResolvedValue({}),
+      isPending: false,
+    });
+    queryMocks.useUpdateIdpConfigUsersIncludedMutation.mockReturnValue({
+      mutateAsync: vi.fn().mockResolvedValue({}),
+      isPending: false,
+    });
+    mockEnqueueSnackbar.mockReset();
   });
 
   it('shows a loading state while IDP configs are loading', () => {
@@ -172,5 +193,60 @@ describe('EnforcementSettings', () => {
       'Update SSO Enforcement'
     );
     expect(submitButton).toBeEnabled();
+  });
+
+  it('shows a loading state while included users are loading', () => {
+    queryMocks.useGetIdpConfigUsersIncludedQuery.mockReturnValue({
+      data: null,
+      error: null,
+      isLoading: true,
+    });
+
+    renderWithTheme(<EnforcementSettings />);
+
+    expect(screen.getByTestId('circle-progress')).toBeInTheDocument();
+  });
+
+  it('shows an error state when fetching included users fails', () => {
+    queryMocks.useGetIdpConfigUsersIncludedQuery.mockReturnValue({
+      data: null,
+      error: [{ reason: 'An unexpected error occurred' }],
+      isLoading: false,
+    });
+
+    renderWithTheme(<EnforcementSettings />);
+
+    expect(screen.getByText(ERROR_STATE_TITLE)).toBeVisible();
+    expect(screen.getByText(ERROR_STATE_TEXT)).toBeVisible();
+  });
+
+  it('renders the Included Users Panel section', () => {
+    renderWithTheme(<EnforcementSettings />);
+
+    expect(screen.getByText('Included users')).toBeVisible();
+  });
+
+  it('shows the acknowledgment validation error when submitting without checking', async () => {
+    const { container } = renderWithTheme(<EnforcementSettings />);
+
+    const enableHost = screen
+      .getByText('Enable SSO')
+      .closest('cds-switch') as HTMLElement;
+    const enableControl = await getSwitchControl(enableHost);
+    await userEvent.click(enableControl as HTMLButtonElement);
+
+    const submitButton = await getCdsButtonByText(
+      container,
+      'Update SSO Enforcement'
+    );
+    await userEvent.click(submitButton as HTMLButtonElement);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'You need to confirm that you understand the impact of applied changes.'
+        )
+      ).toBeVisible();
+    });
   });
 });

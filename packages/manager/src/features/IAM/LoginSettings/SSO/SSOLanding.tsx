@@ -29,18 +29,18 @@ export const SSOLanding = () => {
 
   const { tabs, tabIndex, handleTabChange } = useTabs([
     {
-      to: '/iam/login-settings/sso/idp-configurations',
+      to: '/iam/settings/sso/idp-configurations',
       title: 'IDP Configuration',
     },
     {
-      to: '/iam/login-settings/sso/enforcement-settings',
+      to: '/iam/settings/sso/enforcement-settings',
       title: 'SSO Enforcement',
     },
   ]);
 
-  if (location.pathname === '/iam/login-settings/sso') {
+  if (location.pathname === '/iam/settings/sso') {
     navigate({
-      to: '/iam/login-settings/sso/idp-configurations',
+      to: '/iam/settings/sso/idp-configurations',
       replace: true,
     });
   }
@@ -60,7 +60,7 @@ export const SSOLanding = () => {
             {showNewBadge ? <Badge type="new" /> : null}
           </BreadcrumbItem>
           <BreadcrumbItem
-            onCdsBreadcrumbClick={() => navigate({ to: '/iam/login-settings' })}
+            onCdsBreadcrumbClick={() => navigate({ to: '/iam/settings' })}
           >
             Settings
           </BreadcrumbItem>

@@ -390,9 +390,9 @@ const iamUserNameDelegationsRoute = createRoute({
 
 // ─── Settings ───────────────────────────────────────────────────────────
 
-const iamLoginSettingsRoute = createRoute({
+const iamSettingsRoute = createRoute({
   getParentRoute: () => iamTabsRoute,
-  path: 'login-settings',
+  path: 'settings',
   beforeLoad: ({ context }) => {
     const isFederationEnabled = Boolean(context?.flags?.iamFederation);
 
@@ -406,11 +406,11 @@ const iamLoginSettingsRoute = createRoute({
   )
 );
 
-const iamLoginSettingsCatchAllRoute = createRoute({
-  getParentRoute: () => iamLoginSettingsRoute,
+const iamSettingsCatchAllRoute = createRoute({
+  getParentRoute: () => iamSettingsRoute,
   path: '/$invalidPath',
   beforeLoad: () => {
-    throw redirect({ to: '/iam/login-settings', replace: true });
+    throw redirect({ to: '/iam/settings', replace: true });
   },
 });
 
@@ -418,7 +418,7 @@ const iamLoginSettingsCatchAllRoute = createRoute({
 
 const iamSsoRoute = createRoute({
   getParentRoute: () => iamRoute,
-  path: '/login-settings/sso',
+  path: '/settings/sso',
 }).lazy(() =>
   import('src/features/IAM/LoginSettings/SSO/ssoLandingLazyRoute').then(
     (m) => m.ssoLandingLazyRoute
@@ -430,7 +430,7 @@ const iamSsoIndexRoute = createRoute({
   path: '/',
   beforeLoad: () => {
     throw redirect({
-      to: '/iam/login-settings/sso/idp-configurations',
+      to: '/iam/settings/sso/idp-configurations',
       replace: true,
     });
   },
@@ -459,7 +459,7 @@ const iamSsoCatchAllRoute = createRoute({
   path: '/$invalidPath',
   beforeLoad: () => {
     throw redirect({
-      to: '/iam/login-settings/sso/idp-configurations',
+      to: '/iam/settings/sso/idp-configurations',
       replace: true,
     });
   },
@@ -528,7 +528,7 @@ export const iamRouteTree = iamRoute.addChildren([
     ]),
     iamUsersRoute,
     iamDelegationsRoute,
-    iamLoginSettingsRoute.addChildren([iamLoginSettingsCatchAllRoute]),
+    iamSettingsRoute.addChildren([iamSettingsCatchAllRoute]),
     iamUsersCatchAllRoute,
     iamRolesCatchAllRoute,
     iamDelegationsCatchAllRoute,

@@ -42,7 +42,7 @@ describe('LoginSettingsLanding', () => {
     await userEvent.click(screen.getByText('Manage SSO Enforcement'));
 
     expect(mockNavigate).toHaveBeenCalledWith({
-      to: '/iam/login-settings/sso/idp-configurations',
+      to: '/iam/settings/sso/idp-configurations',
     });
   });
 });

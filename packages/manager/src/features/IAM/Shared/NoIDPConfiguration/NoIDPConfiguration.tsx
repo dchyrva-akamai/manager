@@ -25,7 +25,7 @@ export const NoIDPConfiguration = ({ permissions }: Props) => {
 
   const onClick = () => {
     if (!isOnIDPConfigurationsPage) {
-      navigate({ to: '/iam/login-settings/sso/idp-configurations' });
+      navigate({ to: '/iam/settings/sso/idp-configurations' });
     }
     // open a drawer to create IDP configuration
   };

@@ -96,6 +96,13 @@ global.ResizeObserver = class ResizeObserver {
   unobserve() {}
 };
 
+// JSDOM implements attachInternals() but omits the Constraint Validation API
+// methods on ElementInternals (e.g. setValidity).
+// CDS web components call these on mount, which throws without this polyfill.
+if (typeof ElementInternals !== 'undefined') {
+  ElementInternals.prototype.setValidity ??= () => {};
+}
+
 // @ts-expect-error Mock IntersectionObserver for tests
 global.IntersectionObserver = class IntersectionObserver {
   disconnect() {}

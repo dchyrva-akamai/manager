@@ -47,7 +47,7 @@ export const IdentityAccessLanding = React.memo(() => {
     },
     {
       hide: !isIAMFederationEnabled,
-      to: `/iam/login-settings`,
+      to: `/iam/settings`,
       title: 'Settings',
     },
   ]);
