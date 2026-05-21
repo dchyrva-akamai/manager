@@ -1,6 +1,7 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
-import { useRestoreFromBackupMutation } from '@linode/queries';
+import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { useProfile, useRestoreFromBackupMutation } from '@linode/queries';
 import { ActionsPanel, Dialog, Typography } from '@linode/ui';
 import { useNavigate } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
@@ -25,14 +26,20 @@ export const DatabaseBackupsDialog = (props: Props) => {
   const { database, onClose, open } = props;
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const { data: profile } = useProfile();
 
   const { control } = useFormContext<DatabaseBackupsValues>();
-  const [date, time, region] = useWatch({
+  const [date, time, region, fork] = useWatch({
     control,
-    name: ['date', 'time', 'region'],
+    name: ['date', 'time', 'region', 'fork'],
   });
 
-  const formattedDate = toFormattedDate(date, time);
+  const formattedDate =
+    database.engine === 'valkey' && fork.restore_time
+      ? formatDate(fork.restore_time, {
+          timezone: profile?.timezone,
+        })
+      : toFormattedDate(date, time);
 
   const {
     error,
@@ -40,7 +47,10 @@ export const DatabaseBackupsDialog = (props: Props) => {
     reset,
     isPending,
   } = useRestoreFromBackupMutation(database.engine, {
-    fork: toDatabaseFork(database.id, date, time),
+    fork:
+      database.engine === 'valkey'
+        ? fork
+        : toDatabaseFork(database.id, date, time),
     region,
     // Assign same VPC when forking to the same region, otherwise set VPC to null
     private_network:

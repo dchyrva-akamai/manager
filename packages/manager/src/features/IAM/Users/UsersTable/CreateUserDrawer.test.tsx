@@ -49,10 +49,8 @@ describe('CreateUserDrawer', () => {
     expect(dialog).toBeInTheDocument();
   });
 
-  it('should allow the user to fill out the form',  async () => {
-    const { getByTestId } = renderWithTheme(
-      <CreateUserDrawer {...props} />
-    );
+  it('should allow the user to fill out the form', async () => {
+    const { getByTestId } = renderWithTheme(<CreateUserDrawer {...props} />);
 
     const dialog = getByTestId('drawer');
     expect(dialog).toBeInTheDocument();
@@ -78,9 +76,7 @@ describe('CreateUserDrawer', () => {
       })
     );
 
-    const { getByTestId } = renderWithTheme(
-      <CreateUserDrawer {...props} />
-    );
+    const { getByTestId } = renderWithTheme(<CreateUserDrawer {...props} />);
 
     const dialog = getByTestId('drawer');
     expect(dialog).toBeInTheDocument();

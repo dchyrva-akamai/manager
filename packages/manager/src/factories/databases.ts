@@ -2,7 +2,6 @@ import {
   type ClusterSize,
   type ConnectionPool,
   type Database,
-  type DatabaseBackup,
   type DatabaseEngine,
   type DatabaseInstance,
   type DatabaseStatus,
@@ -11,7 +10,7 @@ import {
   type MySQLReplicationType,
   type PostgresReplicationType,
 } from '@linode/api-v4';
-import { pickRandom, randomDate } from '@linode/utilities';
+import { pickRandom } from '@linode/utilities';
 import { Factory } from '@linode/utilities';
 
 export const possibleStatuses: DatabaseStatus[] = [
@@ -331,17 +330,6 @@ export const databaseFactory = Factory.Sync.makeFactory<Database>({
   },
   used_disk_size_gb: 5,
   version: '5.8.13',
-});
-
-export const databaseBackupFactory = Factory.Sync.makeFactory<DatabaseBackup>({
-  created: Factory.each(() => {
-    const now = new Date();
-    const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
-    return randomDate(tenDaysAgo, now).toISO() ?? '';
-  }),
-  id: Factory.each((i) => i),
-  label: Factory.each(() => `backup-${crypto.randomUUID()}`),
-  type: pickRandom(['snapshot', 'auto']),
 });
 
 export const databaseEngineFactory = Factory.Sync.makeFactory<DatabaseEngine>({

@@ -54,7 +54,6 @@ import {
   credentialFactory,
   creditPaymentResponseFactory,
   dashboardFactory,
-  databaseBackupFactory,
   databaseConnectionPoolFactory,
   databaseEngineFactory,
   databaseFactory,
@@ -221,6 +220,15 @@ const makeMockDatabase = (params: PathParams): Database => {
   }
 
   const database = databaseFactory.build(db);
+
+  if (database.engine === 'valkey') {
+    database.oldest_restore_time = null;
+    database.available_restore_times = [
+      '2025-12-28T20:34:59',
+      '2025-12-29T08:35:29',
+      '2025-12-30T15:35:29',
+    ];
+  }
 
   // Mock a database cluster with a public VPC Configuration
   database.private_network = {
@@ -488,18 +496,13 @@ const databases = [
   ),
 
   http.get('*/databases/:engine/instances/:id', ({ params }) => {
-    const database = makeMockDatabase(params);
+    const database = makeMockDatabase({ ...params, engine: 'valkey' });
     return HttpResponse.json(database);
   }),
 
   http.put('*/databases/:engine/instances/:id', ({ params }) => {
-    const database = makeMockDatabase(params);
+    const database = makeMockDatabase({ ...params, engine: 'valkey' });
     return HttpResponse.json(database);
-  }),
-
-  http.get('*/databases/:engine/instances/:databaseId/backups', () => {
-    const backups = databaseBackupFactory.buildList(10);
-    return HttpResponse.json(makeResourcePage(backups));
   }),
 
   http.get('*/databases/:engine/instances/:databaseId/credentials', () => {
@@ -526,13 +529,6 @@ const databases = [
       }),
     });
   }),
-
-  http.post(
-    '*/databases/:engine/instances/:databaseId/backups/:backupId/restore',
-    () => {
-      return HttpResponse.json({});
-    }
-  ),
 
   http.post(
     '*/databases/:engine/instances/:databaseId/credentials/reset',

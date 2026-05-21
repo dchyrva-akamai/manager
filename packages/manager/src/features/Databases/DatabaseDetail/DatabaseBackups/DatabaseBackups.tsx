@@ -2,13 +2,15 @@ import {
   Button,
   Icon,
   NotificationBanner,
+  Select,
   TimePicker,
   Tooltip,
 } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
-import { useDatabaseQuery, useRegionsQuery } from '@linode/queries';
+import { formatDate } from '@akamai/compute-ui-core/datetime';
+import { useDatabaseQuery, useProfile, useRegionsQuery } from '@linode/queries';
 import { useIsGeckoEnabled } from '@linode/shared';
-import { Box, Typography } from '@linode/ui';
+import { Box, InputLabel, Typography } from '@linode/ui';
 import {
   FormControl,
   FormControlLabel,
@@ -50,9 +52,9 @@ import { DatabaseBackupsDialog } from './DatabaseBackupsDialog';
 
 import type { DatabaseBackupsPayload } from '@linode/api-v4';
 
-export interface TimeOption {
+interface Option {
   label: string;
-  value: number;
+  value: string;
 }
 
 export type VersionOption = 'dateTime' | 'newest';
@@ -74,6 +76,8 @@ export const DatabaseBackups = () => {
     flags.gecko2?.enabled,
     flags.gecko2?.la
   );
+
+  const { data: profile } = useProfile();
   const { data: regionsData } = useRegionsQuery();
 
   const [isRestoreDialogOpen, setIsRestoreDialogOpen] = React.useState(false);
@@ -87,9 +91,25 @@ export const DatabaseBackups = () => {
     ? DateTime.fromISO(`${database.oldest_restore_time}`, { zone: 'utc' }) // Backend uses UTC, so we explicitly set this as the timezone
     : null;
 
-  const unableToRestoreCopy = !oldestBackup
-    ? BACKUPS_UNABLE_TO_RESTORE_TEXT
-    : '';
+  const isValkeyBackupUnavailable =
+    database?.engine === 'valkey' &&
+    database.available_restore_times !== null &&
+    database.available_restore_times.length === 0;
+
+  const unableToRestoreCopy =
+    (database?.engine !== 'valkey' && !oldestBackup) ||
+    isValkeyBackupUnavailable
+      ? BACKUPS_UNABLE_TO_RESTORE_TEXT
+      : '';
+
+  const availableRestoreTimeOptions = database?.available_restore_times
+    ? database!.available_restore_times.map((restoreTime) => ({
+        label: formatDate(restoreTime, {
+          timezone: profile?.timezone,
+        }),
+        value: restoreTime,
+      }))
+    : [];
 
   /**
    * Check whether date and time are within the valid range of available backups by providing the selected date and time.
@@ -180,40 +200,56 @@ export const DatabaseBackups = () => {
     formState: { errors },
   } = form;
 
-  const [date, time, region] = useWatch({
+  const [date, time, region, fork] = useWatch({
     control,
-    name: ['date', 'time', 'region'],
+    name: ['date', 'time', 'region', 'fork'],
   });
 
-  const unableToRestoreDisabled =
+  const isValkeyDatabase = database?.engine === 'valkey';
+
+  const isRestoreDisabled =
     Boolean(unableToRestoreCopy) ||
+    (isValkeyDatabase && !fork.restore_time) ||
     (versionOption === 'dateTime' && (!date || !time || !!errors.time));
 
   return (
     <Paper>
-      <Typography variant="h2">Summary</Typography>
-      <StyledTypography>
-        Databases are automatically backed-up with full daily backups for the
-        past 14 days, and binary logs recorded continuously. Full backups are
-        version-specific binary backups, which when combined with binary logs
-        allow for consistent recovery to a specific point in time (PITR).
-      </StyledTypography>
-      <Divider marginBottom={Spacing.S24} marginTop={Spacing.S24} />
-      <Typography variant="h2">Restore a Backup</Typography>
-      <StyledTypography>
-        {isDatabasesV2GA ? (
-          <span>
+      {!isValkeyDatabase && (
+        <>
+          <Typography variant="h2">Summary</Typography>
+          <StyledTypography>
+            Databases are automatically backed-up with full daily backups for
+            the past 14 days, and binary logs recorded continuously. Full
+            backups are version-specific binary backups, which when combined
+            with binary logs allow for consistent recovery to a specific point
+            in time (PITR).
+          </StyledTypography>
+          <Divider marginBottom={Spacing.S24} marginTop={Spacing.S24} />
+          <Typography variant="h2">Restore a Backup</Typography>
+          <StyledTypography>
             The newest full backup plus incremental is selected by default. Or,
             select any date and time within the last 14 days you want to create
             a fork from.
-          </span>
-        ) : (
-          <span>
-            Select a date and time within the last 14 days you want to create a
-            fork from.
-          </span>
-        )}
-      </StyledTypography>
+          </StyledTypography>
+        </>
+      )}
+      {isValkeyDatabase && (
+        <>
+          <Typography variant="h2">Restore a Backup</Typography>
+          <StyledTypography>
+            Valkey databases automatically backup data every 12 hours and
+            support configurable data persistence using Redis Database Backup
+            (RDB). You can change the default 12 hours to 24 hours using
+            Advanced Configuration settings. Learn more.
+          </StyledTypography>
+          <StyledTypography
+            paddingBottom={unableToRestoreCopy ? Spacing.S8 : Spacing.S20}
+            paddingTop={Spacing.S16}
+          >
+            Select the restore time and region you want to create a fork for.
+          </StyledTypography>
+        </>
+      )}
       {unableToRestoreCopy && (
         <NotificationBanner
           style={{ marginTop: Spacing.S16, marginBottom: Spacing.S16 }}
@@ -223,101 +259,144 @@ export const DatabaseBackups = () => {
       )}
       <FormProvider {...form}>
         <form>
-          {isDatabasesV2GA && (
-            <RadioGroup
-              aria-label="type"
-              name="type"
-              onChange={handleOnVersionOptionChange}
-              value={versionOption}
-            >
-              <FormControlLabel
-                control={<Radio />}
-                data-qa-dbaas-radio="Newest"
-                disabled={disabled}
-                label="Newest full backup plus incremental"
-                value="newest"
-              />
-              <FormControlLabel
-                control={<Radio />}
-                data-qa-dbaas-radio="DateTime"
-                disabled={disabled}
-                label="Specific date & time"
-                value="dateTime"
-              />
-            </RadioGroup>
+          {!isValkeyDatabase && (
+            <>
+              <RadioGroup
+                aria-label="type"
+                name="type"
+                onChange={handleOnVersionOptionChange}
+                value={versionOption}
+              >
+                <FormControlLabel
+                  control={<Radio />}
+                  data-qa-dbaas-radio="Newest"
+                  disabled={disabled}
+                  label="Newest full backup plus incremental"
+                  value="newest"
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  data-qa-dbaas-radio="DateTime"
+                  disabled={disabled}
+                  label="Specific date & time"
+                  value="dateTime"
+                />
+              </RadioGroup>
+              <Typography variant="h3">Date</Typography>
+              <StyledDateTimeStack>
+                <Controller
+                  control={control}
+                  name="date"
+                  render={({ field }) => (
+                    <LocalizationProvider dateAdapter={AdapterLuxon}>
+                      <StyledDateCalendar
+                        disabled={disabled || versionOption === 'newest'}
+                        onChange={(newDate: DateTime) => {
+                          validateDateTime(newDate, time);
+                          field.onChange(newDate);
+                        }}
+                        shouldDisableDate={(date) =>
+                          isDateOutsideBackup(
+                            date,
+                            oldestBackup?.startOf('day')
+                          )
+                        }
+                        value={field.value}
+                      />
+                    </LocalizationProvider>
+                  )}
+                />
+                <Controller
+                  control={control}
+                  name="time"
+                  render={({ field, fieldState }) => (
+                    <FormControl style={{ marginTop: 0 }}>
+                      <Typography variant="h3">Time (UTC)</Typography>
+                      <TimePicker
+                        dateTime={toPickerDate(field.value) ?? null}
+                        disabled={
+                          disabled || versionOption === 'newest' || !date
+                        }
+                        error={!!fieldState.error}
+                        hourStep={1}
+                        key={
+                          versionOption === 'dateTime'
+                            ? 'time-picker-active'
+                            : 'time-picker-disabled'
+                        }
+                        minuteStep={15}
+                        noMeridian
+                        onChange={(e: CustomEvent<Date | null>) => {
+                          const newDate = e.detail;
+                          if (newDate === null) {
+                            setError('time', {
+                              message: BACKUPS_INVALID_TIME_VALIDATON_TEXT,
+                            });
+                            field.onChange(null);
+                            return;
+                          }
+                          // Read local time components (what the user typed/selected)
+                          // and store them as UTC hours in the Luxon DateTime.
+                          const newTime = DateTime.utc().set({
+                            hour: newDate.getHours(),
+                            minute: newDate.getMinutes(),
+                            second: newDate.getSeconds(),
+                          });
+                          validateDateTime(date, newTime);
+                          field.onChange(newTime);
+                        }}
+                        seconds
+                        style={{ width: '220px' }}
+                      />
+                      {versionOption === 'dateTime' &&
+                        date &&
+                        fieldState.error?.message && (
+                          <FormHelperText error sx={{ marginLeft: 0 }}>
+                            {fieldState.error.message}
+                          </FormHelperText>
+                        )}
+                    </FormControl>
+                  )}
+                />
+              </StyledDateTimeStack>
+            </>
           )}
-          <Typography variant="h3">Date</Typography>
-          <StyledDateTimeStack>
-            <Controller
-              control={control}
-              name="date"
-              render={({ field }) => (
-                <LocalizationProvider dateAdapter={AdapterLuxon}>
-                  <StyledDateCalendar
-                    disabled={disabled || versionOption === 'newest'}
-                    onChange={(newDate: DateTime) => {
-                      validateDateTime(newDate, time);
-                      field.onChange(newDate);
+          {isValkeyDatabase && (
+            <>
+              <InputLabel
+                data-qa-dropdown-label="time-select"
+                data-qa-textfield-label="Time"
+                htmlFor="time"
+                sx={{
+                  marginBottom: '8px',
+                  transform: 'none',
+                }}
+              >
+                Restore time
+              </InputLabel>
+              <Controller
+                control={control}
+                name="fork.restore_time"
+                render={({ field }) => (
+                  <Select
+                    autocomplete
+                    id="time"
+                    items={availableRestoreTimeOptions}
+                    onChange={(e: CustomEvent) => {
+                      const restoreTime: Option = e.detail;
+                      field.onChange(restoreTime.value);
                     }}
-                    shouldDisableDate={(date) =>
-                      isDateOutsideBackup(date, oldestBackup?.startOf('day'))
-                    }
-                    value={field.value}
-                  />
-                </LocalizationProvider>
-              )}
-            />
-            <Controller
-              control={control}
-              name="time"
-              render={({ field, fieldState }) => (
-                <FormControl style={{ marginTop: 0 }}>
-                  <Typography variant="h3">Time (UTC)</Typography>
-                  <TimePicker
-                    dateTime={toPickerDate(field.value) ?? null}
-                    disabled={disabled || versionOption === 'newest' || !date}
-                    error={!!fieldState.error}
-                    hourStep={1}
-                    key={
-                      versionOption === 'dateTime'
-                        ? 'time-picker-active'
-                        : 'time-picker-disabled'
-                    }
-                    minuteStep={15}
-                    noMeridian
-                    onChange={(e: CustomEvent<Date | null>) => {
-                      const newDate = e.detail;
-                      if (newDate === null) {
-                        setError('time', {
-                          message: BACKUPS_INVALID_TIME_VALIDATON_TEXT,
-                        });
-                        field.onChange(null);
-                        return;
-                      }
-                      // Read local time components (what the user typed/selected)
-                      // and store them as UTC hours in the Luxon DateTime.
-                      const newTime = DateTime.utc().set({
-                        hour: newDate.getHours(),
-                        minute: newDate.getMinutes(),
-                        second: newDate.getSeconds(),
-                      });
-                      validateDateTime(date, newTime);
-                      field.onChange(newTime);
-                    }}
-                    seconds
-                    style={{ width: '220px' }}
-                  />
-                  {versionOption === 'dateTime' &&
-                    date &&
-                    fieldState.error?.message && (
-                      <FormHelperText error sx={{ marginLeft: 0 }}>
-                        {fieldState.error.message}
-                      </FormHelperText>
+                    placeholder="Choose a backup"
+                    selected={availableRestoreTimeOptions?.find(
+                      (option) => option.value === field.value
                     )}
-                </FormControl>
-              )}
-            />
-          </StyledDateTimeStack>
+                    style={{ width: '416px' }}
+                    valueFn={(restoreTime: Option) => `${restoreTime.label}`}
+                  />
+                )}
+              />
+            </>
+          )}
           <StyledRegionStack>
             <Controller
               control={control}
@@ -338,12 +417,12 @@ export const DatabaseBackups = () => {
           </StyledRegionStack>
           <Box display="flex" justifyContent="flex-end">
             <Tooltip
-              disabled={!unableToRestoreCopy}
+              disabled={!isRestoreDisabled}
               tooltipText={unableToRestoreCopy}
             >
               <Button
                 data-qa-settings-button="restore"
-                disabled={unableToRestoreDisabled}
+                disabled={isRestoreDisabled}
                 onClick={() => setIsRestoreDialogOpen(true)}
                 variant="primary"
               >
