@@ -1,9 +1,13 @@
 import { profileFactory } from '@linode/utilities';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { accountUserFactory } from 'src/factories';
+import {
+  getCdsTextFieldInput,
+  getCdsTooltipHostByText,
+} from 'src/features/IAM/utilities/testHelpers';
 import { http, HttpResponse, server } from 'src/mocks/testServer';
 import { renderWithTheme } from 'src/utilities/testHelpers';
 
@@ -27,23 +31,49 @@ const defaultProps = {
   open: true,
 };
 
+const getDrawerInputs = async () => {
+  const [usernameHost, emailHost] = Array.from(
+    document.querySelectorAll<HTMLElement>('cds-text-field')
+  );
+
+  expect(usernameHost).toBeInTheDocument();
+  expect(emailHost).toBeInTheDocument();
+
+  const usernameInput = await getCdsTextFieldInput(usernameHost);
+  const emailInput = await getCdsTextFieldInput(emailHost);
+
+  expect(usernameInput).toBeTruthy();
+  expect(emailInput).toBeTruthy();
+
+  return {
+    emailInput,
+    emailHost,
+    usernameInput,
+    usernameHost,
+  };
+};
+
 describe('EditUserDetailsDrawer', () => {
   describe('Username field', () => {
     it("initializes the form with the user's username and email", async () => {
       const user = accountUserFactory.build();
 
-      const { getByLabelText } = renderWithTheme(
+      renderWithTheme(
         <EditUserDetailsDrawer {...defaultProps} activeUser={user} />
       );
 
-      expect(getByLabelText('Username')).toHaveDisplayValue(user.username);
-      expect(getByLabelText('Email')).toHaveDisplayValue(user.email);
+      const { emailInput, usernameInput } = await getDrawerInputs();
+
+      await waitFor(() => {
+        expect(usernameInput).toHaveValue(user.username);
+        expect(emailInput).toHaveValue(user.email);
+      });
     });
 
     it('disables the username field and shows a tooltip when canUpdateUser is false', async () => {
       const user = accountUserFactory.build();
 
-      const { getByLabelText } = renderWithTheme(
+      renderWithTheme(
         <EditUserDetailsDrawer
           {...defaultProps}
           activeUser={user}
@@ -51,12 +81,15 @@ describe('EditUserDetailsDrawer', () => {
         />
       );
 
-      expect(getByLabelText('Username')).toBeDisabled();
+      const { usernameInput } = await getDrawerInputs();
+
+      expect(usernameInput).toBeDisabled();
       expect(
-        getByLabelText(
+        getCdsTooltipHostByText(
+          document,
           'Restricted users cannot update their username. Please contact an account administrator.'
         )
-      ).toBeVisible();
+      ).toBeDefined();
     });
 
     it('disables the username field for a proxy user', async () => {
@@ -65,15 +98,16 @@ describe('EditUserDetailsDrawer', () => {
         username: 'proxy-user-1',
       });
 
-      const { getAllByLabelText, getByLabelText } = renderWithTheme(
+      renderWithTheme(
         <EditUserDetailsDrawer {...defaultProps} activeUser={user} />
       );
 
-      // Both username and email fields share the same tooltip for proxy users;
-      // getAllByLabelText handles the case where the aria-label appears more than once.
-      const tooltips = getAllByLabelText('This field can\u2019t be modified.');
-      expect(tooltips.length).toBeGreaterThan(0);
-      expect(getByLabelText('Username')).toBeDisabled();
+      const { usernameInput } = await getDrawerInputs();
+
+      expect(usernameInput).toBeDisabled();
+      expect(
+        getCdsTooltipHostByText(document, 'This field can’t be modified.')
+      ).toBeDefined();
     });
 
     it('enables the Save button when the username is changed and canUpdateUser is true', async () => {
@@ -85,16 +119,20 @@ describe('EditUserDetailsDrawer', () => {
         data: profileFactory.build({ username: 'my-linode-username' }),
       });
 
-      const { findByDisplayValue, getByLabelText, getByRole } = renderWithTheme(
+      renderWithTheme(
         <EditUserDetailsDrawer {...defaultProps} activeUser={user} />
       );
 
-      await findByDisplayValue(user.username);
+      const { usernameInput } = await getDrawerInputs();
+      const saveButton = screen.getByRole('button', { name: 'Save' });
 
-      const saveButton = getByRole('button', { name: 'Save' });
+      await waitFor(() => {
+        expect(usernameInput).toHaveValue(user.username);
+      });
+
       expect(saveButton).toBeDisabled();
 
-      await userEvent.type(getByLabelText('Username'), '-updated');
+      await userEvent.type(usernameInput as HTMLInputElement, '-updated');
       expect(saveButton).toBeEnabled();
     });
 
@@ -103,7 +141,7 @@ describe('EditUserDetailsDrawer', () => {
         username: 'my-linode-username',
       });
 
-      const { findByDisplayValue, getByRole } = renderWithTheme(
+      renderWithTheme(
         <EditUserDetailsDrawer
           {...defaultProps}
           activeUser={user}
@@ -111,9 +149,13 @@ describe('EditUserDetailsDrawer', () => {
         />
       );
 
-      await findByDisplayValue(user.username);
+      const { usernameInput } = await getDrawerInputs();
 
-      expect(getByRole('button', { name: 'Save' })).toBeDisabled();
+      await waitFor(() => {
+        expect(usernameInput).toHaveValue(user.username);
+      });
+
+      expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
     });
   });
 
@@ -128,15 +170,22 @@ describe('EditUserDetailsDrawer', () => {
         })
       );
 
-      const { findByLabelText, getByLabelText } = renderWithTheme(
+      renderWithTheme(
         <EditUserDetailsDrawer {...defaultProps} activeUser={user} />
       );
 
-      const warning = await findByLabelText(
-        'You can\u2019t change another user\u2019s email address.'
-      );
-      expect(warning).toBeInTheDocument();
-      expect(getByLabelText('Email')).toBeDisabled();
+      const { emailInput } = await getDrawerInputs();
+
+      await waitFor(() => {
+        expect(emailInput).toBeDisabled();
+      });
+
+      expect(
+        getCdsTooltipHostByText(
+          document,
+          'You can’t change another user’s email address.'
+        )
+      ).toBeDefined();
     });
 
     it('disables the email field for a proxy user', async () => {
@@ -145,13 +194,16 @@ describe('EditUserDetailsDrawer', () => {
         username: 'proxy-user-1',
       });
 
-      const { getAllByLabelText, getByLabelText } = renderWithTheme(
+      renderWithTheme(
         <EditUserDetailsDrawer {...defaultProps} activeUser={user} />
       );
 
-      const tooltips = getAllByLabelText('This field can\u2019t be modified.');
-      expect(tooltips.length).toBeGreaterThan(0);
-      expect(getByLabelText('Email')).toBeDisabled();
+      const { emailInput } = await getDrawerInputs();
+
+      expect(emailInput).toBeDisabled();
+      expect(
+        getCdsTooltipHostByText(document, 'This field can’t be modified.')
+      ).toBeDefined();
     });
 
     it('shows a validation error for an invalid email address', async () => {
@@ -164,13 +216,14 @@ describe('EditUserDetailsDrawer', () => {
         <EditUserDetailsDrawer {...defaultProps} activeUser={user} />
       );
 
-      const emailInput = screen.getByLabelText('Email');
-      await userEvent.clear(emailInput);
-      await userEvent.type(emailInput, 'user#@example.com');
+      const { emailInput } = await getDrawerInputs();
 
+      await userEvent.click(emailInput as HTMLInputElement);
+      await userEvent.keyboard('{Meta>}a{/Meta}{Backspace}');
+      await userEvent.type(emailInput as HTMLInputElement, 'user#@example.com');
       await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-      expect(screen.getByText(/invalid email address/i)).toBeInTheDocument();
+      expect(screen.getByText(/valid email address/i)).toBeInTheDocument();
     });
 
     it('disables the email field when the active user is not the logged-in user', async () => {
@@ -179,11 +232,13 @@ describe('EditUserDetailsDrawer', () => {
       });
       const user = accountUserFactory.build({ username: 'another-user' });
 
-      const { getByLabelText } = renderWithTheme(
+      renderWithTheme(
         <EditUserDetailsDrawer {...defaultProps} activeUser={user} />
       );
 
-      expect(getByLabelText('Email')).toBeDisabled();
+      const { emailInput } = await getDrawerInputs();
+
+      expect(emailInput).toBeDisabled();
     });
   });
 });

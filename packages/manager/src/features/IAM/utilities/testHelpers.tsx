@@ -44,6 +44,23 @@ export const getCdsButtonByText = async (
   return getShadowRootElement<HTMLButtonElement>(host, 'button');
 };
 
+/**
+ * Resolves the real `<input>` element inside a `cds-text-field` shadow DOM.
+ */
+export const getCdsTextFieldInput = async (
+  host: HTMLElement
+): Promise<HTMLInputElement | null> => {
+  return getShadowRootElement<HTMLInputElement>(host, 'input');
+};
+
+export const getCdsTooltipHostByText = (
+  root: ParentNode,
+  text: string
+): HTMLElement | undefined =>
+  Array.from(root.querySelectorAll<HTMLElement>('cds-tooltip')).find(
+    (tooltip) => (tooltip as any).tooltipText === text
+  );
+
 export const openActionMenu = async () => {
   const menu = screen.getByTestId('user-action-menu');
 
