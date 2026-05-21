@@ -1,6 +1,15 @@
+import {
+  FormError,
+  FormField,
+  FormLabel,
+  Icon,
+  TextField,
+  Tooltip,
+} from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutateProfile, useUpdateUserMutation } from '@linode/queries';
-import { ActionsPanel, Drawer, TextField } from '@linode/ui';
+import { ActionsPanel, Drawer } from '@linode/ui';
 import {
   UpdateUserEmailSchema,
   UpdateUserNameSchema,
@@ -113,34 +122,118 @@ export const EditUserDetailsDrawer = (props: Props) => {
           control={control}
           name="username"
           render={({ field, fieldState }) => (
-            <TextField
-              disabled={tooltipForDisabledUsernameField !== undefined}
-              errorText={fieldState.error?.message}
-              label="Username"
-              noMarginTop
-              onBlur={field.onBlur}
-              onChange={field.onChange}
-              tooltipText={tooltipForDisabledUsernameField}
-              trimmed
-              value={field.value}
-            />
+            <FormField
+              error={Boolean(fieldState.error?.message)}
+              labelPosition="top"
+              style={{ padding: Spacing.S0 }}
+            >
+              <FormLabel
+                htmlFor="username"
+                slot="label"
+                style={{
+                  textAlign: 'left',
+                  padding: Spacing.S0,
+                  marginBottom: Spacing.S8,
+                }}
+              >
+                Username
+              </FormLabel>
+
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <TextField
+                  disabled={tooltipForDisabledUsernameField !== undefined}
+                  error={Boolean(fieldState.error?.message)}
+                  id="username"
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  required
+                  style={{ boxSizing: 'border-box' }}
+                  value={field.value}
+                />
+                {!canUpdateUser || isProxyOrDelegateUserType ? (
+                  <Tooltip
+                    disabled={tooltipForDisabledUsernameField === undefined}
+                    key={tooltipForDisabledUsernameField}
+                    style={{
+                      textAlign: 'left',
+                      whiteSpace: 'normal',
+                      marginLeft: Spacing.S12,
+                    }}
+                    tooltipPlacement="left"
+                    tooltipText={tooltipForDisabledUsernameField}
+                  >
+                    <Icon icon="info-outline" size="m" />
+                  </Tooltip>
+                ) : null}
+              </div>
+              {Boolean(fieldState.error?.message) && (
+                <FormError slot="error">{fieldState.error?.message}</FormError>
+              )}
+            </FormField>
           )}
         />
         <Controller
           control={control}
           name="email"
           render={({ field, fieldState }) => (
-            <TextField
-              disabled={disableEmailField}
-              errorText={fieldState.error?.message}
-              label="Email"
-              onBlur={field.onBlur}
-              onChange={field.onChange}
-              tooltipText={emailDisabledReason}
-              trimmed
-              type="email"
-              value={field.value}
-            />
+            <FormField
+              error={Boolean(fieldState.error?.message)}
+              labelPosition="top"
+            >
+              <FormLabel
+                htmlFor="email"
+                slot="label"
+                style={{
+                  textAlign: 'left',
+                  padding: Spacing.S0,
+                  marginBottom: Spacing.S8,
+                }}
+              >
+                Email
+              </FormLabel>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <TextField
+                  disabled={disableEmailField}
+                  error={Boolean(fieldState.error?.message)}
+                  id="email"
+                  onBlur={field.onBlur}
+                  onChange={field.onChange}
+                  required
+                  style={{ boxSizing: 'border-box' }}
+                  value={field.value}
+                />
+                {disableEmailField ? (
+                  <Tooltip
+                    disabled={!disableEmailField}
+                    key={tooltipForDisabledUsernameField}
+                    style={{
+                      textAlign: 'left',
+                      whiteSpace: 'normal',
+                      marginLeft: Spacing.S12,
+                    }}
+                    tooltipPlacement="left"
+                    tooltipText={emailDisabledReason}
+                  >
+                    <Icon icon="info-outline" size="m" />
+                  </Tooltip>
+                ) : null}
+              </div>
+              {Boolean(fieldState.error?.message) && (
+                <FormError slot="error">{fieldState.error?.message}</FormError>
+              )}
+            </FormField>
           )}
         />
         <ActionsPanel
