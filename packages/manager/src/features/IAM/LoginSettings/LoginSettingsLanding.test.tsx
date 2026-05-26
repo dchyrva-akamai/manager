@@ -43,7 +43,7 @@ const makeIdpConfig = (overrides: Partial<IdpConfig> = {}): IdpConfig => ({
   label: 'Test IDP',
   saml: {
     entity_id: 'entity-id',
-    identity_element: 'NAME_ID',
+    identity_element: 'name_id',
     idp_url: 'https://idp.example.com',
     public_certificates: [],
   },

@@ -1,0 +1,137 @@
+import {
+  Button,
+  FormError,
+  FormField,
+  FormLabel,
+  Icon,
+  TextArea,
+  Tooltip,
+} from '@akamai/cds-components/react';
+import * as React from 'react';
+import { Controller, useFieldArray } from 'react-hook-form';
+import type { Control } from 'react-hook-form';
+
+import { idpConfiguration } from '../../constants';
+import { CertificatesTable } from './CertificatesTable';
+import styles from './IdpConfigurationDrawer.module.css';
+
+import type { CreateIdpConfigPayload, IdpCertificate } from '@linode/api-v4';
+
+interface CreateProps {
+  control: Control<CreateIdpConfigPayload>;
+  isEdit?: false;
+}
+
+interface EditProps {
+  certificates: IdpCertificate[];
+  control: Control<CreateIdpConfigPayload>;
+  deletedCertificateIds: Set<string>;
+  isEdit: true;
+  onToggleDeleteCertificate: (id: string) => void;
+}
+
+type Props = CreateProps | EditProps;
+
+export const CertificatesSection = (props: Props) => {
+  const { control, isEdit } = props;
+
+  const {
+    fields: certificateFields,
+    append: addCertificate,
+    remove: removeCertificate,
+  } = useFieldArray({
+    control,
+    name: 'saml.public_certificates',
+  });
+
+  const existingCertificatesCount = isEdit ? props.certificates.length : 0;
+  const totalCertificatesCount =
+    existingCertificatesCount + certificateFields.length;
+
+  const isMaxCertificatesReached = totalCertificatesCount >= 10;
+  const canRemoveCertificate = certificateFields.length > 1 || isEdit;
+
+  return (
+    <>
+      {isEdit && (
+        <CertificatesTable
+          certificates={props.certificates}
+          deletedIds={props.deletedCertificateIds}
+          onToggleDelete={props.onToggleDeleteCertificate}
+        />
+      )}
+
+      {certificateFields.map((certificateField, index) => (
+        <Controller
+          control={control}
+          key={certificateField.id}
+          name={`saml.public_certificates.${index}.certificate`}
+          render={({ field, fieldState }) => (
+            <>
+              <FormLabel
+                className={`${styles.formLabel} ${
+                  index === 0
+                    ? styles.firstCertificateLabel
+                    : styles.nextCertificateLabel
+                }`}
+              >
+                SAML Public Certificate
+              </FormLabel>
+
+              <div className={styles.certificateRow}>
+                <div className={styles.certificateField}>
+                  <FormField
+                    className={styles.formFieldCertificate}
+                    error={!!fieldState.error}
+                  >
+                    <TextArea
+                      aria-invalid={!!fieldState.error}
+                      onChange={field.onChange}
+                      placeholder="Enter a SAML public certificate"
+                      rows={4}
+                      value={field.value ?? ''}
+                    />
+
+                    {fieldState.error && (
+                      <FormError>{fieldState.error.message}</FormError>
+                    )}
+                  </FormField>
+                </div>
+
+                {canRemoveCertificate && (
+                  <Button
+                    aria-label={`Remove SAML public certificate ${index + 1}`}
+                    className={styles.removeCertificateButton}
+                    onClick={() => removeCertificate(index)}
+                    type="button"
+                    variant="icon"
+                  >
+                    <Icon icon="delete" size="m" />
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
+        />
+      ))}
+
+      <Tooltip
+        disabled={!isMaxCertificatesReached}
+        tooltipPlacement="bottom"
+        tooltipText={idpConfiguration.addButtonMaxTooltip}
+      >
+        <Button
+          aria-disabled={isMaxCertificatesReached}
+          className={styles.addCertificateButton}
+          disabled={isMaxCertificatesReached}
+          onClick={() => addCertificate({ certificate: '' })}
+          type="button"
+          variant="link"
+        >
+          Add another certificate
+          {isMaxCertificatesReached && <Icon icon="info-outline" size="m" />}
+        </Button>
+      </Tooltip>
+    </>
+  );
+};

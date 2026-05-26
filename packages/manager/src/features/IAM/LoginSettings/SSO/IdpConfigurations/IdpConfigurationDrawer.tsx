@@ -1,0 +1,321 @@
+import {
+  Button,
+  FormError,
+  FormField,
+  FormLabel,
+  NotificationBanner,
+  TextField,
+} from '@akamai/cds-components/react';
+import { Spacing, Typography } from '@akamai/cds-tokens';
+import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  useCreateIdpConfigMutation,
+  useUpdateIdpConfigMutation,
+} from '@linode/queries';
+import { Drawer } from '@linode/ui';
+import {
+  CreateIdpConfigSchema,
+  UpdateIdpConfigSchema,
+} from '@linode/validation';
+import { useSnackbar } from 'notistack';
+import * as React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import type { Resolver } from 'react-hook-form';
+
+import { idpConfiguration } from '../../constants';
+import { AttributeMappingSection } from './AttributeMappingSection';
+import { CertificatesSection } from './CertificatesSection';
+import styles from './IdpConfigurationDrawer.module.css';
+import { defaultValues } from './idpConfigurationDrawer.utils';
+
+import type { DrawerMode } from './idpConfigurationDrawer.utils';
+import type { CreateIdpConfigPayload, IdpConfig } from '@linode/api-v4';
+
+interface Props {
+  idpConfig?: IdpConfig;
+  mode: DrawerMode;
+  onClose: () => void;
+  open: boolean;
+}
+
+export const IdpConfigurationDrawer = ({
+  idpConfig,
+  mode,
+  onClose,
+  open,
+}: Props) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const { mutateAsync: createIdpConfig } = useCreateIdpConfigMutation();
+  const { mutateAsync: updateIdpConfig } = useUpdateIdpConfigMutation(
+    idpConfig?.id ?? ''
+  );
+
+  const isEdit = mode === 'edit';
+  const title = isEdit ? 'Edit IDP Configuration' : 'Create IDP Configuration';
+
+  const [deletedCertificateIds, setDeletedCertificateIds] = React.useState<
+    Set<string>
+  >(new Set());
+
+  const notificationBannerRef = React.useRef<HTMLDivElement>(null);
+
+  const handleToggleDeleteCertificate = (id: string) => {
+    setDeletedCertificateIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const editValues =
+    isEdit && idpConfig
+      ? {
+          default: idpConfig.default,
+          enabled: idpConfig.enabled,
+          enforce: idpConfig.enforce,
+          label: idpConfig.label,
+          saml: {
+            entity_id: idpConfig.saml.entity_id,
+            identity_element: idpConfig.saml.identity_element,
+            idp_url: idpConfig.saml.idp_url,
+            public_certificates: [] as { certificate: string }[],
+            user_id_attribute: idpConfig.saml.user_id_attribute ?? '',
+          },
+        }
+      : undefined;
+
+  const {
+    control,
+    formState: { errors, isDirty, isSubmitting },
+    handleSubmit,
+    reset,
+    setError,
+    watch,
+  } = useForm<CreateIdpConfigPayload>({
+    defaultValues,
+    resolver: yupResolver(
+      isEdit ? UpdateIdpConfigSchema : CreateIdpConfigSchema
+    ) as Resolver<CreateIdpConfigPayload>,
+    values: editValues,
+  });
+
+  const onSubmit = async (formValues: CreateIdpConfigPayload) => {
+    const payload = {
+      ...formValues,
+      saml: { ...formValues.saml },
+    };
+
+    // API rejects user_id_attribute when identity_element is 'name_id'
+    if (payload.saml.identity_element === 'name_id') {
+      delete payload.saml.user_id_attribute;
+    }
+    // In edit mode, check that not all existing certs are deleted
+    // unless new ones are being added
+    if (isEdit && idpConfig) {
+      const existingCerts = idpConfig.saml.public_certificates;
+      const remainingExisting = existingCerts.filter(
+        (cert) => !deletedCertificateIds.has(cert.id)
+      );
+      const newCerts = formValues.saml.public_certificates.filter(
+        (cert) => cert.certificate.trim() !== ''
+      );
+
+      if (remainingExisting.length === 0 && newCerts.length === 0) {
+        setError('root', {
+          message: idpConfiguration.allCertificatesDeletedError,
+        });
+        return;
+      }
+
+      // Build the certificates payload: keep non-deleted existing + add new
+      payload.saml.public_certificates = [
+        ...remainingExisting.map((cert) => ({
+          certificate: cert.certificate,
+        })),
+        ...newCerts,
+      ];
+    }
+
+    try {
+      if (isEdit) {
+        await updateIdpConfig(payload);
+      } else {
+        await createIdpConfig(payload);
+      }
+      enqueueSnackbar(
+        isEdit
+          ? idpConfiguration.updateSuccess
+          : idpConfiguration.createSuccess,
+        { variant: 'success' }
+      );
+      handleClose();
+    } catch (errors) {
+      const apiErrors = Array.isArray(errors) ? errors : [];
+
+      for (const error of apiErrors) {
+        const field = error.field;
+
+        if (field?.startsWith('saml.public_certificates')) {
+          // TODO: UIE-11457 - Certificate errors are handled as root errors since API certificate indexes
+          // can differ from the form field indexes after certificate delete/update actions in edit mode.
+          // TODO: UIE-11457 - Refactor NotificationBanner error handling to support rendering multiple API errors as a list.
+          setError('root', { message: error.reason });
+          continue;
+        }
+
+        setError(field ?? 'root', { message: error.reason });
+      }
+
+      requestAnimationFrame(() => {
+        notificationBannerRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      });
+    }
+  };
+
+  const handleClose = () => {
+    reset();
+    setDeletedCertificateIds(new Set());
+    onClose();
+  };
+
+  const hasChanges = isDirty || (isEdit && deletedCertificateIds.size > 0);
+
+  return (
+    <Drawer
+      onClose={handleClose}
+      open={open}
+      slotProps={{
+        paper: {
+          sx: {
+            width: isEdit ? '616px !important' : 'auto',
+          },
+        },
+      }}
+      title={title}
+    >
+      <form noValidate onSubmit={handleSubmit(onSubmit)}>
+        {errors.root?.message && (
+          <div ref={notificationBannerRef}>
+            <NotificationBanner
+              style={{ marginBottom: Spacing.S12 }}
+              text={errors.root?.message}
+              type="error"
+            />
+          </div>
+        )}
+        <Controller
+          control={control}
+          name="label"
+          render={({ field, fieldState }) => (
+            <>
+              <FormLabel className={styles.formLabel}>Label</FormLabel>
+              <FormField
+                className={styles.formFieldText}
+                error={!!fieldState.error}
+              >
+                <TextField
+                  onChange={field.onChange}
+                  placeholder="Enter a label"
+                  value={field.value}
+                />
+                {fieldState.error && (
+                  <FormError>{fieldState.error.message}</FormError>
+                )}
+              </FormField>
+            </>
+          )}
+        />
+
+        <h3
+          className={styles.sectionHeading}
+          style={{ font: Typography.Heading.S }}
+        >
+          Identity provider details
+        </h3>
+        <p className={styles.sectionDescription}>
+          {idpConfiguration.identityProviderDescription}
+        </p>
+
+        <Controller
+          control={control}
+          name="saml.entity_id"
+          render={({ field, fieldState }) => (
+            <>
+              <FormLabel className={styles.formLabel}>Entity ID</FormLabel>
+              <FormField
+                className={styles.formFieldTextSpaced}
+                error={!!fieldState.error}
+              >
+                <TextField
+                  onChange={field.onChange}
+                  placeholder="Enter an entity ID"
+                  value={field.value}
+                />
+                {fieldState.error && (
+                  <FormError>{fieldState.error.message}</FormError>
+                )}
+              </FormField>
+            </>
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="saml.idp_url"
+          render={({ field, fieldState }) => (
+            <>
+              <FormLabel className={styles.formLabel}>IDP URL</FormLabel>
+              <FormField
+                className={styles.formFieldText}
+                error={!!fieldState.error}
+              >
+                <TextField
+                  onChange={field.onChange}
+                  placeholder="Enter an IDP URL"
+                  value={field.value}
+                />
+                {fieldState.error && (
+                  <FormError>{fieldState.error.message}</FormError>
+                )}
+              </FormField>
+            </>
+          )}
+        />
+
+        {!isEdit && <CertificatesSection control={control} />}
+
+        {isEdit && idpConfig && (
+          <CertificatesSection
+            certificates={idpConfig.saml.public_certificates}
+            control={control}
+            deletedCertificateIds={deletedCertificateIds}
+            isEdit
+            onToggleDeleteCertificate={handleToggleDeleteCertificate}
+          />
+        )}
+
+        <AttributeMappingSection control={control} watch={watch} />
+
+        <div className={styles.actions}>
+          <Button onClick={handleClose} variant="secondary">
+            Cancel
+          </Button>
+          <Button
+            disabled={!hasChanges || isSubmitting}
+            type="submit"
+            variant="primary"
+          >
+            {isEdit ? 'Save Changes' : 'Create IDP Configuration'}
+          </Button>
+        </div>
+      </form>
+    </Drawer>
+  );
+};

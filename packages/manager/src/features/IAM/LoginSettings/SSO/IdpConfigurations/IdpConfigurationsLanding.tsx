@@ -31,7 +31,7 @@ export const IdpConfigurationsLanding = () => {
     <>
       <DocumentTitleSegment segment="IDP Configuration" />
       {hasIdpConfig ? (
-        <IdpConfigurations />
+        <IdpConfigurations idpConfig={data?.data[0]} />
       ) : (
         <NoIDPConfiguration permissions={permissions} />
       )}

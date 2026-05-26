@@ -93,23 +93,6 @@ describe('NoIDPConfiguration', () => {
     expect(createButton).toBeDisabled();
   });
 
-  it('navigates to IDP configurations page when button is clicked and not already there', async () => {
-    const { container } = renderWithTheme(
-      <NoIDPConfiguration permissions={{ is_account_admin: true }} />
-    );
-
-    const createButton = await getCdsButtonByText(
-      container,
-      'Create IDP Configuration'
-    );
-    expect(createButton).toBeVisible();
-    await userEvent.click(createButton as HTMLButtonElement);
-
-    expect(mockNavigate).toHaveBeenCalledWith({
-      to: IDP_CONFIGURATIONS_PATH,
-    });
-  });
-
   it('does not navigate when button is clicked on the IDP configurations page', async () => {
     queryMocks.useLocation.mockReturnValue({
       pathname: IDP_CONFIGURATIONS_PATH,

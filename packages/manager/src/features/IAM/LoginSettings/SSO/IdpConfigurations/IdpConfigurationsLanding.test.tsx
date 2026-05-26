@@ -74,14 +74,34 @@ describe('IdpConfigurationsLanding', () => {
 
   it('renders IDP configurations when a configuration exists', () => {
     queryMocks.useGetIdpConfigsQuery.mockReturnValue({
-      data: { results: 1 },
+      data: {
+        results: 1,
+        data: [
+          {
+            id: 1,
+            label: 'Test Config',
+            entity_id: 'test-entity-id',
+            saml: {
+              entity_id: 'test-entity-id',
+              identity_element: 'user_id_attribute',
+              idp_url: 'https://idp.example.com',
+              public_certificates: [{ certificate: 'cert' }],
+            },
+            enabled: true,
+            enforce: false,
+            default: false,
+            created: '2023-01-01T00:00:00',
+            updated: '2023-01-01T00:00:00',
+          },
+        ],
+      },
       error: null,
       isLoading: false,
     });
 
     renderWithTheme(<IdpConfigurationsLanding />);
 
-    expect(screen.getByText('IDP Configurations')).toBeVisible();
+    expect(screen.getByText('Edit IDP Configuration')).toBeVisible();
     expect(screen.queryByText('No data to display')).not.toBeInTheDocument();
   });
 

@@ -1,0 +1,119 @@
+.formLabel {
+  text-align: left;
+  padding-top: var(--token-global-spacing-s0, 0);
+  padding-bottom: var(--token-global-spacing-s0, 0);
+}
+
+.firstCertificateLabel {
+  padding-top: var(--token-global-spacing-s12, 12px);
+}
+
+.nextCertificateLabel {
+  padding-top: var(--token-global-spacing-s8, 8px);
+}
+
+.formFieldSelect {
+  padding-bottom: var(--token-global-spacing-s12, 12px);
+}
+
+.formFieldText {
+  padding-top: var(--token-global-spacing-s8, 8px);
+  padding-bottom: var(--token-global-spacing-s0, 0);
+}
+
+.formFieldTextSpaced {
+  padding-top: var(--token-global-spacing-s8, 8px);
+  padding-bottom: var(--token-global-spacing-s12, 12px);
+}
+
+.formFieldCertificate {
+  padding-top: var(--token-global-spacing-s8, 8px);
+  padding-bottom: var(--token-global-spacing-s4, 4px);
+}
+
+.rootError {
+  margin-bottom: var(--token-global-spacing-s12, 12px);
+}
+
+.actions {
+  display: flex;
+  gap: var(--token-global-spacing-s12, 12px);
+  justify-content: flex-end;
+  margin-top: var(--token-global-spacing-s32, 32px);
+}
+
+.sectionHeading {
+  margin-top: var(---token-global-spacing-s32, 32px);
+  margin-bottom: var(---token-global-spacing-s12, 12px);
+}
+
+.sectionDescription {
+  margin-bottom: var(--token-global-spacing-s12, 12px);
+}
+
+.helperText {
+  margin-top: var(--token-global-spacing-s4, 4px);
+  color: var(--token-alias-content-text-secondary-default, light-dark(#696970, #a3a3ab));
+}
+
+.addCertificateButton {
+  margin-top: var(--token-global-spacing-s8, 8px);
+}
+
+.certificateRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--token-global-spacing-s8, 8px);
+}
+
+.certificateField {
+  flex: 1;
+}
+
+.removeCertificateButton {
+  margin-top: var(--token-global-spacing-s4, 4px);
+  flex-shrink: 0;
+}
+
+.deletedCell {
+  color: var(--alias-content-text-primary-disabled, light-dark(#a3a3ab, #83838c));
+}
+
+.deletedOpacity {
+  opacity: 0.5;
+}
+
+.tableError {
+  border: 1px solid var(--token-alias-border-negative, light-dark(#d63c42, #eb9091));
+}
+
+.tableErrorMessage {
+  margin-top: var(--token-global-spacing-s12, 12px);
+}
+
+.certCell {
+  min-width: 246px;
+  box-sizing: border-box;
+  padding-left: 0;
+}
+
+.expirationCell {
+  min-width: 180px;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.certHeaderCell {
+  min-width: 246px;
+  box-sizing: border-box;
+}
+
+.expirationHeaderCell {
+  min-width: 180px;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.actionCell {
+  justify-content: flex-end;
+}
