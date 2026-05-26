@@ -8,8 +8,10 @@ import { Spacing } from '@akamai/cds-tokens';
 import {
   useGetIdpConfigQuery,
   useGetIdpConfigsQuery,
+  useGetIdpConfigUsersExcludedQuery,
   useGetIdpConfigUsersIncludedQuery,
   useUpdateIdpConfigMutation,
+  useUpdateIdpConfigUsersExcludedMutation,
   useUpdateIdpConfigUsersIncludedMutation,
 } from '@linode/queries';
 import { enqueueSnackbar } from 'notistack';
@@ -23,6 +25,7 @@ import { Paper } from 'src/features/IAM/Shared/Paper/Paper';
 
 import { hasNoValidCertificates } from '../utilities';
 import { ActivationStatus } from './ActivationStatus';
+import { ExcludedUsersPanel } from './ExcludedUsersPanel';
 import { IncludedUsersPanel } from './IncludedUsersPanel';
 
 import type { APIError, IdpUser } from '@linode/api-v4/lib/types';
@@ -35,8 +38,6 @@ export interface EnforcementSettingsFormValues {
   ssoEnforced: boolean;
 }
 
-// TODO: Implement Enforcement Settings tab
-// - Excluded users list management (break-glass users that bypass SSO)
 export const EnforcementSettings = () => {
   // TODO: check whether we need to fetch all IDP configs to find the relevant one
   // or if we can get the euuid from IDP configuration tab and pass it down
@@ -70,6 +71,11 @@ export const EnforcementSettings = () => {
   } = useUpdateIdpConfigUsersIncludedMutation(euuid ?? '');
 
   const {
+    mutateAsync: updateExcludedUsers,
+    isPending: isExcludedUsersPending,
+  } = useUpdateIdpConfigUsersExcludedMutation(euuid ?? '');
+
+  const {
     data: includedUsers,
     error: includedUsersError,
     isLoading: includedUsersLoading,
@@ -81,13 +87,25 @@ export const EnforcementSettings = () => {
     return includedUsers?.data.map((user: IdpUser) => user.label);
   }, [includedUsers]);
 
+  const {
+    data: excludedUsers,
+    error: excludedUsersError,
+    isLoading: excludedUsersLoading,
+  } = useGetIdpConfigUsersExcludedQuery({
+    euuid: euuid ?? '',
+  });
+
+  const excludedUsersOptions = React.useMemo(() => {
+    return excludedUsers?.data.map((user: IdpUser) => user.label);
+  }, [excludedUsers]);
+
   const form = useForm<EnforcementSettingsFormValues>({
     values: {
       ssoEnabled: idpConfig?.enabled ?? false,
       ssoEnforced: idpConfig?.enforce ?? false,
       isAcknowledged: false,
       includedUsers: includedUsersOptions ?? [],
-      excludedUsers: [],
+      excludedUsers: excludedUsersOptions ?? [],
     },
   });
 
@@ -110,6 +128,10 @@ export const EnforcementSettings = () => {
   // call the right endpoint on submit
   const isIncludedUsersDirty = !!dirtyFields.includedUsers;
 
+  // Determine if Excluded Users has been modified to conditionally
+  // call the right endpoint on submit
+  const isExcludedUsersDirty = !!dirtyFields.excludedUsers;
+
   const onSubmit = async (values: EnforcementSettingsFormValues) => {
     const mutations: Promise<unknown>[] = [];
 
@@ -128,6 +150,11 @@ export const EnforcementSettings = () => {
       mutations.push(updateIncludedUsers({ usernames: values.includedUsers }));
     }
 
+    // Only update excluded users if it has been modified
+    if (isExcludedUsersDirty) {
+      mutations.push(updateExcludedUsers({ usernames: values.excludedUsers }));
+    }
+
     try {
       await Promise.all(mutations);
       enqueueSnackbar(`SSO settings updated successfully.`, {
@@ -140,11 +167,16 @@ export const EnforcementSettings = () => {
     }
   };
 
-  if (isLoading || idpConfigsLoading || includedUsersLoading) {
+  if (
+    isLoading ||
+    idpConfigsLoading ||
+    includedUsersLoading ||
+    excludedUsersLoading
+  ) {
     return <CircleProgress />;
   }
 
-  if (error || idpConfigsError || includedUsersError) {
+  if (error || idpConfigsError || includedUsersError || excludedUsersError) {
     return <ErrorState />;
   }
 
@@ -167,6 +199,7 @@ export const EnforcementSettings = () => {
           <Divider spacingBottom={Spacing.S16} spacingTop={Spacing.S16} />
           <IncludedUsersPanel includedUsers={includedUsersOptions} />
           <Divider spacingBottom={Spacing.S16} spacingTop={Spacing.S16} />
+          <ExcludedUsersPanel excludedUsers={excludedUsersOptions} />
         </Paper>
 
         {isActivationStatusDirty && (
@@ -204,7 +237,8 @@ export const EnforcementSettings = () => {
             processing={
               isSubmitting ||
               isActivationStatusPending ||
-              isIncludedUsersPending
+              isIncludedUsersPending ||
+              isExcludedUsersPending
             }
             type="submit"
             variant="primary"

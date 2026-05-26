@@ -24,6 +24,10 @@ const queryMocks = vi.hoisted(() => ({
   useUpdateIdpConfigUsersIncludedMutation: vi
     .fn()
     .mockReturnValue({ mutateAsync: vi.fn() }),
+  useGetIdpConfigUsersExcludedQuery: vi.fn().mockReturnValue({}),
+  useUpdateIdpConfigUsersExcludedMutation: vi
+    .fn()
+    .mockReturnValue({ mutateAsync: vi.fn() }),
 }));
 
 vi.mock('@linode/queries', async () => {
@@ -37,6 +41,10 @@ vi.mock('@linode/queries', async () => {
     useUpdateIdpConfigMutation: queryMocks.useUpdateIdpConfigMutation,
     useUpdateIdpConfigUsersIncludedMutation:
       queryMocks.useUpdateIdpConfigUsersIncludedMutation,
+    useGetIdpConfigUsersExcludedQuery:
+      queryMocks.useGetIdpConfigUsersExcludedQuery,
+    useUpdateIdpConfigUsersExcludedMutation:
+      queryMocks.useUpdateIdpConfigUsersExcludedMutation,
   };
 });
 
@@ -78,11 +86,20 @@ describe('EnforcementSettings', () => {
       error: null,
       isLoading: false,
     });
+    queryMocks.useGetIdpConfigUsersExcludedQuery.mockReturnValue({
+      data: { data: [], results: 0 },
+      error: null,
+      isLoading: false,
+    });
     queryMocks.useUpdateIdpConfigMutation.mockReturnValue({
       mutateAsync: vi.fn().mockResolvedValue({}),
       isPending: false,
     });
     queryMocks.useUpdateIdpConfigUsersIncludedMutation.mockReturnValue({
+      mutateAsync: vi.fn().mockResolvedValue({}),
+      isPending: false,
+    });
+    queryMocks.useUpdateIdpConfigUsersExcludedMutation.mockReturnValue({
       mutateAsync: vi.fn().mockResolvedValue({}),
       isPending: false,
     });
@@ -207,8 +224,33 @@ describe('EnforcementSettings', () => {
     expect(screen.getByTestId('circle-progress')).toBeInTheDocument();
   });
 
+  it('shows a loading state while excluded users are loading', () => {
+    queryMocks.useGetIdpConfigUsersExcludedQuery.mockReturnValue({
+      data: null,
+      error: null,
+      isLoading: true,
+    });
+
+    renderWithTheme(<EnforcementSettings />);
+
+    expect(screen.getByTestId('circle-progress')).toBeInTheDocument();
+  });
+
   it('shows an error state when fetching included users fails', () => {
     queryMocks.useGetIdpConfigUsersIncludedQuery.mockReturnValue({
+      data: null,
+      error: [{ reason: 'An unexpected error occurred' }],
+      isLoading: false,
+    });
+
+    renderWithTheme(<EnforcementSettings />);
+
+    expect(screen.getByText(ERROR_STATE_TITLE)).toBeVisible();
+    expect(screen.getByText(ERROR_STATE_TEXT)).toBeVisible();
+  });
+
+  it('shows an error state when fetching excluded users fails', () => {
+    queryMocks.useGetIdpConfigUsersExcludedQuery.mockReturnValue({
       data: null,
       error: [{ reason: 'An unexpected error occurred' }],
       isLoading: false,
@@ -248,5 +290,13 @@ describe('EnforcementSettings', () => {
         )
       ).toBeVisible();
     });
+  });
+
+  it('renders the Excluded Users Panel section', () => {
+    renderWithTheme(<EnforcementSettings />);
+
+    expect(
+      screen.getByRole('heading', { name: 'Excluded Users' })
+    ).toBeVisible();
   });
 });

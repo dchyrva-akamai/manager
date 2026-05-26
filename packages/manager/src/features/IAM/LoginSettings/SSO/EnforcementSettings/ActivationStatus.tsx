@@ -84,7 +84,6 @@ export const ActivationStatus = ({ isConfigInvalid }: Props) => {
               Enforce SSO for all users
               {!isSSOEnabled && (
                 <Tooltip
-                  key="sso-enforce-tooltip"
                   style={{ textAlign: 'left', whiteSpace: 'normal' }}
                   tooltipPlacement="bottom"
                   tooltipText="Enable SSO first to enforce it for all users."

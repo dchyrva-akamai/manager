@@ -108,6 +108,10 @@ export const SSO_DOCS_LINK =
 export const SSO_INCLUDED_USERS_DOCS_LINK =
   'https://techdocs.akamai.com/cloud-computing/docs/identity-and-access-cm';
 
+// TODO: UIE-11341 - update this link when the doc is ready
+export const SSO_EXCLUDED_USERS_DOCS_LINK =
+  'https://techdocs.akamai.com/cloud-computing/docs/identity-and-access-cm';
+
 export const PAID_ENTITY_TYPES = [
   'database',
   'linode',
