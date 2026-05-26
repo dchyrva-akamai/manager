@@ -10,7 +10,6 @@ import {
 } from '@linode/queries';
 import { formatStorageUnits, scrollErrorIntoViewV2 } from '@linode/utilities';
 import { getDynamicDatabaseSchema } from '@linode/validation/lib/databases.schema';
-import Grid from '@mui/material/Grid';
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
@@ -25,7 +24,6 @@ import {
 } from 'src/features/components/PlansPanel/utils';
 import { DatabaseClusterData } from 'src/features/Databases/DatabaseCreate/DatabaseClusterData';
 import {
-  StyledBtnCtn,
   StyledCreateBtn,
   StyledPlansPanel,
   StyledTypography,
@@ -38,6 +36,7 @@ import { useFlags } from 'src/hooks/useFlags';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
 
 import { PREMIUM_CPU_PLANS_RENAME } from '../constants';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 import { CircleProgress } from '../shared/CircleProgress/CircleProgress';
 import { Divider } from '../shared/Divider/Divider';
 import { ErrorState } from '../shared/ErrorState/ErrorState';
@@ -89,6 +88,7 @@ export const DatabaseCreate = () => {
     platform: 'rdbms-default',
   });
 
+  const isSMDown = useBreakpoint('down', 'sm');
   const flags = useFlags();
   const isVPCEnabled = flags.databaseVpc;
 
@@ -342,47 +342,43 @@ export const DatabaseCreate = () => {
             )}
             <DatabaseClusterData selectedPlan={selectedPlan} />
             <Divider marginBottom={Spacing.S12} marginTop={Spacing.S32} />
-            <Grid>
-              <Controller
-                control={control}
-                name="type"
-                render={({ field, fieldState }) => (
-                  <StyledPlansPanel
-                    data-qa-select-plan
-                    disabled={isRestricted}
-                    disabledTabs={disabledTabsConfig.disabledTabs}
-                    error={fieldState.error?.message}
-                    flow="database"
-                    handleTabChange={handleTabChange}
-                    header="Choose a Plan"
-                    isCreate
-                    onSelect={field.onChange}
-                    regionsData={regionsData}
-                    selectedId={field.value}
-                    selectedRegionID={region}
-                    types={displayTypes}
-                  />
-                )}
-              />
-            </Grid>
+            <Controller
+              control={control}
+              name="type"
+              render={({ field, fieldState }) => (
+                <StyledPlansPanel
+                  data-qa-select-plan
+                  disabled={isRestricted}
+                  disabledTabs={disabledTabsConfig.disabledTabs}
+                  error={fieldState.error?.message}
+                  flow="database"
+                  handleTabChange={handleTabChange}
+                  header="Choose a Plan"
+                  isCreate
+                  onSelect={field.onChange}
+                  regionsData={regionsData}
+                  selectedId={field.value}
+                  selectedRegionID={region}
+                  types={displayTypes}
+                />
+              )}
+            />
             <Divider marginBottom={Spacing.S12} marginTop={Spacing.S24} />
-            <Grid>
-              <Controller
-                control={control}
-                name="cluster_size"
-                render={({ field, fieldState }) => (
-                  <DatabaseNodeSelector
-                    displayTypes={displayTypes}
-                    error={fieldState.error?.message}
-                    handleNodeChange={field.onChange}
-                    selectedClusterSize={field.value}
-                    selectedEngine={selectedEngine}
-                    selectedPlan={selectedPlan}
-                    selectedTab={selectedTab}
-                  />
-                )}
-              />
-            </Grid>
+            <Controller
+              control={control}
+              name="cluster_size"
+              render={({ field, fieldState }) => (
+                <DatabaseNodeSelector
+                  displayTypes={displayTypes}
+                  error={fieldState.error?.message}
+                  handleNodeChange={field.onChange}
+                  selectedClusterSize={field.value}
+                  selectedEngine={selectedEngine}
+                  selectedPlan={selectedPlan}
+                  selectedTab={selectedTab}
+                />
+              )}
+            />
             <Divider marginBottom={Spacing.S12} marginTop={Spacing.S24} />
             {isVPCEnabled ? (
               <DatabaseCreateNetworkingConfiguration
@@ -402,7 +398,15 @@ export const DatabaseCreate = () => {
               selectedVPC={selectedVPC}
             />
           </Paper>
-          <StyledBtnCtn>
+          <div
+            style={{
+              alignItems: isSMDown ? 'flex-end' : 'center',
+              display: 'flex',
+              flexDirection: isSMDown ? 'column' : 'row',
+              justifyContent: 'flex-end',
+              marginTop: isSMDown ? Spacing.S8 : Spacing.S16,
+            }}
+          >
             <StyledTypography>
               Your database node(s) will take approximately 15-30 minutes to
               provision.
@@ -416,7 +420,7 @@ export const DatabaseCreate = () => {
             >
               Create Database Cluster
             </StyledCreateBtn>
-          </StyledBtnCtn>
+          </div>
           <DatabaseLogo />
         </form>
       </FormProvider>

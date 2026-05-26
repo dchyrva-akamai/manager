@@ -2,7 +2,7 @@ import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseEnginesQuery } from '@linode/queries';
 import { Typography } from '@linode/ui';
-import { GridLegacy, styled } from '@mui/material';
+import { styled } from '@mui/material';
 import * as React from 'react';
 
 import {
@@ -35,8 +35,8 @@ export const DatabaseSettingsMaintenance = (props: Props) => {
   const hasUpdates = hasPendingUpdates(databasePendingUpdates);
 
   return (
-    <GridLegacy container data-qa-settings-section="Maintenance">
-      <GridLegacy item xs={6}>
+    <div data-qa-settings-section="Maintenance" style={{ display: 'flex' }}>
+      <div style={{ width: '50%' }}>
         <StyledTypography variant="h3">Maintenance</StyledTypography>
         <BoldTypography>Version</BoldTypography>
         <StyledTypography>{engineVersion}</StyledTypography>
@@ -61,15 +61,15 @@ export const DatabaseSettingsMaintenance = (props: Props) => {
             />
           </Tooltip>
         )}
-      </GridLegacy>
+      </div>
       {/*
         TODO Uncomment and provide value when the EOL is returned by the API.
         Currently, it is not supported, however they are working on returning it since it has value to the end user
-        <Grid item xs={4}>
+        <div>
           <StyledTypography variant="h3">End of life</StyledTypography>
-        </Grid>
+        </div>
       */}
-      <GridLegacy item xs={6}>
+      <div style={{ width: '50%' }}>
         <StyledTypography variant="h3">Maintenance updates</StyledTypography>
         {hasUpdates ? (
           <BoldTypography>
@@ -89,8 +89,8 @@ export const DatabaseSettingsMaintenance = (props: Props) => {
             maintenance window.{' '}
           </BoldTypography>
         )}
-      </GridLegacy>
-    </GridLegacy>
+      </div>
+    </div>
   );
 };
 

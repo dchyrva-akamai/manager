@@ -40,11 +40,7 @@ import { Divider } from '../../shared/Divider/Divider';
 import { ErrorState } from '../../shared/ErrorState/ErrorState';
 import { Paper } from '../../shared/Paper/Paper';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
-import {
-  StyledGrid,
-  StyledPlansPanel,
-  StyledResizeButton,
-} from './DatabaseResize.style';
+import { StyledPlansPanel, StyledResizeButton } from './DatabaseResize.style';
 import { isSmallerOrEqualCurrentPlan } from './DatabaseResize.utils';
 
 import type {
@@ -515,7 +511,9 @@ export const DatabaseResize = () => {
           resizeData={summaryText}
         />
       </Paper>
-      <StyledGrid>
+      <div
+        style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}
+      >
         <StyledResizeButton
           data-testid="resize-database-button"
           disabled={shouldSubmitBeDisabled || disabled}
@@ -527,7 +525,7 @@ export const DatabaseResize = () => {
         >
           Resize Database Cluster
         </StyledResizeButton>
-      </StyledGrid>
+      </div>
       <TypeToConfirmDialog
         entity={{
           action: 'resizing',

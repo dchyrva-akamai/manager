@@ -14,7 +14,6 @@ import { ErrorState } from '../../shared/ErrorState/ErrorState';
 import { ConnectionDetailsHostRows } from '../ConnectionDetailsHostRows';
 import { ConnectionDetailsHostRows2 } from '../ConnectionDetailsHostRows2';
 import { ConnectionDetailsRow } from '../ConnectionDetailsRow';
-import { StyledGridContainer } from '../DatabaseSummary/DatabaseSummaryClusterConfiguration.style';
 import DatabaseManageNetworkingDrawer from './DatabaseManageNetworkingDrawer';
 import { DatabaseNetworkingUnassignVPCDialog } from './DatabaseNetworkingUnassignVPCDialog';
 
@@ -35,7 +34,6 @@ export const DatabaseManageNetworking = ({ database }: Props) => {
 
   const vpcId = Number(database.private_network?.vpc_id);
   const hasVPCConfigured = Boolean(vpcId);
-  const gridContainerSize = { lg: 7, md: 10 };
 
   const {
     data: vpcs,
@@ -116,7 +114,7 @@ export const DatabaseManageNetworking = ({ database }: Props) => {
         </Tooltip>
       </div>
 
-      <StyledGridContainer container size={gridContainerSize} spacing={0}>
+      <div style={{ marginTop: Spacing.S16, maxWidth: 700 }}>
         <ConnectionDetailsRow label="Connection Type">
           {hasVPCConfigured ? 'VPC' : 'Public'}
         </ConnectionDetailsRow>
@@ -141,7 +139,7 @@ export const DatabaseManageNetworking = ({ database }: Props) => {
             {database?.private_network?.public_access ? 'Yes' : 'No'}
           </ConnectionDetailsRow>
         )}
-      </StyledGridContainer>
+      </div>
 
       <DatabaseManageNetworkingDrawer
         database={database}

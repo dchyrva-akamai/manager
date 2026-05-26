@@ -22,7 +22,6 @@ import { ConnectionDetailsHostRows } from '../ConnectionDetailsHostRows';
 import { ConnectionDetailsHostRows2 } from '../ConnectionDetailsHostRows2';
 import { ConnectionDetailsRow } from '../ConnectionDetailsRow';
 import { ServiceURI } from '../ServiceURI';
-import { StyledGridContainer } from './DatabaseSummaryClusterConfiguration.style';
 import { useStyles } from './DatabaseSummaryConnectionDetails.style';
 
 import type { Database } from '@linode/api-v4/lib/databases/types';
@@ -123,66 +122,64 @@ export const DatabaseSummaryConnectionDetails = (props: Props) => {
   const showServiceURIs = flags.hostnameEndpoints && flags.databasePgBouncer;
 
   return (
-    <>
+    <div style={{ marginBottom: Spacing.S16 }}>
       <Typography className={classes.header} variant="h3">
         Connection Details
       </Typography>
-      <StyledGridContainer container size={{ lg: 10, md: 10 }} spacing={0}>
-        {showServiceURIs && (
-          <ConnectionDetailsRow
-            isSummaryTab
-            label={`${hasPublicVPC ? 'Public Service URI' : 'Service URI'} `}
+      {showServiceURIs && (
+        <ConnectionDetailsRow
+          isSummaryTab
+          label={`${hasPublicVPC ? 'Public Service URI' : 'Service URI'} `}
+        >
+          <ServiceURI database={database} isGeneralServiceURI />
+        </ConnectionDetailsRow>
+      )}
+      {showServiceURIs && hasPublicVPC && (
+        <ConnectionDetailsRow isSummaryTab label="Private Service URI">
+          <ServiceURI
+            database={database}
+            isGeneralServiceURI
+            showPrivateVPC={true}
+          />
+        </ConnectionDetailsRow>
+      )}
+      <ConnectionDetailsRow isSummaryTab label="Username">
+        {username}
+      </ConnectionDetailsRow>
+      <ConnectionDetailsRow isSummaryTab label="Password">
+        {CredentialsContent}
+      </ConnectionDetailsRow>
+      <ConnectionDetailsRow isSummaryTab label="Database name">
+        {isLegacy ? database.engine : 'defaultdb'}
+      </ConnectionDetailsRow>
+      {flags.hostnameEndpoints ? (
+        <ConnectionDetailsHostRows2 database={database} isSummaryTab />
+      ) : (
+        <ConnectionDetailsHostRows database={database} isSummaryTab />
+      )}
+      <ConnectionDetailsRow isSummaryTab label="Port">
+        {database.port}
+      </ConnectionDetailsRow>
+      <ConnectionDetailsRow isSummaryTab label="SSL">
+        {database.ssl_connection ? 'ENABLED' : 'DISABLED'}
+      </ConnectionDetailsRow>
+      {displayConnectionType && (
+        <ConnectionDetailsRow isSummaryTab label="Connection Type">
+          <Box
+            sx={(theme: Theme) => ({
+              marginRight: theme.spacingFunction(20),
+            })}
           >
-            <ServiceURI database={database} isGeneralServiceURI />
-          </ConnectionDetailsRow>
-        )}
-        {showServiceURIs && hasPublicVPC && (
-          <ConnectionDetailsRow isSummaryTab label="Private Service URI">
-            <ServiceURI
-              database={database}
-              isGeneralServiceURI
-              showPrivateVPC={true}
-            />
-          </ConnectionDetailsRow>
-        )}
-        <ConnectionDetailsRow isSummaryTab label="Username">
-          {username}
+            {hasVPC ? 'VPC' : 'Public'}
+          </Box>
+          <Link
+            to={`/databases/${database?.engine}/${database?.id}/networking`}
+          >
+            View Details
+          </Link>
         </ConnectionDetailsRow>
-        <ConnectionDetailsRow isSummaryTab label="Password">
-          {CredentialsContent}
-        </ConnectionDetailsRow>
-        <ConnectionDetailsRow isSummaryTab label="Database name">
-          {isLegacy ? database.engine : 'defaultdb'}
-        </ConnectionDetailsRow>
-        {flags.hostnameEndpoints ? (
-          <ConnectionDetailsHostRows2 database={database} isSummaryTab />
-        ) : (
-          <ConnectionDetailsHostRows database={database} isSummaryTab />
-        )}
-        <ConnectionDetailsRow isSummaryTab label="Port">
-          {database.port}
-        </ConnectionDetailsRow>
-        <ConnectionDetailsRow isSummaryTab label="SSL">
-          {database.ssl_connection ? 'ENABLED' : 'DISABLED'}
-        </ConnectionDetailsRow>
-        {displayConnectionType && (
-          <ConnectionDetailsRow isSummaryTab label="Connection Type">
-            <Box
-              sx={(theme: Theme) => ({
-                marginRight: theme.spacingFunction(20),
-              })}
-            >
-              {hasVPC ? 'VPC' : 'Public'}
-            </Box>
-            <Link
-              to={`/databases/${database?.engine}/${database?.id}/networking`}
-            >
-              View Details
-            </Link>
-          </ConnectionDetailsRow>
-        )}
-      </StyledGridContainer>
-    </>
+      )}
+    </div>
   );
 };
 

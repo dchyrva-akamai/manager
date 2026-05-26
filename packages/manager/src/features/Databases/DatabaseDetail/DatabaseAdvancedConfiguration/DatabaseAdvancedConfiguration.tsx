@@ -1,7 +1,6 @@
 import { Button } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { Box, Typography } from '@linode/ui';
-import Grid from '@mui/material/Grid';
 import { useNavigate } from '@tanstack/react-router';
 import React from 'react';
 
@@ -9,12 +8,10 @@ import { Link } from 'src/components/Link';
 
 import { ADVANCED_CONFIG_LEARN_MORE_LINK } from '../../constants';
 import { Paper } from '../../shared/Paper/Paper';
+import { cssVars } from '../../shared/utilities/cssVars';
+import styles from '../DatabaseDetail.module.css';
 import { useDatabaseDetailContext } from '../DatabaseDetailContext';
-import {
-  StyledGridContainer,
-  StyledLabelTypography,
-} from '../DatabaseSummary/DatabaseSummaryClusterConfiguration.style';
-import { StyledConfigValue } from './DatabaseAdvancedConfiguration.style';
+import { StyledLabelTypography } from '../DatabaseSummary/DatabaseSummaryClusterConfiguration.style';
 import { DatabaseAdvancedConfigurationDrawer } from './DatabaseAdvancedConfigurationDrawer';
 import { formatConfigValue } from './utilities';
 
@@ -24,6 +21,10 @@ export const DatabaseAdvancedConfiguration = () => {
     useDatabaseDetailContext();
   const [advancedConfigurationDrawerOpen, setAdvancedConfigurationDrawerOpen] =
     React.useState<boolean>(false);
+
+  const style = cssVars({
+    '--summary-label-width': '30%',
+  });
 
   const engineConfigs = database.engine_config;
 
@@ -40,14 +41,14 @@ export const DatabaseAdvancedConfiguration = () => {
 
   return (
     <Paper paddingBottom={Spacing.S40}>
-      <Grid container justifyContent={'space-between'}>
-        <Grid size={10}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ flex: 1 }}>
           <Typography variant="h2">Advanced Configuration</Typography>
           <Typography sx={{ mb: 1, mt: 1 }}>
             Advanced parameters to configure your database cluster.{' '}
             <Link to={ADVANCED_CONFIG_LEARN_MORE_LINK}>Learn more.</Link>
           </Typography>
-        </Grid>
+        </div>
         <Button
           data-testid="configure-database"
           onClick={() => setAdvancedConfigurationDrawerOpen(true)}
@@ -56,40 +57,37 @@ export const DatabaseAdvancedConfiguration = () => {
         >
           Configure
         </Button>
-      </Grid>
+      </div>
 
       {engineConfigs ? (
-        <StyledGridContainer
-          container
-          mt={3}
-          size={11}
-          spacing={0}
-          sx={{ wordBreak: 'break-all' }}
+        <div
+          className={styles.summaryLabelValueContainer}
+          style={{ wordBreak: 'break-all', marginTop: Spacing.S16, ...style }}
         >
           {Object.entries(engineConfigs).map(([key, value]) =>
             typeof value === 'object' ? (
               Object.entries(value!).map(([configLabel, configValue]) => (
                 <React.Fragment key={`${key}-${configLabel}`}>
-                  <Grid size={{ lg: 4, md: 4, xs: 5 }}>
+                  <div className={styles.summaryLabelColumn}>
                     <StyledLabelTypography>{`${key}.${configLabel}`}</StyledLabelTypography>
-                  </Grid>
-                  <StyledConfigValue size={{ lg: 8, md: 8, xs: 7 }}>
+                  </div>
+                  <div className={styles.summaryValueColumn}>
                     {formatConfigValue(String(configValue))}
-                  </StyledConfigValue>
+                  </div>
                 </React.Fragment>
               ))
             ) : (
               <React.Fragment key={key}>
-                <Grid size={{ lg: 4, md: 4, xs: 5 }}>
+                <div className={styles.summaryLabelColumn}>
                   <StyledLabelTypography>{`${key}`}</StyledLabelTypography>
-                </Grid>
-                <StyledConfigValue size={{ lg: 8, md: 8, xs: 7 }}>
+                </div>
+                <div className={styles.summaryValueColumn}>
                   {formatConfigValue(String(value))}
-                </StyledConfigValue>
+                </div>
               </React.Fragment>
             )
           )}
-        </StyledGridContainer>
+        </div>
       ) : (
         <Box display="flex" flexGrow={1} justifyContent="center">
           <Typography sx={{ marginTop: 5 }}>

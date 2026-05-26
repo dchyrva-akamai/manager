@@ -2,7 +2,7 @@ import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useDatabaseCredentialsQuery } from '@linode/queries';
 import { Typography } from '@linode/ui';
-import { Box, Grid, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import copy from 'copy-to-clipboard';
 import { enqueueSnackbar } from 'notistack';
 import React, { useState } from 'react';
@@ -14,7 +14,6 @@ import {
   DISABLE_CREDENTIAL_STATES,
   DISABLED_PASSWORD_BUTTON_TEXT,
 } from 'src/features/Databases/constants';
-import { StyledValueGrid } from 'src/features/Databases/DatabaseDetail/DatabaseSummary/DatabaseSummaryClusterConfiguration.style';
 
 import { CopyTooltip } from '../shared/CopyTooltip/CopyTooltip';
 
@@ -158,27 +157,26 @@ export const ServiceURI = (props: ServiceURIProps) => {
     (engine === 'postgres' && !primaryConnectionPoolHost)
   ) {
     return (
-      <Grid display="contents">
-        <StyledValueGrid
+      <div style={{ display: 'contents' }}>
+        <div
           data-testid="service-uri"
-          size="grow"
-          sx={{
+          style={{
             overflowX: 'auto',
             overflowY: 'hidden',
-            p: '0',
+            padding: 0,
+            whiteSpace: 'pre',
           }}
-          whiteSpace="pre"
         >
           <Typography fontStyle="italic">
             Your Service URI will appear here once it is available.
           </Typography>
-        </StyledValueGrid>
-      </Grid>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Grid display="contents">
+    <div style={{ display: 'contents' }}>
       <Box
         data-testid="service-uri"
         sx={{
@@ -215,17 +213,17 @@ export const ServiceURI = (props: ServiceURIProps) => {
           <Icon icon="spinner-gradient" size="s" />
         </Box>
       ) : (
-        <Grid alignContent="center" size="auto">
+        <div style={{ display: 'contents' }}>
           <CopyTooltip
             disabled={disablePasswordBtn}
             disabledReason={disabledPasswordTooltipText}
             onClickCallback={handleCopy}
             text={getServiceURIText(credentials, isGeneralServiceURI)}
           />
-        </Grid>
+        </div>
       )}
       {hasPublicVPC && showPrivateVPC && (
-        <Grid>
+        <div style={{ display: 'contents' }}>
           <Tooltip
             style={{ marginLeft: Spacing.S4 }}
             tooltipPlacement="bottom"
@@ -233,9 +231,9 @@ export const ServiceURI = (props: ServiceURIProps) => {
           >
             <Icon icon="info-outline" size="m" />
           </Tooltip>
-        </Grid>
+        </div>
       )}
-    </Grid>
+    </div>
   );
 };
 

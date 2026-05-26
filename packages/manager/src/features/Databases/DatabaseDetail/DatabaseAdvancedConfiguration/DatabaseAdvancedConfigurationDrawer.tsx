@@ -5,7 +5,6 @@ import { useDatabaseEngineConfig, useDatabaseMutation } from '@linode/queries';
 import { ActionsPanel, Drawer, Stack, Typography } from '@linode/ui';
 import { scrollErrorIntoViewV2 } from '@linode/utilities';
 import { createDynamicAdvancedConfigSchema } from '@linode/validation';
-import Grid from '@mui/material/Grid';
 import { enqueueSnackbar } from 'notistack';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Controller, get, useFieldArray, useForm } from 'react-hook-form';
@@ -175,33 +174,24 @@ export const DatabaseAdvancedConfigurationDrawer = (props: Props) => {
           <Typography>{ADVANCED_CONFIG_INFO}</Typography>
         </NotificationBanner>
 
-        <Grid
-          alignItems="end"
-          container
-          justifyContent="space-between"
-          size={12}
-        >
-          <Grid size={9}>
-            <DatabaseConfigurationSelect
-              configurations={availableConfigurations}
-              errorText={undefined}
-              label={selectedConfig?.label ?? ''}
-              onChange={(config) => setSelectedConfig(config)}
-            />
-          </Grid>
-          <Grid size={2}>
-            <Button
-              data-testid="add-config"
-              disabled={!selectedConfig}
-              onClick={() => handleAddConfiguration(selectedConfig)}
-              style={{ minWidth: 'auto', width: '70px' }}
-              title="Add"
-              variant="primary"
-            >
-              Add
-            </Button>
-          </Grid>
-        </Grid>
+        <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+          <DatabaseConfigurationSelect
+            configurations={availableConfigurations}
+            errorText={undefined}
+            label={selectedConfig?.label ?? ''}
+            onChange={(config) => setSelectedConfig(config)}
+          />
+          <Button
+            data-testid="add-config"
+            disabled={!selectedConfig}
+            onClick={() => handleAddConfiguration(selectedConfig)}
+            style={{ minWidth: 'auto', width: '100px', marginLeft: Spacing.S8 }}
+            title="Add"
+            variant="primary"
+          >
+            Add
+          </Button>
+        </div>
         <Divider marginBottom={Spacing.S20} marginTop={Spacing.S24} />
         {isLoading && (
           <Stack alignItems="center" height="100%" justifyContent="center">

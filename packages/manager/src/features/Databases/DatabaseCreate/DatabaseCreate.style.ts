@@ -1,6 +1,6 @@
 import { Button } from '@akamai/cds-components/react';
 import { Box, TextField, Typography } from '@linode/ui';
-import { Grid, styled } from '@mui/material';
+import { styled } from '@mui/material';
 
 import { PlansPanel } from 'src/features/components/PlansPanel/PlansPanel';
 
@@ -30,20 +30,6 @@ export const StyledPlansPanel = styled(PlansPanel, {
 })(() => ({
   margin: 0,
   padding: 0,
-}));
-
-export const StyledBtnCtn = styled(Grid, {
-  label: 'StyledBtnCtn',
-})(({ theme }) => ({
-  alignItems: 'center',
-  display: 'flex',
-  justifyContent: 'flex-end',
-  marginTop: theme.spacing(2),
-  [theme.breakpoints.down('sm')]: {
-    alignItems: 'flex-end',
-    flexDirection: 'column',
-    marginTop: theme.spacing(),
-  },
 }));
 
 export const StyledCreateBtn = styled(Button, {
