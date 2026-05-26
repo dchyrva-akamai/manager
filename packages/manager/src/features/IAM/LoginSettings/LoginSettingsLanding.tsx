@@ -1,15 +1,46 @@
-import { Button } from '@akamai/cds-components/react';
+import { Button, NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing, Typography } from '@akamai/cds-tokens';
+import { useGetIdpConfigsQuery } from '@linode/queries';
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
 
+import { CircleProgress } from '../Shared/CircleProgress/CircleProgress';
 import { SSO_ENFORCEMENT_LINK } from '../Shared/constants';
+import { ErrorState } from '../Shared/ErrorState/ErrorState';
 import { Link } from '../Shared/Link/Link';
 import { Paper } from '../Shared/Paper/Paper';
 import { StatusIcon } from '../Shared/StatusIcon/StatusIcon';
+import { getSummaryStatus } from './SSO/utilities';
+
+import type { IdpConfig } from '@linode/api-v4';
 
 export const LoginSettingsLanding = () => {
   const navigate = useNavigate();
+
+  const { data: idpConfigs, error, isLoading } = useGetIdpConfigsQuery();
+
+  const idpConfig =
+    idpConfigs && idpConfigs?.results > 0 ? idpConfigs.data[0] : null;
+
+  const getStatus = (idpConfig: IdpConfig | null) => {
+    if (!idpConfig || (idpConfig && !idpConfig.enabled)) {
+      return 'inactive';
+    }
+    return 'active';
+  };
+
+  const isEnforcedForAllUsers =
+    idpConfig?.enabled &&
+    idpConfig.enforce &&
+    idpConfig.excluded_users_count === 0;
+
+  if (isLoading) {
+    return <CircleProgress />;
+  }
+
+  if (error) {
+    return <ErrorState />;
+  }
 
   return (
     <Paper padding={Spacing.S24} paddingTop={Spacing.S24}>
@@ -30,17 +61,23 @@ export const LoginSettingsLanding = () => {
       </p>
       <div
         style={{
-          padding: `${Spacing.S8} 0`,
           margin: `${Spacing.S16} 0`,
           display: 'flex',
           alignItems: 'center',
         }}
       >
-        <StatusIcon status="active" />
-        <p style={{ margin: Spacing.S0 }}>
-          Disabled. SSO login is not configured for this account.
-        </p>
+        <StatusIcon status={getStatus(idpConfig)} />
+        <p style={{ margin: Spacing.S0 }}>{getSummaryStatus(idpConfig)}</p>
       </div>
+      {isEnforcedForAllUsers && (
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
+          type="warning"
+        >
+          There are no excluded users. Not recommended.{' '}
+          <Link to={SSO_ENFORCEMENT_LINK}>Learn more.</Link>
+        </NotificationBanner>
+      )}
       <Button
         onClick={() => navigate({ to: '/iam/settings/sso/idp-configurations' })}
         variant="secondary"

@@ -1,17 +1,17 @@
-import { Color } from '@akamai/cds-tokens';
 import { screen } from '@testing-library/react';
 import React from 'react';
 
 import { renderWithTheme } from 'src/utilities/testHelpers';
 
+import { STATUS_COLORS } from './constants';
 import { StatusIcon } from './StatusIcon';
 
 describe('IAM StatusIcon', () => {
   it.each([
-    ['active', Color.Green[70]],
-    ['error', Color.Red[70]],
-    ['inactive', Color.Neutrals[30]],
-    ['other', Color.Amber[70]],
+    ['active', STATUS_COLORS.active],
+    ['error', STATUS_COLORS.error],
+    ['inactive', STATUS_COLORS.inactive],
+    ['other', STATUS_COLORS.other],
   ] as const)('renders the correct color for %s status', (status, color) => {
     renderWithTheme(<StatusIcon status={status} />);
 
@@ -64,6 +64,6 @@ describe('IAM StatusIcon', () => {
     expect(icon.style.animation).toBe('');
     expect(icon.style.alignSelf).toBe('center');
     expect(icon.style.marginRight).toBe('0px');
-    expect(icon).toHaveStyle({ backgroundColor: Color.Red[70] });
+    expect(icon).toHaveStyle({ backgroundColor: STATUS_COLORS.error });
   });
 });

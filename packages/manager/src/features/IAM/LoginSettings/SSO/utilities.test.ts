@@ -1,4 +1,4 @@
-import { hasNoValidCertificates } from './utilities';
+import { getSummaryStatus, hasNoValidCertificates } from './utilities';
 
 import type { IdpConfig } from '@linode/api-v4';
 
@@ -65,5 +65,69 @@ describe('hasNoValidCertificates', () => {
         makeConfig([makeCert(PAST_DATE), makeCert(PAST_DATE)])
       )
     ).toBe(true);
+  });
+});
+
+describe('getSummaryStatus', () => {
+  it('returns not-configured message when idpConfig is null', () => {
+    expect(getSummaryStatus(null)).toBe(
+      'SSO is not configured for this account.'
+    );
+  });
+
+  it('returns disabled message when enabled is false', () => {
+    expect(getSummaryStatus(makeConfig([]))).toBe(
+      'SSO is disabled. All users log in using alternative methods.'
+    );
+  });
+
+  it('returns not-enforced message when enabled and enforce are false and included_users_count is 0', () => {
+    expect(
+      getSummaryStatus({
+        ...makeConfig([]),
+        enabled: true,
+        enforce: false,
+        included_users_count: 0,
+      })
+    ).toBe(
+      'SSO is enabled but not enforced. All users log in using alternative methods.'
+    );
+  });
+
+  it('returns partial enforcement message when enabled is true, enforce is false, and included_users_count > 0', () => {
+    expect(
+      getSummaryStatus({
+        ...makeConfig([]),
+        enabled: true,
+        enforce: false,
+        included_users_count: 3,
+      })
+    ).toBe(
+      'SSO is enforced for 3 included users. Other users log in using alternative methods.'
+    );
+  });
+
+  it('returns full enforcement message when enabled and enforce are true and excluded_users_count is 0', () => {
+    expect(
+      getSummaryStatus({
+        ...makeConfig([]),
+        enabled: true,
+        enforce: true,
+        excluded_users_count: 0,
+      })
+    ).toBe('SSO is enforced. All users log in with SSO.');
+  });
+
+  it('returns enforcement-with-exclusions message when enabled and enforce are true and excluded_users_count > 0', () => {
+    expect(
+      getSummaryStatus({
+        ...makeConfig([]),
+        enabled: true,
+        enforce: true,
+        excluded_users_count: 5,
+      })
+    ).toBe(
+      'SSO is enforced. All users log in with SSO, except for 5 excluded users.'
+    );
   });
 });

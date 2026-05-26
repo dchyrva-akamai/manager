@@ -6,9 +6,12 @@ import { renderWithTheme } from 'src/utilities/testHelpers';
 
 import { LoginSettingsLanding } from './LoginSettingsLanding';
 
+import type { IdpConfig } from '@linode/api-v4';
+
 const mockNavigate = vi.fn();
 
 const queryMocks = vi.hoisted(() => ({
+  useGetIdpConfigsQuery: vi.fn(),
   useNavigate: vi.fn(() => mockNavigate),
 }));
 
@@ -20,9 +23,43 @@ vi.mock('@tanstack/react-router', async () => {
   };
 });
 
+vi.mock('@linode/queries', async () => {
+  const actual = await vi.importActual('@linode/queries');
+  return {
+    ...actual,
+    useGetIdpConfigsQuery: queryMocks.useGetIdpConfigsQuery,
+  };
+});
+
+const makeIdpConfig = (overrides: Partial<IdpConfig> = {}): IdpConfig => ({
+  created: '2024-01-01T00:00:00.000Z',
+  created_by: 'user',
+  default: true,
+  enabled: false,
+  enforce: false,
+  excluded_users_count: 0,
+  id: 'config-id',
+  included_users_count: 0,
+  label: 'Test IDP',
+  saml: {
+    entity_id: 'entity-id',
+    identity_element: 'NAME_ID',
+    idp_url: 'https://idp.example.com',
+    public_certificates: [],
+  },
+  updated: '2024-01-01T00:00:00.000Z',
+  updated_by: 'user',
+  ...overrides,
+});
+
 describe('LoginSettingsLanding', () => {
   beforeEach(() => {
     mockNavigate.mockReset();
+    queryMocks.useGetIdpConfigsQuery.mockReturnValue({
+      data: { data: [], results: 0 },
+      error: null,
+      isLoading: false,
+    });
   });
 
   it('renders the SSO enforcement landing content', () => {
@@ -44,5 +81,77 @@ describe('LoginSettingsLanding', () => {
     expect(mockNavigate).toHaveBeenCalledWith({
       to: '/iam/settings/sso/idp-configurations',
     });
+  });
+
+  it('shows disabled icon and not-configured text when there is no IDP config', () => {
+    renderWithTheme(<LoginSettingsLanding />);
+
+    expect(screen.getByLabelText('Status is inactive')).toBeVisible();
+    expect(
+      screen.getByText('SSO is not configured for this account.')
+    ).toBeVisible();
+  });
+
+  it('shows disabled icon and disabled text when SSO is disabled', () => {
+    queryMocks.useGetIdpConfigsQuery.mockReturnValue({
+      data: { data: [makeIdpConfig({ enabled: false })], results: 1 },
+      error: null,
+      isLoading: false,
+    });
+
+    renderWithTheme(<LoginSettingsLanding />);
+
+    expect(screen.getByLabelText('Status is inactive')).toBeVisible();
+    expect(
+      screen.getByText(
+        'SSO is disabled. All users log in using alternative methods.'
+      )
+    ).toBeVisible();
+  });
+
+  it('shows active icon and not-enforced text when SSO is enabled but not enforced', () => {
+    queryMocks.useGetIdpConfigsQuery.mockReturnValue({
+      data: {
+        data: [makeIdpConfig({ enabled: true, enforce: false })],
+        results: 1,
+      },
+      error: null,
+      isLoading: false,
+    });
+
+    renderWithTheme(<LoginSettingsLanding />);
+
+    expect(screen.getByLabelText('Status is active')).toBeVisible();
+    expect(
+      screen.getByText(
+        'SSO is enabled but not enforced. All users log in using alternative methods.'
+      )
+    ).toBeVisible();
+  });
+
+  it('shows active icon and enforced text when SSO is enabled and enforced and there are excluded users', () => {
+    queryMocks.useGetIdpConfigsQuery.mockReturnValue({
+      data: {
+        data: [
+          makeIdpConfig({
+            enabled: true,
+            enforce: true,
+            excluded_users_count: 2,
+          }),
+        ],
+        results: 1,
+      },
+      error: null,
+      isLoading: false,
+    });
+
+    renderWithTheme(<LoginSettingsLanding />);
+
+    expect(screen.getByLabelText('Status is active')).toBeVisible();
+    expect(
+      screen.getByText(
+        'SSO is enforced. All users log in with SSO, except for 2 excluded users.'
+      )
+    ).toBeVisible();
   });
 });
