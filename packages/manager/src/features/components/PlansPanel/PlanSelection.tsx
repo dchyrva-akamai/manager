@@ -93,16 +93,11 @@ export const PlanSelection = (props: PlanSelectionProps) => {
     const hourlyLabel = getLabelForInterval('hourly', 'short');
     const formattedHourly = `$${formatPrice(price?.hourly)}/${hourlyLabel}`;
     const formattedMonthly = `$${formatPrice(price?.monthly)}/${monthlyLabel}`;
-    const hasMonthlyPrice = typeof price?.monthly === 'number';
 
     if (billing === 'hourly') {
-      // Do not show monthly price in hourly billing mode when it is null.
-      // Even though formatPrice returns UNKNOWN_PRICE for null values,
-      // we avoid displaying it because monthly pricing is not applicable here.
-      if (!hasMonthlyPrice) {
-        return formattedHourly;
-      }
-      return `${formattedMonthly} (${formattedHourly})`;
+      // Hourly-scoped plans are billed purely by the hour and have no monthly commitment,
+      // so the subheading always shows only the hourly price - even when the API happens to return a monthly value.
+      return formattedHourly;
     }
 
     if (billing === 'monthly') {

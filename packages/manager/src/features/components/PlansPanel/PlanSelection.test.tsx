@@ -477,14 +477,15 @@ describe('PlanSelection (card, mobile)', () => {
       expect(getByText('$10/mo ($0.015/hr)')).toBeVisible();
     });
 
-    it('subheading displays "$monthly/mo ($hourly/hr)" in hourly billing mode when monthly price is present', () => {
+    it('subheading shows only "$hourly/hr" in hourly billing mode, even when monthly price is present', () => {
       mockHourlyBilling();
 
-      const { getByText } = renderWithTheme(
+      const { getByText, queryByText } = renderWithTheme(
         <PlanSelection {...defaultProps} selectedRegionId={'us-east'} />
       );
 
-      expect(getByText('$10/mo ($0.015/hr)')).toBeVisible();
+      expect(getByText('$0.015/hr')).toBeVisible();
+      expect(queryByText(/\/mo/)).not.toBeInTheDocument();
     });
 
     it('subheading shows only "$hourly/hr" in hourly billing mode when monthly price is absent', () => {
