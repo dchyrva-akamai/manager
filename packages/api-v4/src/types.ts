@@ -1,9 +1,11 @@
 import type { PriceObject, RegionPriceObject } from './linodes/types';
+import type {
+  APIFieldError as APIError,
+  Filter,
+  ResourcePage,
+} from '@akamai/compute-ui-core/api';
 
-export interface APIError {
-  field?: string;
-  reason: string;
-}
+export type { APIError, Filter, ResourcePage };
 
 export interface APIWarning {
   detail: string;
@@ -12,13 +14,6 @@ export interface APIWarning {
 
 export interface ConfigOverride {
   baseURL?: string;
-}
-
-export interface ResourcePage<T> {
-  data: T[];
-  page: number;
-  pages: number;
-  results: number;
 }
 
 // Credit: https://stackoverflow.com/a/47914643
@@ -52,51 +47,6 @@ export interface FilterConditionTypes {
   '+order'?: 'asc' | 'desc';
   '+order_by'?: string;
 }
-
-export type Filter = LinodeFilter | LinodeFilter[];
-
-type LinodeFilter =
-  | { [key: string]: boolean | Filter | null | number | string | undefined }
-  | {
-      [key in keyof FilterConditionTypes]: FilterConditionTypes[key];
-    };
-
-// const filter: Filter = {
-//   '+or': [{ vcpus: 1 }, { class: 'standard' }],
-// };
-
-// const f1: Filter = {
-//   '+and': [{ label: 'test' }, { id: 'odk' }],
-// };
-
-// const f: Filter = {
-//   '+or': [
-//     {
-//       '+or': [
-//         {
-//           class: 'standard',
-//         },
-//         {
-//           class: 'highmem',
-//         },
-//       ],
-//     },
-//     {
-//       '+and': [
-//         {
-//           vcpus: {
-//             '+gte': 12,
-//           },
-//         },
-//         {
-//           vcpus: {
-//             '+lte': 20,
-//           },
-//         },
-//       ],
-//     },
-//   ],
-// };
 
 type RequestHeaderValue = boolean | null | number | string | string[];
 
