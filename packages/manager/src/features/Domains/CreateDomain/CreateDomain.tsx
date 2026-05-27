@@ -1,3 +1,4 @@
+import { extendedIPToString } from '@akamai/compute-ui-core/api';
 import {
   useCreateDomainMutation,
   useGrants,
@@ -35,7 +36,7 @@ import {
   handleGeneralErrors,
 } from 'src/utilities/formikErrorUtils';
 import { handleFormikBlur } from 'src/utilities/formikTrimUtil';
-import { extendedIPToString, stringToExtendedIP } from 'src/utilities/ipUtils';
+import { stringToExtendedIP } from 'src/utilities/ipUtils';
 
 import { generateDefaultDomainRecords } from '../domainUtils';
 

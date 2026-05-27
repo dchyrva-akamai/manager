@@ -1,3 +1,4 @@
+import { formatStorageUnits } from '@akamai/compute-ui-core/api';
 import {
   useAllTypes,
   useImageQuery,
@@ -5,7 +6,6 @@ import {
   useTypeQuery,
 } from '@linode/queries';
 import { Divider, Paper, Stack, Typography } from '@linode/ui';
-import { formatStorageUnits } from '@linode/utilities';
 import { useTheme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React from 'react';

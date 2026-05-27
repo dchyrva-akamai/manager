@@ -1,11 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  formatNumber,
-  formatPercentage,
-  getMetrics,
-  getTotalTraffic,
-} from './statMetrics';
+import { getMetrics, getTotalTraffic } from './statMetrics';
 
 const data = [
   [0, 0.12],
@@ -115,26 +110,5 @@ describe('total traffic', () => {
     expect(totalTraffic.combinedTraffic).toEqual(
       totalTraffic.inTraffic + totalTraffic.outTraffic,
     );
-  });
-});
-
-describe('format number', () => {
-  it('always returns two decimal places', () => {
-    expect(formatNumber(24)).toBe('24.00');
-    expect(formatNumber(0)).toBe('0.00');
-    expect(formatNumber(110)).toBe('110.00');
-    expect(formatNumber(92.078)).toBe('92.08');
-    expect(formatNumber(10000.07)).toBe('10000.07');
-    expect(formatNumber(99.99)).toBe('99.99');
-    expect(formatNumber(99.999)).toBe('100.00');
-    expect(formatNumber(99.7)).toBe('99.70');
-  });
-});
-
-describe('formatting', () => {
-  it('formatPercent adds percent sign', () => {
-    expect(formatPercentage(12)).toBe('12.00 %');
-    expect(formatPercentage(0)).toBe('0.00 %');
-    expect(formatPercentage(123456789)).toBe('123456789.00 %');
   });
 });

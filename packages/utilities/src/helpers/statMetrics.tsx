@@ -43,10 +43,6 @@ export const getMetrics = (data: number[][]): Metrics => {
   return { average, last, length, max, total: sum };
 };
 
-export const formatNumber = (n: number): string => n.toFixed(2);
-
-export const formatPercentage = (value: number) => formatNumber(value) + ' %';
-
 export const getTraffic = (averageInBits: number): number => {
   const averageInBytes = averageInBits / 8;
   // eslint-disable-next-line

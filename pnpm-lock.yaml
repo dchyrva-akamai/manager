@@ -132,8 +132,8 @@ importers:
         specifier: 0.0.0-20260518081728
         version: 0.0.0-20260518081728
       '@akamai/compute-ui-core':
-        specifier: ^0.0.4
-        version: 0.0.4(luxon@3.4.4)
+        specifier: 0.0.0-20260526190952
+        version: 0.0.0-20260526190952(luxon@3.4.4)
       '@braintree/sanitize-url':
         specifier: ^7.1.0
         version: 7.1.0
@@ -828,6 +828,17 @@ packages:
 
   '@akamai/cds-tokens@0.0.0-20260518081728':
     resolution: {integrity: sha512-b3W33NNbXNrsdIfDk9xvnV5RI1SnpE3C0XI5wlMiGVQQa6Gmv6Tby7NUH4UNyVK39SdFec+1SDySzYKRfdH3pw==, tarball: https://repos.akamai.com/artifactory/api/npm/npmjs-repos/@akamai/cds-tokens/-/@akamai/cds-tokens-0.0.0-20260518081728.tgz}
+
+  '@akamai/compute-ui-core@0.0.0-20260526190952':
+    resolution: {integrity: sha512-Tnfk6JfsieaD3Tbd8zKG/rnf8zIKSLuW3CxTvOxTAiAp1tHph0kIN8U3mOSHr3o/BtCQKpk9LvFMkR40vlftGw==, tarball: https://repos.akamai.com/artifactory/api/npm/npmjs-repos/@akamai/compute-ui-core/-/@akamai/compute-ui-core-0.0.0-20260526190952.tgz}
+    peerDependencies:
+      '@launchdarkly/js-client-sdk': ^4
+      luxon: ^3
+    peerDependenciesMeta:
+      '@launchdarkly/js-client-sdk':
+        optional: true
+      luxon:
+        optional: true
 
   '@akamai/compute-ui-core@0.0.4':
     resolution: {integrity: sha512-viByVLM/ZREfHMNO1RwAJJ3Hf4WAQ1cHN1onkR6RMgj+Ky+rFdRIrZC/mGTSaEnunDAvt37VwSIyJYVEP0jEuA==, tarball: https://repos.akamai.com/artifactory/api/npm/npmjs-repos/@akamai/compute-ui-core/-/@akamai/compute-ui-core-0.0.4.tgz}
@@ -6639,6 +6650,14 @@ snapshots:
       react: 19.2.6
 
   '@akamai/cds-tokens@0.0.0-20260518081728': {}
+
+  '@akamai/compute-ui-core@0.0.0-20260526190952(luxon@3.4.4)':
+    dependencies:
+      ipaddr.js: 2.3.0
+      ky: 1.14.3
+      zod: 4.3.6
+    optionalDependencies:
+      luxon: 3.4.4
 
   '@akamai/compute-ui-core@0.0.4(luxon@3.4.4)':
     dependencies:

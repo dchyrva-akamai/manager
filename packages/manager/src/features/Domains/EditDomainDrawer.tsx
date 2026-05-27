@@ -1,3 +1,4 @@
+import { extendedIPToString } from '@akamai/compute-ui-core/api';
 import {
   useGrants,
   useProfile,
@@ -19,7 +20,7 @@ import { MultipleIPInput } from 'src/components/MultipleIPInput/MultipleIPInput'
 import { TagsInput } from 'src/components/TagsInput/TagsInput';
 import { getErrorMap } from 'src/utilities/errorUtils';
 import { handleFormikBlur } from 'src/utilities/formikTrimUtil';
-import { extendedIPToString, stringToExtendedIP } from 'src/utilities/ipUtils';
+import { stringToExtendedIP } from 'src/utilities/ipUtils';
 
 import { transferHelperText as helperText } from './domainUtils';
 

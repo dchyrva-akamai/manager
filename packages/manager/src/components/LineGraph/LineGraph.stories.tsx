@@ -1,4 +1,5 @@
-import { formatPercentage, getMetrics } from '@linode/utilities';
+import { formatPercentage } from '@akamai/compute-ui-core/api';
+import { getMetrics } from '@linode/utilities';
 import * as React from 'react';
 
 import { LineGraph } from 'src/components/LineGraph/LineGraph';

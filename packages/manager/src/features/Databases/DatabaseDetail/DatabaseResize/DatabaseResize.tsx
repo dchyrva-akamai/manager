@@ -1,5 +1,6 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
+import { formatStorageUnits } from '@akamai/compute-ui-core/api';
 import {
   useDatabaseMutation,
   useDatabaseTypesQuery,
@@ -7,7 +8,6 @@ import {
   useRegionsQuery,
 } from '@linode/queries';
 import { Box, Typography } from '@linode/ui';
-import { formatStorageUnits } from '@linode/utilities';
 import { useNavigate } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';

@@ -1,5 +1,5 @@
+import { formatStorageUnits } from '@akamai/compute-ui-core/api';
 import { useTypeQuery } from '@linode/queries';
-import { formatStorageUnits } from '@linode/utilities';
 
 import type { NodeRow } from './NodeRow';
 import type {

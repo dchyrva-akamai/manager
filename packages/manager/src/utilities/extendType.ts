@@ -1,4 +1,5 @@
-import { formatStorageUnits, isNotNullOrUndefined } from '@linode/utilities';
+import { formatStorageUnits } from '@akamai/compute-ui-core/api';
+import { isNotNullOrUndefined } from '@linode/utilities';
 
 import { LINODE_NETWORK_IN } from 'src/constants';
 import { typeLabelDetails } from 'src/features/Linodes/presentation';

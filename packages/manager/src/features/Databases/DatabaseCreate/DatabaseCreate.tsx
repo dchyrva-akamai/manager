@@ -1,5 +1,6 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
+import { formatStorageUnits } from '@akamai/compute-ui-core/api';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   useCreateDatabaseMutation,
@@ -8,7 +9,7 @@ import {
   useRegionAvailabilityQuery,
   useRegionsQuery,
 } from '@linode/queries';
-import { formatStorageUnits, scrollErrorIntoViewV2 } from '@linode/utilities';
+import { scrollErrorIntoViewV2 } from '@linode/utilities';
 import { getDynamicDatabaseSchema } from '@linode/validation/lib/databases.schema';
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';

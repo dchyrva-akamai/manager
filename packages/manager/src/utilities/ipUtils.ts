@@ -27,7 +27,6 @@ export interface ExtendedIP {
 export interface ExtendedPL extends ExtendedIP, PrefixListRuleReference {}
 
 export const stringToExtendedIP = (ip: string): ExtendedIP => ({ address: ip });
-export const extendedIPToString = (ip: ExtendedIP): string => ip.address;
 
 // Adds an `error` message to each invalid IP in the list.
 export const validateIPs = (

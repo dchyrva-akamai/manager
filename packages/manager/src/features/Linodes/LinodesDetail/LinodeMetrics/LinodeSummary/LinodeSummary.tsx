@@ -1,3 +1,4 @@
+import { formatNumber, formatPercentage } from '@akamai/compute-ui-core/api';
 import {
   STATS_NOT_READY_API_MESSAGE,
   STATS_NOT_READY_MESSAGE,
@@ -6,7 +7,7 @@ import {
   useProfile,
 } from '@linode/queries';
 import { Autocomplete, ErrorState, Paper, Stack, Typography } from '@linode/ui';
-import { formatNumber, formatPercentage, getMetrics } from '@linode/utilities';
+import { getMetrics } from '@linode/utilities';
 import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/material/styles';
 import { useParams } from '@tanstack/react-router';

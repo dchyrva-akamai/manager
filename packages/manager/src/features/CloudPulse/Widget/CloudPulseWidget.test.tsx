@@ -1,4 +1,4 @@
-import { formatPercentage } from '@linode/utilities';
+import { formatPercentage } from '@akamai/compute-ui-core/api';
 import userEvent from '@testing-library/user-event';
 import { DateTime } from 'luxon';
 import React from 'react';

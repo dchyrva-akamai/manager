@@ -1,8 +1,9 @@
+import { extendedIPToString } from '@akamai/compute-ui-core/api';
 import { TextField as _TextField, Autocomplete } from '@linode/ui';
 import * as React from 'react';
 
 import { MultipleIPInput } from 'src/components/MultipleIPInput/MultipleIPInput';
-import { extendedIPToString, stringToExtendedIP } from 'src/utilities/ipUtils';
+import { stringToExtendedIP } from 'src/utilities/ipUtils';
 
 import { transferHelperText as helperText } from '../../domainUtils';
 import { resolve, shouldResolve } from './DomainRecordDrawerUtils';
