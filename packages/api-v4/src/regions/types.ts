@@ -1,4 +1,4 @@
-import type { COUNTRY_CODE_TO_CONTINENT_CODE } from './constants';
+import type { COUNTRY_CODE_TO_CONTINENT_CODE } from '@akamai/compute-ui-core/api';
 
 export type Capabilities =
   | 'ACLP Logs Datacenter LKE-E'

@@ -1,3 +1,4 @@
+import { convertStorageUnit } from '@akamai/compute-ui-core/api';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { pluralize } from '@akamai/compute-ui-core/formatting';
 import { useProfile, useRegionsQuery } from '@linode/queries';
@@ -9,7 +10,6 @@ import {
   TooltipIcon,
   Typography,
 } from '@linode/ui';
-import { convertStorageUnit } from '@linode/utilities';
 import React from 'react';
 
 import CloudInitIcon from 'src/assets/icons/cloud-init.svg';

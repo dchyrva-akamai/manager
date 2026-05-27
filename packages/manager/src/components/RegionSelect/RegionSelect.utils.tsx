@@ -1,4 +1,4 @@
-import { CONTINENT_CODE_TO_CONTINENT } from '@linode/api-v4';
+import { CONTINENT_CODE_TO_CONTINENT } from '@akamai/compute-ui-core/api';
 
 // @todo: modularization - Move `getRegionCountryGroup` utility to `@linode/shared` package
 // as it imports GLOBAL_QUOTA_VALUE from RegionSelect's constants.ts and update the import.

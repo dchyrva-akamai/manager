@@ -91,6 +91,9 @@ importers:
 
   packages/api-v4:
     dependencies:
+      '@akamai/compute-ui-core':
+        specifier: ^0.0.4
+        version: 0.0.4(luxon@3.4.4)
       '@linode/validation':
         specifier: workspace:*
         version: link:../validation

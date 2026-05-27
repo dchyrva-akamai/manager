@@ -1,9 +1,8 @@
 import {
   CONTINENT_CODE_TO_CONTINENT,
   COUNTRY_CODE_TO_CONTINENT_CODE,
-} from '@linode/api-v4';
-
-import { GLOBAL_QUOTA_VALUE } from 'src/components/RegionSelect/constants';
+  GLOBAL_QUOTA_VALUE,
+} from '@akamai/compute-ui-core/api';
 
 import type { Region } from '@linode/api-v4';
 import type { Agreements, Country, Profile } from '@linode/api-v4';

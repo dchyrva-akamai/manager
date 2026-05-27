@@ -1,7 +1,8 @@
+import { GLOBAL_QUOTA_VALUE } from '@akamai/compute-ui-core/api';
+
 import type { Region } from '@linode/api-v4';
 
 export const GLOBAL_QUOTA_LABEL = 'Global (Account level)';
-export const GLOBAL_QUOTA_VALUE = 'global';
 
 // Ultimately for this option we only need the id and label
 // The additional properties are here to satisfy the type.

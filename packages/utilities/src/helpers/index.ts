@@ -45,5 +45,4 @@ export * from './statMetrics';
 export * from './stringUtils';
 export * from './stripImageName';
 export * from './tail';
-export * from './unitConversions';
 export * from './userAgent';
