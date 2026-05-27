@@ -1,12 +1,23 @@
 import react from '@vitejs/plugin-react';
 import { URL } from 'url';
 import svgr from 'vite-plugin-svgr';
-import { defineConfig } from 'vitest/config';
+import { defineConfig, type Plugin } from 'vitest/config';
 
 import { urlCanParsePolyfill } from './src/polyfills/urlCanParse';
 
 // ESM-friendly alternative to `__dirname`.
 const DIRNAME = new URL('.', import.meta.url).pathname;
+
+// Re-scopes @akamai/cds-tokens dark theme from :root{} to [data-theme="dark"]{}
+// so it only activates when LinodeThemeWrapper sets data-theme="dark" on <body>.
+const cdsDarkTokensScope = (): Plugin => ({
+  name: 'cds-dark-tokens-scope',
+  transform(code, id) {
+    if (id.includes('@akamai/cds-tokens') && id.includes('themes/dark')) {
+      return code.replace(':root {', '[data-theme="dark"] {');
+    }
+  },
+});
 
 export default defineConfig({
   build: {
@@ -14,6 +25,7 @@ export default defineConfig({
   },
   envPrefix: 'REACT_APP_',
   plugins: [
+    cdsDarkTokensScope(),
     react(),
     svgr({ svgrOptions: { exportType: 'default' }, include: '**/*.svg' }),
     urlCanParsePolyfill(),

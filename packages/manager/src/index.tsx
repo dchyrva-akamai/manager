@@ -14,6 +14,9 @@ import { setupInterceptors } from 'src/request';
 import { storeFactory } from 'src/store';
 import { getEnvLocalStorageOverrides, storage } from 'src/utilities/storage';
 
+import '@akamai/cds-tokens/tokens.css';
+import '@akamai/cds-tokens/themes/dark/tokens.css';
+
 import './index.css';
 import { App } from './App';
 import { API_ROOT, ENABLE_DEV_TOOLS } from './constants';
