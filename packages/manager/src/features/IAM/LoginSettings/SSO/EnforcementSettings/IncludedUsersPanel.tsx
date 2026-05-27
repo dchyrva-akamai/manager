@@ -1,4 +1,5 @@
 import {
+  Badge,
   FormError,
   FormField,
   FormLabel,
@@ -30,9 +31,13 @@ interface Props {
 export const IncludedUsersPanel = ({ includedUsers }: Props) => {
   const theme = useTheme();
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const { control } = useFormContext<EnforcementSettingsFormValues>();
+  const { control, watch } = useFormContext<EnforcementSettingsFormValues>();
 
-  // TODO: UIE-11408 - replace after tag input supports passing in options directly
+  // Watch SSO enabled/enforced states to conditionally update badge status`
+  const isSSOEnabled = watch('ssoEnabled');
+  const isSSOEnforced = watch('ssoEnforced');
+
+  // TODO:  CDS - UIE-11408 - replace after tag input supports passing in options directly
   // instead of using ref to set preselected options
   const tagInputRef = React.useCallback(
     (node: null | TagInputElement<string>) => {
@@ -55,7 +60,7 @@ export const IncludedUsersPanel = ({ includedUsers }: Props) => {
     }
   );
 
-  // TODO - UIE-11455: replace with useAccountUsersInfiniteQuery when tag input supports infinite loading
+  // TODO - CDS: UIE-11455: replace with useAccountUsersInfiniteQuery when tag input supports infinite loading
   const {
     data: users,
     error,
@@ -72,15 +77,20 @@ export const IncludedUsersPanel = ({ includedUsers }: Props) => {
 
   return (
     <div>
-      <h2
-        style={{
-          marginTop: Spacing.S0,
-          marginBottom: Spacing.S12,
-          font: Typography.Heading.S,
-        }}
-      >
-        Included users
-      </h2>
+      <div style={{ display: 'flex', gap: Spacing.S12 }}>
+        <h2
+          style={{
+            marginTop: Spacing.S0,
+            marginBottom: Spacing.S12,
+            font: Typography.Heading.S,
+          }}
+        >
+          Included users
+        </h2>
+        <Badge color={isSSOEnabled && !isSSOEnforced ? 'green' : 'neutral'}>
+          {isSSOEnabled && !isSSOEnforced ? 'Active' : 'Inactive'}
+        </Badge>
+      </div>
       <p
         style={{
           marginTop: Spacing.S0,

@@ -9,7 +9,7 @@ import { IncludedUsersPanel } from './IncludedUsersPanel';
 import type { EnforcementSettingsFormValues } from './EnforcementSettings';
 
 const queryMocks = vi.hoisted(() => ({
-  useAccountUsersInfiniteQuery: vi.fn().mockReturnValue({}),
+  useAllAccountUsersQuery: vi.fn().mockReturnValue({}),
   usePermissions: vi.fn().mockReturnValue({}),
 }));
 
@@ -17,7 +17,7 @@ vi.mock('@linode/queries', async () => {
   const actual = await vi.importActual('@linode/queries');
   return {
     ...actual,
-    useAccountUsersInfiniteQuery: queryMocks.useAccountUsersInfiniteQuery,
+    useAllAccountUsersQuery: queryMocks.useAllAccountUsersQuery,
   };
 });
 
@@ -37,10 +37,13 @@ const defaultValues: EnforcementSettingsFormValues = {
   ssoEnforced: false,
 };
 
-const renderComponent = (includedUsers?: string[]) =>
+const renderComponent = (
+  values: Partial<EnforcementSettingsFormValues> = {},
+  includedUsers?: string[]
+) =>
   renderWithThemeAndHookFormContext<EnforcementSettingsFormValues>({
     component: <IncludedUsersPanel includedUsers={includedUsers} />,
-    useFormOptions: { defaultValues },
+    useFormOptions: { defaultValues: { ...defaultValues, ...values } },
   });
 
 describe('IncludedUsersPanel', () => {
@@ -48,10 +51,8 @@ describe('IncludedUsersPanel', () => {
     queryMocks.usePermissions.mockReturnValue({
       data: { view_user: true },
     });
-    queryMocks.useAccountUsersInfiniteQuery.mockReturnValue({
-      data: {
-        pages: [{ data: [{ username: 'user1' }, { username: 'user2' }] }],
-      },
+    queryMocks.useAllAccountUsersQuery.mockReturnValue({
+      data: [{ username: 'user1' }, { username: 'user2' }],
       error: null,
       isLoading: false,
     });
@@ -77,5 +78,23 @@ describe('IncludedUsersPanel', () => {
     expect(screen.getByText('Included Users')).toBeVisible();
 
     expect(document.querySelector('cds-tag-input')).toBeInTheDocument();
+  });
+
+  it('shows "Inactive" with neutral color when SSO is disabled', () => {
+    renderComponent({ ssoEnabled: false, ssoEnforced: false });
+    expect(screen.getByText('Inactive')).toBeVisible();
+    expect((document.querySelector('cds-badge') as any).color).toBe('neutral');
+  });
+
+  it('shows "Active" with green color when SSO is enabled and not enforced', () => {
+    renderComponent({ ssoEnabled: true, ssoEnforced: false });
+    expect(screen.getByText('Active')).toBeVisible();
+    expect((document.querySelector('cds-badge') as any).color).toBe('green');
+  });
+
+  it('shows "Inactive" with neutral color when SSO is enabled and enforced', () => {
+    renderComponent({ ssoEnabled: true, ssoEnforced: true });
+    expect(screen.getByText('Inactive')).toBeVisible();
+    expect((document.querySelector('cds-badge') as any).color).toBe('neutral');
   });
 });
