@@ -1,4 +1,4 @@
-import type { COUNTRY_CODE_TO_CONTINENT_CODE } from '@akamai/compute-ui-core/api';
+import type { Country } from '@akamai/compute-ui-core/api';
 
 export type Capabilities =
   | 'ACLP Logs Datacenter LKE-E'
@@ -77,6 +77,4 @@ export interface RegionVPCAvailability {
   region: string;
 }
 
-type CountryCode = keyof typeof COUNTRY_CODE_TO_CONTINENT_CODE;
-
-export type Country = Lowercase<CountryCode>;
+export type { Country };
