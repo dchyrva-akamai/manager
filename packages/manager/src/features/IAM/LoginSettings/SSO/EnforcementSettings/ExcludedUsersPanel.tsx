@@ -14,7 +14,9 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import * as React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
+import { useDelegationRole } from 'src/features/IAM/hooks/useDelegationRole';
 import { usePermissions } from 'src/features/IAM/hooks/usePermissions';
+import { useTagInputCloseHandler } from 'src/features/IAM/hooks/useTagInputCloseHandler';
 import {
   ERROR_STATE_TITLE,
   SSO_EXCLUDED_USERS_DOCS_LINK,
@@ -30,22 +32,54 @@ interface Props {
 export const ExcludedUsersPanel = ({ excludedUsers }: Props) => {
   const theme = useTheme();
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
-  const { control, watch } = useFormContext<EnforcementSettingsFormValues>();
+  const { control, getValues, trigger, watch } =
+    useFormContext<EnforcementSettingsFormValues>();
 
   // Watch SSO enabled/enforced states to conditionally update badge status`
   const isSSOEnabled = watch('ssoEnabled');
   const isSSOEnforced = watch('ssoEnforced');
+  const includedUsers = watch('includedUsers');
+
+  // Filter out delegate users from the included/excluded users if user is a child user
+  const { isChildUserType } = useDelegationRole();
 
   // TODO: CDS - UIE-11408 - replace after tag input supports passing in options directly
   // instead of using ref to set preselected options
+  const tagInputNodeRef = React.useRef<null | TagInputElement<string>>(null);
   const tagInputRef = React.useCallback(
     (node: null | TagInputElement<string>) => {
+      tagInputNodeRef.current = node;
       if (node && excludedUsers && excludedUsers.length > 0) {
         node.setValue(excludedUsers);
       }
     },
     [excludedUsers]
   );
+
+  // TODO - CDS - UIE-11498 - replace after tag input handles it internally
+  useTagInputCloseHandler(tagInputNodeRef);
+
+  // TODO - CDS - UIE-11498 - replace after tag input handles it internally
+  // When includedUsers changes, we must: (1) update validFn on the Lit element directly so it
+  // uses the latest includedUsers, and (2) call setValue() instead of bare requestUpdate().
+  // requestUpdate() alone does not change _tags, so Lit's updated() hook never fires _updateValidity(),
+  // which means the element-level `invalid` attribute is never cleared. setValue() re-sets _tags,
+  // triggering the full update lifecycle: _renderTag (tag highlighting) + _updateValidity (invalid attr).
+  // Replace with a reactive @property({ attribute: false }) on validFn in TagInputElement
+  // so that passing a new function reference from React is sufficient to re-evaluate.
+  React.useLayoutEffect(() => {
+    const node = tagInputNodeRef.current;
+    if (node) {
+      node.validFn = (item: string) => !includedUsers.includes(item);
+      try {
+        node.setValue(getValues('excludedUsers'));
+      } catch {
+        // ElementInternals.setFormValue is not supported in jsdom (test environment).
+        // Fall back to requestUpdate() which re-renders tags via _renderTag.
+        node.requestUpdate();
+      }
+    }
+  }, [includedUsers, getValues]);
 
   const { data: permissions } = usePermissions('account', ['view_user']);
   const [usernameInput, setUsernameInput] = React.useState<string>('');
@@ -66,6 +100,11 @@ export const ExcludedUsersPanel = ({ excludedUsers }: Props) => {
     isLoading,
   } = useAllAccountUsersQuery(permissions?.view_user, {
     ...filter,
+    ...(isChildUserType
+      ? {
+          user_type: 'child',
+        }
+      : {}),
     '+order': 'asc',
     '+order_by': 'username',
   });
@@ -73,6 +112,8 @@ export const ExcludedUsersPanel = ({ excludedUsers }: Props) => {
   const userOptions = React.useMemo(() => {
     return users?.map((user) => user.username);
   }, [users]);
+
+  const tagInputValidFn = (item: string) => !includedUsers.includes(item);
 
   return (
     <div>
@@ -127,7 +168,10 @@ export const ExcludedUsersPanel = ({ excludedUsers }: Props) => {
               isLoading={isLoading}
               items={userOptions ?? []}
               loadingErrorLabel={searchError?.message || ERROR_STATE_TITLE}
-              onChange={(e) => field.onChange(e.detail)}
+              onChange={(e) => {
+                field.onChange(e.detail);
+                trigger(['excludedUsers', 'includedUsers']);
+              }}
               onSearchChange={(e) => setUsernameInput(e.detail)}
               placeholder="Search by name or email or select from the list"
               ref={tagInputRef}
@@ -136,12 +180,23 @@ export const ExcludedUsersPanel = ({ excludedUsers }: Props) => {
                 width: isSmUp ? 598 : '100%',
                 boxSizing: 'border-box',
               }}
+              validFn={tagInputValidFn}
             />
-            {Boolean(fieldState.error?.message) && (
-              <FormError slot="error">{fieldState.error?.message}</FormError>
-            )}
+            <FormError slot="error">{fieldState.error?.message}</FormError>
           </FormField>
         )}
+        rules={{
+          validate: (value) => {
+            const includedUsers = getValues('includedUsers');
+            const overlap = value.filter((user) =>
+              includedUsers.includes(user)
+            );
+            return (
+              overlap.length === 0 ||
+              `Users can't be included and excluded at the same time. Remove the highlighted users from either list.`
+            );
+          },
+        }}
       />
     </div>
   );

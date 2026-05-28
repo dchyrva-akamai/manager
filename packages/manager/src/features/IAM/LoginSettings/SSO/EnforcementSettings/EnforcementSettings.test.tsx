@@ -196,6 +196,57 @@ describe('EnforcementSettings', () => {
     ).toBeVisible();
   });
 
+  it('hides the acknowledgment checkbox when ssoEnabled is toggled back to its initial value', async () => {
+    renderWithTheme(<EnforcementSettings />);
+
+    const enableHost = screen
+      .getByText('Enable SSO')
+      .closest('cds-switch') as HTMLElement;
+    const enableControl = await getSwitchControl(enableHost);
+
+    // Enable SSO — checkbox should appear
+    await userEvent.click(enableControl as HTMLButtonElement);
+    expect(
+      screen.getByText(
+        /I understand that my changes will be applied immediately/i
+      )
+    ).toBeVisible();
+
+    // Disable SSO (back to initial value) — checkbox should disappear
+    await userEvent.click(enableControl as HTMLButtonElement);
+    expect(
+      screen.queryByText(/I understand that my changes will be applied/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides the acknowledgment checkbox when ssoEnabled and ssoEnforced are both toggled back to their initial values', async () => {
+    renderWithTheme(<EnforcementSettings />);
+
+    const enableHost = screen
+      .getByText('Enable SSO')
+      .closest('cds-switch') as HTMLElement;
+    const enableControl = await getSwitchControl(enableHost);
+
+    // Enable SSO
+    await userEvent.click(enableControl as HTMLButtonElement);
+
+    const enforceHost = screen
+      .getByText('Enforce SSO for all users')
+      .closest('cds-switch') as HTMLElement;
+    const enforceControl = await getSwitchControl(enforceHost);
+
+    // Enable Enforce SSO
+    await userEvent.click(enforceControl as HTMLButtonElement);
+
+    // Disable SSO (also resets ssoEnforced back to false via setValue with shouldDirty: true)
+    await userEvent.click(enableControl as HTMLButtonElement);
+
+    // Both fields are back to their initial values — checkbox should not be visible
+    expect(
+      screen.queryByText(/I understand that my changes will be applied/i)
+    ).not.toBeInTheDocument();
+  });
+
   it('enables the submit button when the form is dirty', async () => {
     const { container } = renderWithTheme(<EnforcementSettings />);
 
@@ -298,5 +349,64 @@ describe('EnforcementSettings', () => {
     expect(
       screen.getByRole('heading', { name: 'Excluded Users' })
     ).toBeVisible();
+  });
+
+  describe('summary banner', () => {
+    it('shows disabled summary when SSO is not enabled', () => {
+      const { container } = renderWithTheme(<EnforcementSettings />);
+
+      const banner = container.querySelector('cds-notification-banner') as
+        | (HTMLElement & { text?: string })
+        | null;
+
+      expect(banner).not.toBeNull();
+      expect(banner?.text).toBe(
+        'SSO is disabled and not enforced. All users log in using alternative methods.'
+      );
+    });
+
+    it('updates to enabled-not-enforced summary after enabling SSO', async () => {
+      const { container } = renderWithTheme(<EnforcementSettings />);
+
+      const enableHost = screen
+        .getByText('Enable SSO')
+        .closest('cds-switch') as HTMLElement;
+      const enableControl = await getSwitchControl(enableHost);
+      await userEvent.click(enableControl as HTMLButtonElement);
+
+      const banner = container.querySelector('cds-notification-banner') as
+        | (HTMLElement & { text?: string })
+        | null;
+
+      expect(banner).not.toBeNull();
+      expect(banner?.text).toBe(
+        'SSO is enabled but not enforced for any users. All users log in using alternative methods.'
+      );
+    });
+
+    it('updates to fully-enforced summary after enabling SSO and enforcement', async () => {
+      const { container } = renderWithTheme(<EnforcementSettings />);
+
+      const enableHost = screen
+        .getByText('Enable SSO')
+        .closest('cds-switch') as HTMLElement;
+      const enableControl = await getSwitchControl(enableHost);
+      await userEvent.click(enableControl as HTMLButtonElement);
+
+      const enforceHost = screen
+        .getByText('Enforce SSO for all users')
+        .closest('cds-switch') as HTMLElement;
+      const enforceControl = await getSwitchControl(enforceHost);
+      await userEvent.click(enforceControl as HTMLButtonElement);
+
+      const banner = container.querySelector('cds-notification-banner') as
+        | (HTMLElement & { text?: string })
+        | null;
+
+      expect(banner).not.toBeNull();
+      expect(banner?.text).toBe(
+        'SSO is enabled and enforced. All users are required to log in with SSO. There are no excluded users (not recommended).'
+      );
+    });
   });
 });

@@ -23,11 +23,12 @@ import { Divider } from 'src/features/IAM/Shared/Divider/Divider';
 import { ErrorState } from 'src/features/IAM/Shared/ErrorState/ErrorState';
 import { Paper } from 'src/features/IAM/Shared/Paper/Paper';
 
-import { hasNoValidCertificates } from '../utilities';
+import { getSummaryStatus, hasNoValidCertificates } from '../utilities';
 import { ActivationStatus } from './ActivationStatus';
 import { ExcludedUsersPanel } from './ExcludedUsersPanel';
 import { IncludedUsersPanel } from './IncludedUsersPanel';
 
+import type { SummaryStatusConfig } from '../utilities';
 import type { APIError, IdpUser } from '@linode/api-v4/lib/types';
 
 export interface EnforcementSettingsFormValues {
@@ -116,7 +117,15 @@ export const EnforcementSettings = () => {
     reset,
     setError,
     getValues,
+    watch,
   } = form;
+
+  const formSummaryConfig: SummaryStatusConfig = {
+    enabled: watch('ssoEnabled'),
+    enforce: watch('ssoEnforced'),
+    included_users_count: watch('includedUsers').length,
+    excluded_users_count: watch('excludedUsers').length,
+  };
 
   // Determine if Activation Status has been modified to conditionally
   // require acknowledgment and call the right endpoint on submit
@@ -189,18 +198,22 @@ export const EnforcementSettings = () => {
           type="error"
         />
       )}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Paper
-          marginBottom={Spacing.S16}
-          padding={Spacing.S24}
-          paddingTop={Spacing.S24}
-        >
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{ gap: Spacing.S24, display: 'flex', flexDirection: 'column' }}
+      >
+        <Paper padding={Spacing.S24} paddingTop={Spacing.S24}>
           <ActivationStatus isConfigInvalid={isConfigInvalid} />
-          <Divider spacingBottom={Spacing.S16} spacingTop={Spacing.S16} />
+          <Divider spacingBottom={Spacing.S20} spacingTop={Spacing.S20} />
           <IncludedUsersPanel includedUsers={includedUsersOptions} />
-          <Divider spacingBottom={Spacing.S16} spacingTop={Spacing.S16} />
+          <Divider spacingBottom={Spacing.S20} spacingTop={Spacing.S20} />
           <ExcludedUsersPanel excludedUsers={excludedUsersOptions} />
         </Paper>
+
+        <NotificationBanner
+          text={getSummaryStatus(formSummaryConfig, true)}
+          type="info"
+        />
 
         {isActivationStatusDirty && (
           <Controller

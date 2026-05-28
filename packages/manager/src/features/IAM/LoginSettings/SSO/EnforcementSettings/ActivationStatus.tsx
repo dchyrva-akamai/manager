@@ -37,7 +37,7 @@ export const ActivationStatus = ({ isConfigInvalid }: Props) => {
             onChange={(e) => {
               field.onChange(e.detail);
               if (!e.detail) {
-                setValue('ssoEnforced', false);
+                setValue('ssoEnforced', false, { shouldDirty: true });
               }
             }}
           >

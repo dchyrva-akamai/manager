@@ -81,6 +81,12 @@ describe('getSummaryStatus', () => {
     );
   });
 
+  it('returns disabled message when enabled is false for summary', () => {
+    expect(getSummaryStatus(makeConfig([]), true)).toBe(
+      'SSO is disabled and not enforced. All users log in using alternative methods.'
+    );
+  });
+
   it('returns not-enforced message when enabled and enforce are false and included_users_count is 0', () => {
     expect(
       getSummaryStatus({
@@ -91,6 +97,22 @@ describe('getSummaryStatus', () => {
       })
     ).toBe(
       'SSO is enabled but not enforced. All users log in using alternative methods.'
+    );
+  });
+
+  it('returns not-enforced message when enabled and enforce are false and included_users_count is 0 for summary', () => {
+    expect(
+      getSummaryStatus(
+        {
+          ...makeConfig([]),
+          enabled: true,
+          enforce: false,
+          included_users_count: 0,
+        },
+        true
+      )
+    ).toBe(
+      'SSO is enabled but not enforced for any users. All users log in using alternative methods.'
     );
   });
 
@@ -107,6 +129,22 @@ describe('getSummaryStatus', () => {
     );
   });
 
+  it('returns partial enforcement message when enabled is true, enforce is false, and included_users_count > 0 for summary', () => {
+    expect(
+      getSummaryStatus(
+        {
+          ...makeConfig([]),
+          enabled: true,
+          enforce: false,
+          included_users_count: 3,
+        },
+        true
+      )
+    ).toBe(
+      'SSO is enabled and enforced for 3 included users. Other users log in using alternative methods.'
+    );
+  });
+
   it('returns full enforcement message when enabled and enforce are true and excluded_users_count is 0', () => {
     expect(
       getSummaryStatus({
@@ -116,6 +154,22 @@ describe('getSummaryStatus', () => {
         excluded_users_count: 0,
       })
     ).toBe('SSO is enforced. All users log in with SSO.');
+  });
+
+  it('returns full enforcement message when enabled and enforce are true and excluded_users_count is 0 for summary', () => {
+    expect(
+      getSummaryStatus(
+        {
+          ...makeConfig([]),
+          enabled: true,
+          enforce: true,
+          excluded_users_count: 0,
+        },
+        true
+      )
+    ).toBe(
+      'SSO is enabled and enforced. All users are required to log in with SSO. There are no excluded users (not recommended).'
+    );
   });
 
   it('returns enforcement-with-exclusions message when enabled and enforce are true and excluded_users_count > 0', () => {
@@ -128,6 +182,22 @@ describe('getSummaryStatus', () => {
       })
     ).toBe(
       'SSO is enforced. All users log in with SSO, except for 5 excluded users.'
+    );
+  });
+
+  it('returns enforcement-with-exclusions message when enabled and enforce are true and excluded_users_count > 0 for summary', () => {
+    expect(
+      getSummaryStatus(
+        {
+          ...makeConfig([]),
+          enabled: true,
+          enforce: true,
+          excluded_users_count: 5,
+        },
+        true
+      )
+    ).toBe(
+      'SSO is enabled and enforced. All users are required to log in with SSO, except for 5 excluded users.'
     );
   });
 });
