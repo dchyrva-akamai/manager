@@ -11,3 +11,5 @@ export const idpConfiguration = {
     'Use the IDP metadata from your identity provider (IDP) to create the configuration.',
   updateSuccess: 'IDP configuration updated successfully.',
 } as const;
+
+export const METADATA_HREF = 'https://login.linode.com/saml/sp/metadata';

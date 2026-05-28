@@ -49,13 +49,3 @@ export const getCertificateStatus = (notAfter: string): Status => {
 
   return 'active';
 };
-
-/**
- * Truncates a certificate string for display in the table.
- */
-export const truncateCertificate = (cert: string): string => {
-  if (cert.length <= 30) {
-    return cert;
-  }
-  return `${cert.slice(0, 10)} ... ${cert.slice(-10)}`;
-};

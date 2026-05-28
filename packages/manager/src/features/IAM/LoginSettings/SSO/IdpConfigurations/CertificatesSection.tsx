@@ -57,6 +57,7 @@ export const CertificatesSection = (props: Props) => {
         <CertificatesTable
           certificates={props.certificates}
           deletedIds={props.deletedCertificateIds}
+          mode="edit"
           onToggleDelete={props.onToggleDeleteCertificate}
         />
       )}

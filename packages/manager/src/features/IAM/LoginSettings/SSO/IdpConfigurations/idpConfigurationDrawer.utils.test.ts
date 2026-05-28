@@ -1,7 +1,4 @@
-import {
-  getCertificateStatus,
-  truncateCertificate,
-} from './idpConfigurationDrawer.utils';
+import { getCertificateStatus } from './idpConfigurationDrawer.utils';
 
 describe('IDP Configuration Drawer Utils', () => {
   describe('getCertificateStatus', () => {
@@ -24,18 +21,6 @@ describe('IDP Configuration Drawer Utils', () => {
         Date.now() + 1000 * 60 * 60 * 24 * 120
       ).toISOString();
       expect(getCertificateStatus(futureDate)).toBe('active');
-    });
-  });
-
-  describe('truncateCertificate', () => {
-    it('returns the original string if <= 30 chars', () => {
-      const cert = 'short-certificate-string';
-      expect(truncateCertificate(cert)).toBe(cert);
-    });
-
-    it('truncates and formats long certificates', () => {
-      const cert = '1234567890abcdefghijABCDEFGHIJ1234567890';
-      expect(truncateCertificate(cert)).toBe('1234567890 ... 1234567890');
     });
   });
 });

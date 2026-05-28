@@ -1,0 +1,46 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header h3 {
+  margin-top: var(--token-global-spacing-s0, 0);
+}
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--global-spacing-s24, 24px);
+}
+
+.sectionHeading {
+  margin-top: var(--global-spacing-s24, 24px);
+  margin-bottom: var(--global-spacing-s12, 12px);
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  gap: var(--global-spacing-s8, 8px);
+  margin-bottom: var(--global-spacing-s8, 8px);
+}
+.detailRow p{
+  padding: var(--token-global-spacing-s0, 0px);
+  margin: var(--token-global-spacing-s0, 0px);
+}
+.metadataLink{
+  margin-top: var(--token-global-spacing-s16, 16px);
+}
+.detailLabel {
+  font-weight: var(--token-global-font-font-weight-bold, bold);
+}
+
+.certsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--global-spacing-s24, 24px);
+  margin-bottom: var(--global-spacing-s12, 12px);
+}
+.certsHeader h3{
+  margin: var(--token-global-spacing-s0, 0);
+}
