@@ -26,7 +26,8 @@ import {
   findConfigItem,
   formatConfigPayload,
   getDefaultConfigValue,
-  hasRestartCluster,
+  getSaveBtnLabel,
+  isTopLevelCategory,
 } from './utilities';
 
 import type { ConfigurationOption } from './DatabaseConfigurationSelect';
@@ -212,10 +213,9 @@ export const DatabaseAdvancedConfigurationDrawer = (props: Props) => {
             key={config.label}
             name={`configs.${index}.value`}
             render={({ field, fieldState }) => {
-              const configName =
-                config.category === 'other'
-                  ? `engine_config.${config.label}`
-                  : `engine_config.${config.category}.${config.label}`;
+              const configName = isTopLevelCategory(config.category)
+                ? `engine_config.${config.label}`
+                : `engine_config.${config.category}.${config.label}`;
               return (
                 <DatabaseConfigurationItem
                   configItem={config}
@@ -235,7 +235,7 @@ export const DatabaseAdvancedConfigurationDrawer = (props: Props) => {
         <ActionsPanel
           primaryButtonProps={{
             disabled: !isDirty,
-            label: hasRestartCluster(configs, existingConfigurations),
+            label: getSaveBtnLabel(configs, existingConfigurations),
             loading: isUpdating,
             type: 'submit',
             title: 'Save',

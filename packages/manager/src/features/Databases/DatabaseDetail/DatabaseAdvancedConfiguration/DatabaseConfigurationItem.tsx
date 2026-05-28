@@ -7,6 +7,7 @@ import {
   formatConfigValue,
   isConfigBoolean,
   isConfigStringWithEnum,
+  isTopLevelCategory,
 } from './utilities';
 
 import type { ConfigurationOption } from './DatabaseConfigurationSelect';
@@ -130,7 +131,7 @@ export const DatabaseConfigurationItem = (props: Props) => {
             mr: 0.5,
           })}
         >
-          {configItem?.category === 'other'
+          {isTopLevelCategory(configItem?.category ?? '')
             ? configLabel
             : `${configItem?.category}.${configLabel}`}
         </Typography>

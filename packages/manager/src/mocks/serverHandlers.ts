@@ -134,6 +134,7 @@ import {
   supportReplyFactory,
   supportTicketFactory,
   tagFactory,
+  valkeyConfigResponse,
   VLANFactory,
   volumeFactory,
   volumeTypeFactory,
@@ -566,6 +567,9 @@ const databases = [
     }
     if (engine === 'postgresql') {
       return HttpResponse.json(postgresConfigResponse);
+    }
+    if (engine === 'valkey') {
+      return HttpResponse.json(valkeyConfigResponse);
     }
 
     return HttpResponse.json(mysqlConfigResponse);
