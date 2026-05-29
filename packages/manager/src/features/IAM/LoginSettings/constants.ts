@@ -1,5 +1,7 @@
 export const idpConfiguration = {
   addButtonMaxTooltip: 'You can add up to 10 certificates.',
+  maxCertificatesReachedError:
+    'The configuration can have up to 10 certificates. Delete an unused certificate to add a new one.',
   allCertificatesDeletedError:
     'IDP configuration requires at least one active certificate. ',
   attributeMappingDescription:

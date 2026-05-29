@@ -188,6 +188,7 @@ export const IdpConfigurationDrawer = ({
   const hasChanges = isDirty || (isEdit && deletedCertificateIds.size > 0);
 
   return (
+    // TODO: UIE-10784 - replace with CDS Drawer when available
     <Drawer
       onClose={handleClose}
       open={open}

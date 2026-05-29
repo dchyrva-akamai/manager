@@ -1,11 +1,12 @@
-import { Button, Icon } from '@akamai/cds-components/react';
+import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import * as React from 'react';
 
 import { usePermissions } from 'src/features/IAM/hooks/usePermissions';
 import { CopyTooltip } from 'src/features/IAM/Shared/CopyTooltip/CopyTooltip';
 import { Paper } from 'src/features/IAM/Shared/Paper/Paper';
 
-import { METADATA_HREF } from '../../constants';
+import { idpConfiguration, METADATA_HREF } from '../../constants';
+import { AddCertificateDrawer } from './AddCertificateDrawer';
 import { CertificatesTable } from './CertificatesTable';
 import { IdpConfigurationDrawer } from './IdpConfigurationDrawer';
 import { identityElementOptions } from './idpConfigurationDrawer.utils';
@@ -20,6 +21,7 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
   // const { mutateAsync: deleteIdpConfig } = useDeleteIdpConfigMutation();
 
   const [isEditDrawerOpen, setIsEditDrawerOpen] = React.useState(false);
+  const [isAddCertDrawerOpen, setIsAddCertDrawerOpen] = React.useState(false);
 
   const handleDelete = async () => {
     try {
@@ -35,6 +37,9 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
     identityElementOptions.find(
       (opt) => opt.value === idpConfig.saml.identity_element
     )?.label ?? idpConfig.saml.identity_element;
+
+  const isMaxCertificatesReached =
+    idpConfig.saml.public_certificates.length >= 10;
   return (
     <>
       <Paper>
@@ -103,9 +108,23 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
 
         <div className={styles.certsHeader}>
           <h3>SAML Certificates</h3>
-          <Button type="button" variant="secondary">
-            Add Certificate
-          </Button>
+          <Tooltip
+            disabled={!isMaxCertificatesReached}
+            tooltipPlacement="bottom"
+            tooltipText={idpConfiguration.maxCertificatesReachedError}
+          >
+            <Button
+              disabled={isMaxCertificatesReached}
+              onClick={() => setIsAddCertDrawerOpen(true)}
+              type="button"
+              variant="secondary"
+            >
+              Add Certificate
+              {isMaxCertificatesReached && (
+                <Icon icon="info-outline" size="m" />
+              )}
+            </Button>
+          </Tooltip>
         </div>
         <CertificatesTable
           certificates={idpConfig.saml.public_certificates}
@@ -118,6 +137,11 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
         mode="edit"
         onClose={() => setIsEditDrawerOpen(false)}
         open={isEditDrawerOpen}
+      />
+      <AddCertificateDrawer
+        idpConfigId={idpConfig.id}
+        onClose={() => setIsAddCertDrawerOpen(false)}
+        open={isAddCertDrawerOpen}
       />
     </>
   );

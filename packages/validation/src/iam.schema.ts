@@ -126,3 +126,8 @@ export const UpdateIdpConfigSchema = object({
     }),
   }),
 });
+export const AddCertificateSchema = object({
+  certificate: string()
+    .required('This field is required.')
+    .max(4000, 'Certificate must be at most 4000 characters.'),
+});
