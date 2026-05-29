@@ -25,6 +25,12 @@ interface ServiceURIProps {
   showPrivateVPC?: boolean;
 }
 
+const ENGINE_SSLMODE_MAP = {
+  mysql: '/defaultdb?ssl-mode=REQUIRED',
+  postgres: '/defaultdb?sslmode=require',
+  valkey: '',
+};
+
 export const ServiceURI = (props: ServiceURIProps) => {
   const {
     database,
@@ -37,7 +43,7 @@ export const ServiceURI = (props: ServiceURIProps) => {
   const engine =
     database.engine === 'postgresql' ? 'postgres' : database.engine;
   const generalSslmode =
-    engine === 'mysql' ? 'ssl-mode=REQUIRED' : 'sslmode=require';
+    ENGINE_SSLMODE_MAP[engine] ?? '/defaultdb?sslmode=require';
 
   const {
     data: credentials,
@@ -91,7 +97,7 @@ export const ServiceURI = (props: ServiceURIProps) => {
     isGeneralServiceURI?: boolean
   ) => {
     if (isGeneralServiceURI) {
-      return `${engine}://${credentials?.username}:${credentials?.password}@${primaryHost?.address}:${primaryHost?.port}/defaultdb?${generalSslmode}`;
+      return `${engine}://${credentials?.username}:${credentials?.password}@${primaryHost?.address}:${primaryHost?.port}${generalSslmode}`;
     }
     return `postgres://${credentials?.username}:${credentials?.password}@${primaryConnectionPoolHost?.address}:${primaryConnectionPoolHost?.port}/{connection pool label}?sslmode=require`;
   };
@@ -189,8 +195,7 @@ export const ServiceURI = (props: ServiceURIProps) => {
         {renderPassword()}
         {isGeneralServiceURI ? (
           <>
-            @{primaryHost?.address}:
-            {`${primaryHost?.port}/defaultdb?${generalSslmode}`}
+            @{primaryHost?.address}:{`${primaryHost?.port}${generalSslmode}`}
           </>
         ) : (
           <>

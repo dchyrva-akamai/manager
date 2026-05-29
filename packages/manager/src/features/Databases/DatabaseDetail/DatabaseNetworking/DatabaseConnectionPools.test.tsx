@@ -18,17 +18,17 @@ const mockDatabase = databaseFactory.build({
   platform: 'rdbms-default',
   private_network: null,
   hosts: {
-    primary: 'db-mysql-primary-0.b.linodeb.net',
+    primary: 'db-primary-0.b.linodeb.net',
     endpoints: [
       {
         role: 'primary',
-        address: 'db-mysql-primary-0.b.linodeb.net',
+        address: 'db-primary-0.b.linodeb.net',
         port: 15847,
         public_access: true,
       },
       {
         role: 'primary-connection-pool',
-        address: 'public-db-mysql-primary-0.b.linodeb.net',
+        address: 'public-db-primary-0.b.linodeb.net',
         port: 15848,
         public_access: true,
       },

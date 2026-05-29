@@ -202,11 +202,11 @@ export const databaseInstanceFactory =
     hosts: Factory.each((i) =>
       adb10(i)
         ? {
-            primary: 'db-mysql-primary-0.b.linodeb.net',
-            secondary: 'db-mysql-secondary-0.b.linodeb.net',
+            primary: 'db-primary-0.b.linodeb.net',
+            secondary: 'db-secondary-0.b.linodeb.net',
             endpoints: [
               {
-                address: 'public-db-mysql-primary-0.b.linodeb.net',
+                address: 'public-db-primary-0.b.linodeb.net',
                 role: 'primary',
                 public_access: true,
                 port: 3306,
@@ -214,11 +214,11 @@ export const databaseInstanceFactory =
             ],
           }
         : {
-            primary: 'db-mysql-primary-0.b.linodeb.net',
-            standby: 'db-mysql-secondary-0.b.linodeb.net',
+            primary: 'db-primary-0.b.linodeb.net',
+            standby: 'db-secondary-0.b.linodeb.net',
             endpoints: [
               {
-                address: 'public-db-mysql-primary-0.b.linodeb.net',
+                address: 'public-db-primary-0.b.linodeb.net',
                 role: 'primary',
                 public_access: true,
                 port: 3306,
@@ -273,11 +273,11 @@ export const databaseFactory = Factory.Sync.makeFactory<Database>({
   hosts: Factory.each((i) =>
     adb10(i)
       ? {
-          primary: 'db-mysql-primary-0.b.linodeb.net',
-          secondary: 'db-mysql-secondary-0.b.linodeb.net',
+          primary: 'db-primary-0.b.linodeb.net',
+          secondary: 'db-secondary-0.b.linodeb.net',
           endpoints: [
             {
-              address: 'public-db-mysql-primary-0.b.linodeb.net',
+              address: 'public-db-primary-0.b.linodeb.net',
               role: 'primary',
               public_access: true,
               port: 3306,
@@ -285,11 +285,11 @@ export const databaseFactory = Factory.Sync.makeFactory<Database>({
           ],
         }
       : {
-          primary: 'db-mysql-primary-0.b.linodeb.net',
-          standby: 'db-mysql-secondary-0.b.linodeb.net',
+          primary: 'db-primary-0.b.linodeb.net',
+          standby: 'db-secondary-0.b.linodeb.net',
           endpoints: [
             {
-              address: 'public-db-mysql-primary-0.b.linodeb.net',
+              address: 'public-db-primary-0.b.linodeb.net',
               role: 'primary',
               public_access: true,
               port: 3306,

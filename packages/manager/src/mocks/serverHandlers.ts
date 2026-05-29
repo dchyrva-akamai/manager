@@ -242,8 +242,8 @@ const makeMockDatabase = (params: PathParams): Database => {
   if (database.private_network) {
     // When a database is configured with a VPC, the primary and standby hostnames are prepended with 'private-' in the backend
     database.hosts = {
-      primary: 'private-db-mysql-primary-0.b.linodeb.net',
-      standby: 'private-db-mysql-standby-0.b.linodeb.net',
+      primary: 'private-db-primary-0.b.linodeb.net',
+      standby: 'private-db-standby-0.b.linodeb.net',
       /**
        * The contents of the hosts.endpoints vary based off whether the VPC has public access or not.
        * If private_network public_access is true, the endpoints should return both public and private addresses.
@@ -252,37 +252,37 @@ const makeMockDatabase = (params: PathParams): Database => {
       endpoints: [
         {
           role: 'primary',
-          address: 'public-db-mysql-primary-0.b.linodeb.net',
+          address: 'public-db-primary-0.b.linodeb.net',
           port: 3306,
           public_access: true,
         },
         {
           role: 'primary',
-          address: 'private-db-mysql-primary-0.b.linodeb.net',
+          address: 'private-db-primary-0.b.linodeb.net',
           port: 3306,
           public_access: false,
         },
         {
           role: 'standby',
-          address: 'public-replica-db-mysql-standby-0.b.linodeb.net',
+          address: 'public-replica-db-standby-0.b.linodeb.net',
           port: 3306,
           public_access: true,
         },
         {
           role: 'standby',
-          address: 'private-replica-db-mysql-standby-0.b.linodeb.net',
+          address: 'private-replica-db-standby-0.b.linodeb.net',
           port: 3306,
           public_access: false,
         },
         {
           role: 'primary-connection-pool',
-          address: 'public-db-mysql-primary-0.b.linodeb.net',
+          address: 'public-db-primary-0.b.linodeb.net',
           port: 15848,
           public_access: true,
         },
         {
           role: 'primary-connection-pool',
-          address: 'private-db-mysql-primary-0.b.linodeb.net',
+          address: 'private-db-primary-0.b.linodeb.net',
           port: 15848,
           public_access: false,
         },
@@ -293,17 +293,17 @@ const makeMockDatabase = (params: PathParams): Database => {
   // Uncomment the lines below to mock a database cluster without a VPC configuration
   // database.private_network = null;
   // database.hosts = {
-  //   primary: 'db-mysql-primary-0.b.linodeb.net',
+  //   primary: 'db-primary-0.b.linodeb.net',
   //   endpoints: [
   //     {
   //       role: 'primary',
-  //       address: 'db-mysql-primary-0.b.linodeb.net',
+  //       address: 'db-primary-0.b.linodeb.net',
   //       port: 3306,
   //       public_access: true,
   //     },
   //     {
   //       role: 'primary-connection-pool',
-  //       address: 'public-db-mysql-primary-0.b.linodeb.net',
+  //       address: 'public-db-primary-0.b.linodeb.net',
   //       port: 15848,
   //       public_access: true,
   //     },
@@ -498,12 +498,12 @@ const databases = [
   ),
 
   http.get('*/databases/:engine/instances/:id', ({ params }) => {
-    const database = makeMockDatabase({ ...params, engine: 'valkey' });
+    const database = makeMockDatabase({ ...params });
     return HttpResponse.json(database);
   }),
 
   http.put('*/databases/:engine/instances/:id', ({ params }) => {
-    const database = makeMockDatabase({ ...params, engine: 'valkey' });
+    const database = makeMockDatabase({ ...params });
     return HttpResponse.json(database);
   }),
 
