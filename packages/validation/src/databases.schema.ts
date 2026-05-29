@@ -68,12 +68,14 @@ const createValidator = (key: string, field: any) => {
   switch (true) {
     case fieldTypes.includes('integer'):
       return number()
+        .typeError(`${key} must be a whole number`)
         .transform((val, originalVal) => (originalVal === '' ? undefined : val))
         .integer(`${key} must be a whole number`)
         .required(`${key} is required`);
 
     case fieldTypes.includes('number'):
       return number()
+        .typeError(`${key} must be a number`)
         .transform((val, originalVal) => (originalVal === '' ? undefined : val))
         .required(`${key} is required`);
 

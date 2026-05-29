@@ -16,8 +16,21 @@ const mockProps = {
   open: true,
 };
 
-const poolLabel = 'Pool Label';
 const addPoolBtnText = 'Add Pool';
+
+type CdsTextFieldElement = HTMLElement & { value?: string };
+
+const getTextFieldHostById = (id: string) =>
+  document.querySelector(`cds-text-field#${id}`) as CdsTextFieldElement | null;
+
+const getTextFieldInputById = async (id: string) => {
+  const host = getTextFieldHostById(id);
+  if (!host) {
+    return null;
+  }
+
+  return getShadowRootElement(host, 'input');
+};
 
 // Hoist query mocks
 const queryMocks = vi.hoisted(() => {
@@ -63,9 +76,10 @@ describe('DatabaseAddConnectionPoolDrawer Component', () => {
     };
     renderWithTheme(<DatabaseAddConnectionPoolDrawer {...mockProps} />);
     // Fill out and submit the form
-    const poolLabelInput = screen.getByLabelText(poolLabel);
+    const poolLabelInput = await getTextFieldInputById('poolLabel');
     const addPoolBtn = screen.getByText(addPoolBtnText);
-    await userEvent.type(poolLabelInput, expectedPayloadValues.label);
+    expect(poolLabelInput).toBeTruthy();
+    await userEvent.type(poolLabelInput!, expectedPayloadValues.label);
     await userEvent.click(addPoolBtn);
     // Test that the mutation was called with expected payload
     expect(
@@ -88,9 +102,10 @@ describe('DatabaseAddConnectionPoolDrawer Component', () => {
     renderWithTheme(<DatabaseAddConnectionPoolDrawer {...mockProps} />);
 
     // Fill out and submit the form
-    const poolLabelInput = screen.getByLabelText(poolLabel);
+    const poolLabelInput = await getTextFieldInputById('poolLabel');
     const addPoolBtn = screen.getByText(addPoolBtnText);
-    await userEvent.type(poolLabelInput, 'test-pool');
+    expect(poolLabelInput).toBeTruthy();
+    await userEvent.type(poolLabelInput!, 'test-pool');
     await userEvent.click(addPoolBtn);
 
     // CDS NotificationBanner renders copy inside shadow DOM (not visible to findByText)
@@ -123,9 +138,10 @@ describe('DatabaseAddConnectionPoolDrawer Component', () => {
     renderWithTheme(<DatabaseAddConnectionPoolDrawer {...mockProps} />);
 
     // Fill out and submit the form
-    const poolLabelInput = screen.getByLabelText(poolLabel);
+    const poolLabelInput = await getTextFieldInputById('poolLabel');
     const addPoolBtn = screen.getByText(addPoolBtnText);
-    await userEvent.type(poolLabelInput, 'test-pool');
+    expect(poolLabelInput).toBeTruthy();
+    await userEvent.type(poolLabelInput!, 'test-pool');
     await userEvent.click(addPoolBtn);
 
     // Check that inline errors are displayed
@@ -150,34 +166,36 @@ describe('DatabaseAddConnectionPoolDrawer Component', () => {
   it('Should disable the Username input if the Reuse Inbound User checkbox is checked', async () => {
     renderWithTheme(<DatabaseAddConnectionPoolDrawer {...mockProps} />);
 
-    const usernameInput = screen.getByLabelText('Username');
+    const usernameInput = getTextFieldHostById('username');
     const reuseInboundUserCheckboxHost = screen.getByTestId(
       'database-reuse-inbound-user-checkbox'
     );
     const reuseInboundUserCheckbox = await getShadowRootElement(
-      reuseInboundUserCheckboxHost as HTMLElement,
+      reuseInboundUserCheckboxHost,
       'input'
     );
 
-    expect(usernameInput).toBeDisabled();
+    expect(usernameInput).toBeTruthy();
+    expect(usernameInput!).toBeDisabled();
     expect(reuseInboundUserCheckbox).toBeChecked();
   });
 
   it('Should enable the Username input if the Reuse Inbound User checkbox is not checked', async () => {
     renderWithTheme(<DatabaseAddConnectionPoolDrawer {...mockProps} />);
 
-    const usernameInput = screen.getByLabelText('Username');
+    const usernameInput = getTextFieldHostById('username');
     const reuseInboundUserCheckboxHost = screen.getByTestId(
       'database-reuse-inbound-user-checkbox'
     );
     const reuseInboundUserCheckbox = await getShadowRootElement(
-      reuseInboundUserCheckboxHost as HTMLElement,
+      reuseInboundUserCheckboxHost,
       'input'
     );
 
     await userEvent.click(reuseInboundUserCheckbox!);
 
-    expect(usernameInput).toBeEnabled();
+    expect(usernameInput).toBeTruthy();
+    expect(usernameInput!).toBeEnabled();
     expect(reuseInboundUserCheckbox).not.toBeChecked();
   });
 });

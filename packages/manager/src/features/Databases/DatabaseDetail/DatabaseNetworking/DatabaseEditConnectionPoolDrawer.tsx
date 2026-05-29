@@ -1,4 +1,11 @@
-import { Checkbox, NotificationBanner } from '@akamai/cds-components/react';
+import {
+  Checkbox,
+  FormError,
+  FormField,
+  FormLabel,
+  NotificationBanner,
+  TextField,
+} from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useUpdateDatabaseConnectionPoolMutation } from '@linode/queries';
@@ -8,7 +15,6 @@ import {
   Drawer,
   FormControlLabel,
   Stack,
-  TextField,
 } from '@linode/ui';
 import { updateDatabaseConnectionPoolSchema } from '@linode/validation';
 import { enqueueSnackbar } from 'notistack';
@@ -98,33 +104,49 @@ export const DatabaseEditConnectionPoolDrawer = (props: Props) => {
             control={control}
             name="label"
             render={({ field, fieldState }) => (
-              <TextField
-                disabled
-                errorText={fieldState.error?.message}
-                id="poolLabel"
-                label="Pool Label"
-                placeholder="Enter a pool label"
-                value={field.value}
-              />
+              <FormField
+                error={Boolean(fieldState.error)}
+                labelPosition="top"
+                onBlur={field.onBlur}
+              >
+                <FormLabel htmlFor="poolLabel" slot="label">
+                  Pool Label
+                </FormLabel>
+                <TextField
+                  disabled
+                  id="poolLabel"
+                  placeholder="Enter a pool label"
+                  value={field.value}
+                />
+                <FormError slot="error">{fieldState.error?.message}</FormError>
+              </FormField>
             )}
           />
+
           <Controller
             control={control}
             name="database"
             render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                errorText={fieldState.error?.message}
-                id="databaseName"
-                label="Database Name"
-                onChange={(e) => {
-                  field.onChange(e.target.value);
-                }}
-                onClear={() => field.onChange('')}
-                placeholder="defaultdb"
-              />
+              <FormField
+                error={Boolean(fieldState.error)}
+                labelPosition="top"
+                onBlur={field.onBlur}
+                style={{ paddingBottom: Spacing.S8 }}
+              >
+                <FormLabel htmlFor="databaseName" slot="label">
+                  Database Name
+                </FormLabel>
+                <TextField
+                  {...field}
+                  id="databaseName"
+                  onChange={field.onChange}
+                  placeholder="defaultdb"
+                />
+                <FormError slot="error">{fieldState.error?.message}</FormError>
+              </FormField>
             )}
           />
+
           <Controller
             control={control}
             name="mode"
@@ -141,31 +163,39 @@ export const DatabaseEditConnectionPoolDrawer = (props: Props) => {
                   field.onChange(option.value);
                 }}
                 options={poolModeOptions}
+                sx={{ marginBottom: Spacing.S16 }}
                 value={poolModeOptions.find((option) => option.value === mode)}
               />
             )}
           />
+
           <Controller
             control={control}
             name="size"
             render={({ field, fieldState }) => (
-              <TextField
-                id="poolSize"
-                {...field}
-                data-testid="pool-size-input"
-                errorText={fieldState.error?.message}
-                label="Pool Size"
-                min={1}
-                onChange={(e) => {
-                  const value =
-                    e.target.value.length > 0
-                      ? Number(e.target.value)
-                      : e.target.value;
-                  field.onChange(value);
-                }}
-                style={{ width: '178px' }}
-                type="number"
-              />
+              <FormField
+                error={Boolean(fieldState.error)}
+                labelPosition="top"
+                onBlur={field.onBlur}
+              >
+                <FormLabel htmlFor="poolSize" slot="label">
+                  Pool Size
+                </FormLabel>
+                <TextField
+                  id="poolSize"
+                  {...field}
+                  data-testid="pool-size-input"
+                  onChange={(e) => {
+                    const raw =
+                      (e.currentTarget as EventTarget & { value?: string })
+                        ?.value ?? '';
+                    field.onChange(raw.length > 0 ? Number(raw) : raw);
+                  }}
+                  style={{ width: '178px' }}
+                  value={String(field.value ?? '')}
+                />
+                <FormError slot="error">{fieldState.error?.message}</FormError>
+              </FormField>
             )}
           />
           <Controller
@@ -173,19 +203,27 @@ export const DatabaseEditConnectionPoolDrawer = (props: Props) => {
             name="username"
             render={({ field, fieldState }) => (
               <>
-                <TextField
-                  {...field}
-                  disabled={field.value === null}
-                  errorText={fieldState.error?.message}
-                  id="username"
-                  label="Username"
-                  onChange={(e) => {
-                    field.onChange(e.target.value);
-                  }}
-                  onClear={() => field.onChange('')}
-                  placeholder={field.value === null ? '' : 'akmadmin'}
-                  value={field.value === null ? '' : field.value}
-                />
+                <FormField
+                  error={Boolean(fieldState.error)}
+                  labelPosition="top"
+                  onBlur={field.onBlur}
+                >
+                  <FormLabel htmlFor="username" slot="label">
+                    Username
+                  </FormLabel>
+
+                  <TextField
+                    {...field}
+                    disabled={field.value === null}
+                    id="username"
+                    onChange={field.onChange}
+                    placeholder={field.value === null ? '' : 'akmadmin'}
+                    value={field.value ?? ''}
+                  />
+                  <FormError slot="error">
+                    {fieldState.error?.message}
+                  </FormError>
+                </FormField>
                 <FormControlLabel
                   checked={field.value === null}
                   control={

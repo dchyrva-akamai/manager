@@ -1,5 +1,12 @@
-import { Badge, Button, FormField, Switch } from '@akamai/cds-components/react';
-import { Autocomplete, CloseIcon, TextField, Typography } from '@linode/ui';
+import {
+  Badge,
+  Button,
+  FormError,
+  FormField,
+  Switch,
+  TextField,
+} from '@akamai/cds-components/react';
+import { Autocomplete, CloseIcon, Typography } from '@linode/ui';
 import React from 'react';
 
 import { StyledBox, StyledWrapper } from './DatabaseConfigurationItem.style';
@@ -48,20 +55,14 @@ export const DatabaseConfigurationItem = (props: Props) => {
         <Autocomplete
           autoHighlight
           disableClearable
+          errorText={errorText}
           isOptionEqualToValue={(option, value) => option.label === value.label}
           label={''}
           onChange={(_, selected) => {
             onChange(selected?.label ?? '');
           }}
           options={options}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              errorText={errorText}
-              label=""
-              placeholder="Select an option"
-            />
-          )}
+          placeholder="Select an option"
           value={selectedValue ?? options[0]}
         />
       );
@@ -71,27 +72,33 @@ export const DatabaseConfigurationItem = (props: Props) => {
       typeof configItem.value !== 'boolean'
     ) {
       return (
-        <TextField
-          errorText={errorText}
-          fullWidth
-          label=""
-          name={configLabel}
+        <FormField
+          error={Boolean(errorText)}
+          labelPosition="top"
           onBlur={onBlur}
-          onChange={(e) => {
-            const value = e.target.value;
-            onChange(value === '' ? '' : Number(value));
-          }}
-          placeholder={
-            configItem.isNew ? String(configItem?.example ?? '') : ''
-          }
-          slotProps={{
-            htmlInput: {
-              step: 'any', // UIE-10285: Fix edge-case tooltip
-            },
-          }}
-          type="number"
-          value={configItem.value}
-        />
+        >
+          <TextField
+            error={Boolean(errorText)}
+            onChange={(e) => {
+              const raw =
+                (e.currentTarget as EventTarget & { value?: string })?.value ??
+                '';
+              if (raw === '') {
+                onChange('');
+              } else {
+                const n = Number(raw);
+                // Pass raw string for non-numeric input so Yup's typeError
+                // fires with a clear message rather than receiving NaN.
+                onChange(isNaN(n) ? raw : n);
+              }
+            }}
+            placeholder={
+              configItem.isNew ? String(configItem?.example ?? '') : ''
+            }
+            value={String(configItem.value ?? '')}
+          />
+          <FormError slot="error">{errorText}</FormError>
+        </FormField>
       );
     }
 
@@ -102,17 +109,24 @@ export const DatabaseConfigurationItem = (props: Props) => {
         !configItem.enum)
     ) {
       return (
-        <TextField
-          errorText={errorText}
-          fullWidth
-          label=""
-          name={configLabel}
+        <FormField
+          error={Boolean(errorText)}
+          labelPosition="top"
           onBlur={onBlur}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={String(configItem.example)}
-          type="text"
-          value={configItem.value ? String(configItem.value) : ''}
-        />
+        >
+          <TextField
+            error={Boolean(errorText)}
+            onChange={(e) =>
+              onChange(
+                (e.currentTarget as EventTarget & { value?: string })?.value ??
+                  ''
+              )
+            }
+            placeholder={String(configItem.example)}
+            value={configItem.value ? String(configItem.value) : ''}
+          />
+          <FormError slot="error">{errorText}</FormError>
+        </FormField>
       );
     }
     return null;

@@ -1,3 +1,11 @@
+import {
+  FormError,
+  FormField,
+  FormLabel,
+  Icon,
+  TextField,
+  Tooltip,
+} from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useRegionsQuery } from '@linode/queries';
 import { useIsGeckoEnabled } from '@linode/shared';
@@ -9,10 +17,6 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import { RegionSelect } from 'src/components/RegionSelect/RegionSelect';
 import { RegionHelperText } from 'src/components/SelectRegionPanel/RegionHelperText';
-import {
-  StyledLabelTooltip,
-  StyledTextField,
-} from 'src/features/Databases/DatabaseCreate/DatabaseCreate.style';
 import { DatabaseEngineSelect } from 'src/features/Databases/DatabaseCreate/DatabaseEngineSelect';
 import { useFlags } from 'src/hooks/useFlags';
 import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
@@ -25,17 +29,6 @@ import type { PlanSelectionWithDatabaseType } from 'src/features/components/Plan
 interface Props {
   selectedPlan?: PlanSelectionWithDatabaseType;
 }
-
-const labelToolTip = (
-  <StyledLabelTooltip>
-    <strong>Label must:</strong>
-    <ul>
-      <li>Begin with an alpha character</li>
-      <li>Contain only alpha characters or single hyphens</li>
-      <li>Be between 3 - 32 characters</li>
-    </ul>
-  </StyledLabelTooltip>
-);
 
 export const DatabaseClusterData = (props: Props) => {
   const { selectedPlan } = props;
@@ -94,15 +87,46 @@ export const DatabaseClusterData = (props: Props) => {
           control={control}
           name="label"
           render={({ field, fieldState }) => (
-            <StyledTextField
-              data-qa-label-input
-              disabled={isRestricted}
-              errorText={fieldState.error?.message}
-              label="Cluster Label"
-              onChange={field.onChange}
-              tooltipText={labelToolTip}
-              value={field.value}
-            />
+            <FormField
+              error={Boolean(fieldState.error)}
+              labelPosition="top"
+              style={{ maxWidth: 444, marginTop: Spacing.S16 }}
+            >
+              <FormLabel htmlFor="label-field" slot="label">
+                Cluster Label
+              </FormLabel>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <TextField
+                  data-qa-label-input
+                  disabled={isRestricted}
+                  error={Boolean(fieldState.error)}
+                  id="label-field"
+                  onChange={field.onChange}
+                  style={{
+                    marginRight: Spacing.S8,
+                    padding: `0 ${Spacing.S12}`,
+                  }}
+                  value={field.value}
+                />
+
+                <Tooltip tooltipText="Label must begin with an alpha character, contain only alpha characters or single hyphens, and be between 3-32 characters.">
+                  <Icon
+                    color="primary"
+                    data-qa-label-tooltip
+                    icon="info-outline"
+                    size="m"
+                  />
+                </Tooltip>
+              </div>
+              {fieldState.error?.message && (
+                <FormError slot="error">{fieldState.error.message}</FormError>
+              )}
+            </FormField>
           )}
         />
       </Box>
