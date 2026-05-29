@@ -8,6 +8,7 @@ import { Paper } from 'src/features/IAM/Shared/Paper/Paper';
 import { idpConfiguration, METADATA_HREF } from '../../constants';
 import { AddCertificateDrawer } from './AddCertificateDrawer';
 import { CertificatesTable } from './CertificatesTable';
+import { IDPConfigDeleteConfirmation } from './IDPConfigDeleteConfirmation';
 import { IdpConfigurationDrawer } from './IdpConfigurationDrawer';
 import { identityElementOptions } from './idpConfigurationDrawer.utils';
 import styles from './IdpConfigurations.module.css';
@@ -17,21 +18,10 @@ import type { IdpConfig } from '@linode/api-v4';
 export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
   // TODO - UIE-11305 replace with actual permissions check for creating IDP configurations
   const { data: permissions } = usePermissions('account', ['is_account_admin']);
-  // TODO - UIE-11489 implement delete IDP configuration functionality
-  // const { mutateAsync: deleteIdpConfig } = useDeleteIdpConfigMutation();
 
   const [isEditDrawerOpen, setIsEditDrawerOpen] = React.useState(false);
   const [isAddCertDrawerOpen, setIsAddCertDrawerOpen] = React.useState(false);
-
-  const handleDelete = async () => {
-    try {
-      // TODO - UIE-11489 implement delete IDP configuration functionality
-      // await deleteIdpConfig({ euuid: idpConfig.id });
-      // eslint-disable-next-line sonarjs/no-ignored-exceptions
-    } catch (error) {
-      // TODO: handle error
-    }
-  };
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
   const identityElementLabel =
     identityElementOptions.find(
@@ -46,17 +36,39 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
         <div className={styles.header}>
           <h3>Provider details</h3>
           <div className={styles.headerActions}>
-            <Button onClick={handleDelete} type="button" variant="link">
-              Delete IDP Configuration
-            </Button>
-            <Button
-              disabled={!permissions?.is_account_admin}
-              onClick={() => setIsEditDrawerOpen(true)}
-              type="button"
-              variant="primary"
+            <Tooltip
+              disabled={permissions?.is_account_admin}
+              tooltipPlacement="bottom"
+              tooltipText="You do not have permission to delete this IDP configuration."
             >
-              Edit IDP Configuration
-            </Button>
+              <Button
+                disabled={!permissions?.is_account_admin}
+                onClick={() => setIsDeleteDialogOpen(true)}
+                type="button"
+                variant="link"
+              >
+                Delete IDP Configuration
+                {!permissions?.is_account_admin ? (
+                  <Icon icon="info-outline" size="m" />
+                ) : null}
+              </Button>
+            </Tooltip>
+            <Tooltip
+              disabled={permissions?.is_account_admin}
+              tooltipText="You do not have permission to edit this IDP configuration."
+            >
+              <Button
+                disabled={!permissions?.is_account_admin}
+                onClick={() => setIsEditDrawerOpen(true)}
+                type="button"
+                variant="primary"
+              >
+                Edit IDP Configuration
+                {!permissions?.is_account_admin ? (
+                  <Icon icon="info-outline" size="m" />
+                ) : null}
+              </Button>
+            </Tooltip>
           </div>
         </div>
         <div className={styles.detailRow}>
@@ -142,6 +154,12 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
         idpConfigId={idpConfig.id}
         onClose={() => setIsAddCertDrawerOpen(false)}
         open={isAddCertDrawerOpen}
+      />
+      <IDPConfigDeleteConfirmation
+        idpConfigId={idpConfig.id}
+        idpConfigLabel={idpConfig.label}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        open={isDeleteDialogOpen}
       />
     </>
   );

@@ -355,12 +355,10 @@ describe('EnforcementSettings', () => {
     it('shows disabled summary when SSO is not enabled', () => {
       const { container } = renderWithTheme(<EnforcementSettings />);
 
-      const banner = container.querySelector('cds-notification-banner') as
-        | (HTMLElement & { text?: string })
-        | null;
+      const banner = container.querySelector('cds-notification-banner');
 
       expect(banner).not.toBeNull();
-      expect(banner?.text).toBe(
+      expect(banner?.textContent).toContain(
         'SSO is disabled and not enforced. All users log in using alternative methods.'
       );
     });
@@ -374,12 +372,10 @@ describe('EnforcementSettings', () => {
       const enableControl = await getSwitchControl(enableHost);
       await userEvent.click(enableControl as HTMLButtonElement);
 
-      const banner = container.querySelector('cds-notification-banner') as
-        | (HTMLElement & { text?: string })
-        | null;
+      const banner = container.querySelector('cds-notification-banner');
 
       expect(banner).not.toBeNull();
-      expect(banner?.text).toBe(
+      expect(banner?.textContent).toContain(
         'SSO is enabled but not enforced for any users. All users log in using alternative methods.'
       );
     });
@@ -399,12 +395,10 @@ describe('EnforcementSettings', () => {
       const enforceControl = await getSwitchControl(enforceHost);
       await userEvent.click(enforceControl as HTMLButtonElement);
 
-      const banner = container.querySelector('cds-notification-banner') as
-        | (HTMLElement & { text?: string })
-        | null;
+      const banner = container.querySelector('cds-notification-banner');
 
       expect(banner).not.toBeNull();
-      expect(banner?.text).toBe(
+      expect(banner?.textContent).toContain(
         'SSO is enabled and enforced. All users are required to log in with SSO. There are no excluded users (not recommended).'
       );
     });

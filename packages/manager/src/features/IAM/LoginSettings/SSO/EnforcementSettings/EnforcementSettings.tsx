@@ -210,10 +210,12 @@ export const EnforcementSettings = () => {
           <ExcludedUsersPanel excludedUsers={excludedUsersOptions} />
         </Paper>
 
-        <NotificationBanner
-          text={getSummaryStatus(formSummaryConfig, true)}
-          type="info"
-        />
+        <NotificationBanner type="info">
+          <>
+            <strong>Summary:</strong>{' '}
+            {getSummaryStatus(formSummaryConfig, true)}
+          </>
+        </NotificationBanner>
 
         {isActivationStatusDirty && (
           <Controller
