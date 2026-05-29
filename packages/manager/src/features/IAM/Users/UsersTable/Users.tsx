@@ -1,16 +1,20 @@
-import { Button, Icon, Select, Tooltip } from '@akamai/cds-components/react';
+import {
+  Button,
+  Icon,
+  Pagination,
+  Select,
+  Table,
+  TableBody,
+  Tooltip,
+} from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useAccountUsers } from '@linode/queries';
 import { getAPIFilterFromQuery } from '@linode/search';
-import { Grid, useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { Grid } from '@mui/material';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import React from 'react';
 
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField';
-import { PaginationFooter } from 'src/components/PaginationFooter/PaginationFooter';
-import { Table } from 'src/components/Table';
-import { TableBody } from 'src/components/TableBody';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
@@ -36,6 +40,8 @@ const ALL_USERS_OPTION: SelectOption = {
   value: 'all',
 };
 
+const MIN_PAGE_SIZE = 25;
+
 export const UsersLanding = () => {
   const navigate = useNavigate();
   const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
@@ -49,7 +55,6 @@ export const UsersLanding = () => {
     React.useState<boolean>(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [selectedUsername, setSelectedUsername] = React.useState('');
-  const theme = useTheme();
   const { data: permissions } = usePermissions('account', [
     'create_user',
     'view_user',
@@ -135,17 +140,6 @@ export const UsersLanding = () => {
       page_size: pagination.pageSize,
     },
   });
-
-  const isSmDown = useMediaQuery(theme.breakpoints.down('sm'));
-  const isLgDown = useMediaQuery(theme.breakpoints.up('lg'));
-
-  const numColsLg = isLgDown
-    ? isChildOrDelegateWithDelegationEnabled
-      ? 5
-      : 4
-    : 3;
-
-  const numCols = isSmDown ? 2 : numColsLg;
 
   const handleSearch = (value: string) => {
     const nextQuery = value === '' ? undefined : String(value);
@@ -256,26 +250,32 @@ export const UsersLanding = () => {
             </Tooltip>
           </Grid>
         </Grid>
-        <Table aria-label="List of Users" sx={{ tableLayout: 'fixed' }}>
+        <Table aria-label="List of Users">
           <UsersLandingTableHead order={order} />
           <TableBody>
             <UsersLandingTableBody
               error={error}
               isLoading={isLoading}
-              numCols={numCols}
               onDelete={handleDelete}
               users={users?.data ?? []}
             />
           </TableBody>
         </Table>
-        <PaginationFooter
-          count={users?.results ?? 0}
-          eventCategory="users landing"
-          handlePageChange={pagination.handlePageChange}
-          handleSizeChange={pagination.handlePageSizeChange}
-          page={pagination.page}
-          pageSize={pagination.pageSize}
-        />
+        {users?.results && users.results > MIN_PAGE_SIZE ? (
+          <Pagination
+            count={users?.results ?? 0}
+            onPageChange={(e: CustomEvent<number>) =>
+              pagination.handlePageChange(Number(e.detail))
+            }
+            onPageSizeChange={(
+              e: CustomEvent<{ page: number; pageSize: number }>
+            ) => pagination.handlePageSizeChange(Number(e.detail.pageSize))}
+            page={pagination.page}
+            pageSize={pagination.pageSize}
+            pageSizes={[MIN_PAGE_SIZE, 50, 75, 100]}
+            style={{ borderBottom: 0 }}
+          />
+        ) : null}
       </Paper>
       <CreateUserDrawer
         onClose={() => setIsCreateDrawerOpen(false)}

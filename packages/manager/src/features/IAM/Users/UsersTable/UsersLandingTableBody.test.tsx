@@ -8,9 +8,37 @@ import { UsersLandingTableBody } from './UsersLandingTableBody';
 import type { APIError } from '@linode/api-v4';
 
 const mockOnDelete = vi.fn();
-const numCols = 3;
+
+const queryMocks = vi.hoisted(() => ({
+  useProfile: vi.fn().mockReturnValue({ data: { restricted: false } }),
+}));
+
+vi.mock('src/OAuth/oauthClient', () => ({
+  getIsAdminToken: vi.fn(),
+  oauthClient: {},
+}));
+
+vi.mock('@linode/queries', async () => {
+  const actual = await vi.importActual('@linode/queries');
+  return {
+    ...actual,
+    useProfile: queryMocks.useProfile,
+  };
+});
+
+vi.mock('./UserRow', () => ({
+  UserRow: ({ user }: { user: { username: string } }) => (
+    <tr data-testid={`user-row-${user.username}`}>
+      <td>{user.username}</td>
+    </tr>
+  ),
+}));
 
 describe('UsersLandingTableBody', () => {
+  beforeEach(() => {
+    queryMocks.useProfile.mockReturnValue({ data: { restricted: false } });
+  });
+
   it('renders loading state', async () => {
     const { getByTestId } = renderWithTheme(
       <table>
@@ -18,7 +46,6 @@ describe('UsersLandingTableBody', () => {
           <UsersLandingTableBody
             error={null}
             isLoading={true}
-            numCols={numCols}
             onDelete={mockOnDelete}
             users={undefined}
           />
@@ -43,7 +70,6 @@ describe('UsersLandingTableBody', () => {
           <UsersLandingTableBody
             error={error}
             isLoading={false}
-            numCols={numCols}
             onDelete={mockOnDelete}
             users={undefined}
           />
@@ -56,13 +82,12 @@ describe('UsersLandingTableBody', () => {
   });
 
   it('renders empty state', async () => {
-    const { getByTestId } = renderWithTheme(
+    const { getByText } = renderWithTheme(
       <table>
         <tbody>
           <UsersLandingTableBody
             error={null}
             isLoading={false}
-            numCols={numCols}
             onDelete={mockOnDelete}
             users={[]}
           />
@@ -70,12 +95,11 @@ describe('UsersLandingTableBody', () => {
       </table>
     );
 
-    const emptyRow = getByTestId('table-row-empty');
-    expect(emptyRow).toBeInTheDocument();
+    expect(getByText('No users found')).toBeInTheDocument();
   });
 
-  it('renders user rows', async () => {
-    const users = accountUserFactory.buildList(3);
+  it('renders restricted empty state', async () => {
+    queryMocks.useProfile.mockReturnValue({ data: { restricted: true } });
 
     const { getByText } = renderWithTheme(
       <table>
@@ -83,7 +107,27 @@ describe('UsersLandingTableBody', () => {
           <UsersLandingTableBody
             error={null}
             isLoading={false}
-            numCols={numCols}
+            onDelete={mockOnDelete}
+            users={[]}
+          />
+        </tbody>
+      </table>
+    );
+
+    expect(
+      getByText(/You do not have permission to list users/)
+    ).toBeInTheDocument();
+  });
+
+  it('renders user rows', async () => {
+    const users = accountUserFactory.buildList(3);
+
+    const { getByTestId } = renderWithTheme(
+      <table>
+        <tbody>
+          <UsersLandingTableBody
+            error={null}
+            isLoading={false}
             onDelete={mockOnDelete}
             users={users}
           />
@@ -91,7 +135,8 @@ describe('UsersLandingTableBody', () => {
       </table>
     );
 
-    expect(getByText('user-7')).toBeInTheDocument();
-    expect(getByText('user-6')).toBeInTheDocument();
+    users.forEach((user) => {
+      expect(getByTestId(`user-row-${user.username}`)).toBeInTheDocument();
+    });
   });
 });

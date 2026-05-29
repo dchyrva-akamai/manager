@@ -1,4 +1,9 @@
-import { Icon, Tooltip } from '@akamai/cds-components/react';
+import {
+  Icon,
+  TableCell,
+  TableRow,
+  Tooltip,
+} from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { capitalize, truncateEnd } from '@akamai/compute-ui-core/formatting';
 import { useProfile } from '@linode/queries';
@@ -8,11 +13,7 @@ import React from 'react';
 
 import { Avatar } from 'src/components/Avatar/Avatar';
 import { DateTimeDisplay } from 'src/components/DateTimeDisplay';
-import { TableCell } from 'src/components/TableCell';
-import { TableRow } from 'src/components/TableRow';
 
-import { useDelegationRole } from '../../hooks/useDelegationRole';
-import { useIsIAMDelegationEnabled } from '../../hooks/useIsIAMEnabled';
 import { usePermissions } from '../../hooks/usePermissions';
 import {
   IAM_CHILD_USERS_PENDO_IDS,
@@ -23,6 +24,10 @@ import { Link } from '../../Shared/Link/Link';
 import { MaskableText } from '../../Shared/MaskableText/MaskableText';
 import { StatusIcon } from '../../Shared/StatusIcon/StatusIcon';
 import { UsersActionMenu } from './UsersActionMenu';
+import {
+  getUsersTableCellStyle,
+  useUsersTableColumns,
+} from './usersTableColumnsUtils';
 
 import type { User } from '@linode/api-v4';
 
@@ -33,6 +38,13 @@ interface Props {
 
 export const UserRow = ({ onDelete, user }: Props) => {
   const theme = useTheme();
+  const {
+    columnWidths,
+    isChildOrDelegateWithDelegationEnabled,
+    showEmail,
+    showLastLogin,
+    showUserType,
+  } = useUsersTableColumns();
 
   const { data: profile } = useProfile();
   const { data: permissions } = usePermissions('account', [
@@ -41,19 +53,11 @@ export const UserRow = ({ onDelete, user }: Props) => {
     'view_user',
   ]);
 
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
-  const { isChildUserType, isDelegateUserType } = useDelegationRole();
-
   const canViewUser = permissions.view_user;
 
-  // Determine if the current user is a child or delegate profile with isIAMDelegationEnabled enabled
-  // If so, we need to show the 'User type' column in the table
-  const isChildOrDelegateWithDelegationEnabled =
-    isIAMDelegationEnabled && (isChildUserType || isDelegateUserType);
-
   return (
-    <TableRow data-qa-table-row={user.username} key={user.username}>
-      <TableCell>
+    <TableRow data-qa-table-row={user.username} key={user.username} zebra>
+      <TableCell style={getUsersTableCellStyle(columnWidths.username)}>
         <Stack alignItems="center" direction="row" spacing={1.5}>
           <Avatar
             color={
@@ -98,32 +102,30 @@ export const UserRow = ({ onDelete, user }: Props) => {
           {user.tfa_enabled && <Chip color="success" label="2FA" />}
         </Stack>
       </TableCell>
-      {isChildOrDelegateWithDelegationEnabled && (
-        <TableCell sx={{ display: { lg: 'table-cell', xs: 'none' } }}>
+      {showUserType && (
+        <TableCell style={getUsersTableCellStyle(columnWidths.userType)}>
           <Typography>
             {user.user_type === 'child' ? 'User' : 'Delegate User'}
           </Typography>
         </TableCell>
       )}
-      <TableCell
-        sx={{
-          '& > p': { overflow: 'hidden', textOverflow: 'ellipsis' },
-          display: { sm: 'table-cell', xs: 'none' },
-        }}
-      >
-        <UserEmailContent
-          isChildOrDelegateWithDelegationEnabled={
-            isChildOrDelegateWithDelegationEnabled
-          }
-          userEmail={user.email}
-          userType={user.user_type}
-        />
-      </TableCell>
-      <TableCell sx={{ display: { lg: 'table-cell', xs: 'none' } }}>
-        <LastLogin last_login={user.last_login} user_type={user.user_type} />
-      </TableCell>
-
-      <TableCell actionCell>
+      {showEmail ? (
+        <TableCell style={getUsersTableCellStyle(columnWidths.email)}>
+          <UserEmailContent
+            isChildOrDelegateWithDelegationEnabled={
+              isChildOrDelegateWithDelegationEnabled
+            }
+            userEmail={user.email}
+            userType={user.user_type}
+          />
+        </TableCell>
+      ) : null}
+      {showLastLogin ? (
+        <TableCell style={getUsersTableCellStyle(columnWidths.lastLogin)}>
+          <LastLogin last_login={user.last_login} user_type={user.user_type} />
+        </TableCell>
+      ) : null}
+      <TableCell style={getUsersTableCellStyle(columnWidths.actions)}>
         <UsersActionMenu
           onDelete={onDelete}
           permissions={permissions}
@@ -186,7 +188,17 @@ const UserEmailContent = ({
   userType: User['user_type'];
 }) => {
   if (!isChildOrDelegateWithDelegationEnabled || userType === 'child') {
-    return <MaskableText isToggleable text={userEmail} />;
+    return (
+      <MaskableText
+        isToggleable
+        styleTypography={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          margin: 0,
+        }}
+        text={userEmail}
+      />
+    );
   }
 
   return (
