@@ -1,15 +1,6 @@
-import { IP_ERROR_MESSAGE } from '@akamai/compute-ui-core/api';
 import { PRIVATE_IPV4_REGEX } from '@linode/validation';
-import { parseCIDR, parse as parseIP } from 'ipaddr.js';
 
 import type { PrefixListRuleReference } from 'src/features/Firewalls/shared';
-
-/**
- * Removes the prefix length from the end of an IPv6 address.
- *
- * @param ip The IPv6 address to remove the prefix length from.
- */
-export const removePrefixLength = (ip: string) => ip.replace(/\/\d+/, '');
 
 /**
  * Determines if an IPv4 address is private
@@ -25,35 +16,3 @@ export interface ExtendedIP {
 }
 
 export interface ExtendedPL extends ExtendedIP, PrefixListRuleReference {}
-
-export const stringToExtendedIP = (ip: string): ExtendedIP => ({ address: ip });
-
-// Adds an `error` message to each invalid IP in the list.
-export const validateIPs = (
-  ips: ExtendedIP[],
-  options?: {
-    allowEmptyAddress?: boolean;
-    errorMessage?: string;
-  }
-): ExtendedIP[] => {
-  return ips.map(({ address }) => {
-    if (!options?.allowEmptyAddress && !address) {
-      return { address, error: 'Enter an IP address.' };
-    }
-    // We accept plain IPs as well as ranges (i.e. CIDR notation). Ipaddr.js has separate parsing
-    // methods for each, so we check for a netmask to decide the method to use.
-    const [, mask] = address.split('/');
-    try {
-      if (mask) {
-        parseCIDR(address);
-      } else {
-        parseIP(address);
-      }
-    } catch (err) {
-      if (address) {
-        return { address, error: options?.errorMessage ?? IP_ERROR_MESSAGE };
-      }
-    }
-    return { address };
-  });
-};

@@ -1,6 +1,6 @@
 import { NotificationBanner } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
-import { ipV6FieldPlaceholder } from '@akamai/compute-ui-core/api';
+import { ipV6FieldPlaceholder, validateIPs } from '@akamai/compute-ui-core/api';
 import {
   FormControlLabel,
   Radio,
@@ -17,7 +17,6 @@ import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { Link } from 'src/components/Link';
 import { MultipleIPInput } from 'src/components/MultipleIPInput/MultipleIPInput';
 import { enforceIPMasks } from 'src/features/Firewalls/FirewallDetail/Rules/FirewallRuleDrawer.utils';
-import { validateIPs } from 'src/utilities/ipUtils';
 
 import { ACCESS_CONTROLS_IP_VALIDATION_ERROR_TEXT } from '../constants';
 

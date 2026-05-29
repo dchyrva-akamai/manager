@@ -1,9 +1,12 @@
-import { IP_ERROR_MESSAGE } from '@akamai/compute-ui-core/api';
+import {
+  IP_ERROR_MESSAGE,
+  stringToExtendedIP,
+} from '@akamai/compute-ui-core/api';
 import {
   CUSTOM_PORTS_ERROR_MESSAGE,
   isCustomPortsValid,
 } from '@linode/validation';
-import { parseCIDR, parse as parseIP } from 'ipaddr.js';
+import { parse as parseIP } from 'ipaddr.js';
 
 import {
   allIPs,
@@ -17,7 +20,6 @@ import {
   buildPrefixListReferenceMap,
   predefinedFirewallFromRule,
 } from 'src/features/Firewalls/shared';
-import { stringToExtendedIP } from 'src/utilities/ipUtils';
 
 import { PORT_PRESETS, sortString } from './shared';
 
@@ -114,28 +116,6 @@ export const formValueToIPs = (
       return result;
     }
   }
-};
-
-// Adds an `error` message to each invalid IP in the list.
-export const validateIPs = (
-  ips: ExtendedIP[],
-  options?: { allowEmptyAddress: boolean }
-): ExtendedIP[] => {
-  return ips.map(({ address }) => {
-    if (!options?.allowEmptyAddress && !address) {
-      return { address, error: 'Please enter an IP address.' };
-    }
-    // We accept IP ranges (i.e., CIDR notation). By the time this function is run,
-    // IP masks will have been enforced by enforceIPMasks().
-    try {
-      parseCIDR(address);
-    } catch (err) {
-      if (address) {
-        return { address, error: IP_ERROR_MESSAGE };
-      }
-    }
-    return { address };
-  });
 };
 
 export const validatePrefixLists = (pls: ExtendedPL[]): ExtendedPL[] => {

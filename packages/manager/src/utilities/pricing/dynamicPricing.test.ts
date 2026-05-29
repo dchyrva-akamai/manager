@@ -1,16 +1,10 @@
-import { UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
-
 import {
   lkeHighAvailabilityTypeFactory,
   nodeBalancerTypeFactory,
   volumeTypeFactory,
 } from 'src/factories/types';
 
-import {
-  getDCSpecificPrice,
-  getDCSpecificPriceByType,
-  renderMonthlyPriceToCorrectDecimalPlace,
-} from './dynamicPricing';
+import { getDCSpecificPrice, getDCSpecificPriceByType } from './dynamicPricing';
 
 describe('getDCSpecificPricingDisplay', () => {
   it('calculates dynamic pricing for a region without an increase', () => {
@@ -147,25 +141,5 @@ describe('getDCSpecificPricingByType', () => {
         type: mockNodeBalancerType,
       })
     ).toBe(undefined);
-  });
-});
-
-describe('renderMonthlyPriceToCorrectDecimalPlace', () => {
-  it('renders monthly price to two decimal places if the price includes a decimal', () => {
-    expect(renderMonthlyPriceToCorrectDecimalPlace(12.2)).toBe('12.20');
-  });
-
-  it('renders monthly price as an integer if the price does not include a decimal', () => {
-    expect(renderMonthlyPriceToCorrectDecimalPlace(12)).toBe(12);
-  });
-
-  it('renders monthly price as --.-- (unknown price) if the price is undefined', () => {
-    expect(renderMonthlyPriceToCorrectDecimalPlace(undefined)).toBe(
-      UNKNOWN_PRICE
-    );
-  });
-
-  it('renders monthly price as --.-- (unknown price) if the price is null', () => {
-    expect(renderMonthlyPriceToCorrectDecimalPlace(null)).toBe(UNKNOWN_PRICE);
   });
 });

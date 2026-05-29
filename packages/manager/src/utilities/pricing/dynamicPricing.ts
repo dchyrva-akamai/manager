@@ -1,4 +1,4 @@
-import { priceIncreaseMap, UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
+import { priceIncreaseMap } from '@akamai/compute-ui-core/api';
 
 import type { PriceType, Region, RegionPriceObject } from '@linode/api-v4';
 
@@ -111,15 +111,4 @@ export const getDCSpecificPriceByType = ({
   }
 
   return price?.toFixed(decimalPrecision) ?? undefined;
-};
-
-export const renderMonthlyPriceToCorrectDecimalPlace = (
-  monthlyPrice: null | number | undefined
-) => {
-  if (typeof monthlyPrice !== 'number') {
-    return UNKNOWN_PRICE;
-  }
-  return Number.isInteger(monthlyPrice)
-    ? monthlyPrice
-    : monthlyPrice.toFixed(2);
 };

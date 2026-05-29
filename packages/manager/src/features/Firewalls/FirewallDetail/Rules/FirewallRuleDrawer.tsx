@@ -1,3 +1,4 @@
+import { validateIPs } from '@akamai/compute-ui-core/api';
 import { capitalize } from '@akamai/compute-ui-core/formatting';
 import { Drawer, Notice, Radio, Typography } from '@linode/ui';
 import { Grid } from '@mui/material';
@@ -17,7 +18,6 @@ import {
   itemsToPortString,
   portStringToItems,
   validateForm,
-  validateIPs,
   validatePrefixLists,
 } from './FirewallRuleDrawer.utils';
 import { FirewallRuleForm } from './FirewallRuleForm';

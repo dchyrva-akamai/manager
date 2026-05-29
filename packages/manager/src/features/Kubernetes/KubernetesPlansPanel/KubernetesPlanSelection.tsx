@@ -1,4 +1,8 @@
-import { convertMegabytesTo, UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
+import {
+  convertMegabytesTo,
+  renderMonthlyPriceToCorrectDecimalPlace,
+  UNKNOWN_PRICE,
+} from '@akamai/compute-ui-core/api';
 import { Box, Button, Chip } from '@linode/ui';
 import { Hidden } from '@linode/ui';
 import Grid from '@mui/material/Grid';
@@ -16,7 +20,6 @@ import {
   MAX_NODES_PER_POOL_STANDARD_TIER,
 } from 'src/features/Kubernetes/constants';
 import { PRICE_ERROR_TOOLTIP_TEXT } from 'src/utilities/pricing/constants';
-import { renderMonthlyPriceToCorrectDecimalPlace } from 'src/utilities/pricing/dynamicPricing';
 import { getLinodeRegionPrice } from 'src/utilities/pricing/linodes';
 
 import { useIsLkeEnterpriseEnabled } from '../kubeUtils';

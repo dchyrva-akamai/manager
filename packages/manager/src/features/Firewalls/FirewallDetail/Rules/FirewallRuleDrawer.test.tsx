@@ -1,4 +1,7 @@
-import { IP_ERROR_MESSAGE } from '@akamai/compute-ui-core/api';
+import {
+  IP_ERROR_MESSAGE,
+  stringToExtendedIP,
+} from '@akamai/compute-ui-core/api';
 import { capitalize } from '@akamai/compute-ui-core/formatting';
 import { within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -6,7 +9,6 @@ import * as React from 'react';
 
 import { firewallRuleSetFactory } from 'src/factories';
 import { allIPs } from 'src/features/Firewalls/shared';
-import { stringToExtendedIP } from 'src/utilities/ipUtils';
 import { renderWithTheme } from 'src/utilities/testHelpers';
 
 import * as shared from '../../shared';
@@ -19,7 +21,6 @@ import {
   itemsToPortString,
   portStringToItems,
   validateForm,
-  validateIPs,
 } from './FirewallRuleDrawer.utils';
 import { PORT_PRESETS, RULESET_MARKED_FOR_DELETION_TEXT } from './shared';
 
@@ -320,17 +321,6 @@ describe('utilities', () => {
       ).toEqual({
         ipv4: ['1.1.1.1'],
       });
-    });
-  });
-
-  describe('validateIPs', () => {
-    it('adds errors to invalid IPs', () => {
-      expect(
-        validateIPs(['1.1.1.1/32', 'invalid-IP'].map(stringToExtendedIP))
-      ).toEqual([
-        { address: '1.1.1.1/32' },
-        { address: 'invalid-IP', error: IP_ERROR_MESSAGE },
-      ]);
     });
   });
 
