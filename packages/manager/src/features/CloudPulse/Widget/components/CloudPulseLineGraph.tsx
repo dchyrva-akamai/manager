@@ -27,6 +27,7 @@ export interface CloudPulseLineGraph extends AreaChartProps {
     left: 'dataMin' | number,
     right: 'dataMax' | number
   ) => void;
+  widgetLabel: string;
   zoomResetKey: string;
 }
 
@@ -40,6 +41,7 @@ export const CloudPulseLineGraph = React.memo((props: CloudPulseLineGraph) => {
     zoomResetKey,
     onZoomChange,
     showLegend,
+    widgetLabel,
     ...rest
   } = props;
   const flags = useFlags();
@@ -121,6 +123,7 @@ export const CloudPulseLineGraph = React.memo((props: CloudPulseLineGraph) => {
           {isZoomed && (
             <Button
               buttonType="primary"
+              data-pendo-id={`cloudpulse-widget-reset-zoomin-${widgetLabel}`}
               data-qa-buttons
               onClick={resetZoom}
               sx={(theme) => ({

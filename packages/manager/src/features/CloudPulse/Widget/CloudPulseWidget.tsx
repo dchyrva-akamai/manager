@@ -669,6 +669,7 @@ export const CloudPulseWidget = (props: CloudPulseWidgetProperties) => {
             timezone={timezone}
             unit={`${currentUnit}${unit.endsWith('ps') ? '/s' : ''}`}
             variant={variant}
+            widgetLabel={widget.label}
             xAxis={{ tickFormat, tickGap: 60 }}
             zoomResetKey={
               zoomResetKey // key to reset zoom when duration changes
