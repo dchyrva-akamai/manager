@@ -507,7 +507,6 @@ interface Context {
   taxID: string;
 }
 
-
 export const featureFlagClient = new FeatureFlagClient<FlagSet, Context>({
   provider: launchDarklyProvider({
     clientId: LAUNCH_DARKLY_API_KEY,
@@ -515,7 +514,7 @@ export const featureFlagClient = new FeatureFlagClient<FlagSet, Context>({
 });
 
 export const FeatureFlagContext =
-  React.createContext<FeatureFlagClient<FlagSet, Context>>(null as unknown as FeatureFlagClient<FlagSet, Context>);
+  React.createContext<FeatureFlagClient<FlagSet, Context>>(featureFlagClient);
 
 interface Props {
   children: React.ReactNode;
