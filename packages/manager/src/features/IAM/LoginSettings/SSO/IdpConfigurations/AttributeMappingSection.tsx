@@ -9,7 +9,10 @@ import * as React from 'react';
 import { Controller } from 'react-hook-form';
 import type { Control, UseFormWatch } from 'react-hook-form';
 
-import { idpConfiguration } from '../../constants';
+import {
+  ATTRIBUTE_MAPPING_DESCRIPTION,
+  ATTRIBUTE_NAME_HELPER_TEXT,
+} from '../../constants';
 import styles from './IdpConfigurationDrawer.module.css';
 import {
   type IdentityElementOption,
@@ -28,41 +31,40 @@ export const AttributeMappingSection = ({ control, watch }: Props) => {
     <>
       <h3 className={styles.sectionHeading}>Attribute Mapping</h3>
       <p className={styles.sectionDescription}>
-        {idpConfiguration.attributeMappingDescription}
+        {ATTRIBUTE_MAPPING_DESCRIPTION}
       </p>
 
       <Controller
         control={control}
         name="saml.identity_element"
         render={({ field, fieldState }) => (
-          <>
-            <FormLabel className={styles.formLabel}>Identity Element</FormLabel>
-            <FormField
-              className={styles.formFieldSelect}
-              error={!!fieldState.error}
-            >
-              <Select
-                items={identityElementOptions}
-                onChange={(event) => {
-                  const selected = (event as CustomEvent)
-                    .detail as IdentityElementOption | null;
-                  if (selected) {
-                    field.onChange(selected.value);
-                  }
-                }}
-                placeholder="Select identity element"
-                selected={
-                  identityElementOptions.find(
-                    (opt) => opt.value === field.value
-                  ) ?? null
+          <FormField
+            className={styles.formFieldSelect}
+            error={!!fieldState.error}
+            label-position="top"
+          >
+            <FormLabel slot="label">Identity Element</FormLabel>
+            <Select
+              items={identityElementOptions}
+              onChange={(event) => {
+                const selected = (event as CustomEvent)
+                  .detail as IdentityElementOption | null;
+                if (selected) {
+                  field.onChange(selected.value);
                 }
-                valueFn={(item) => (item as IdentityElementOption).label}
-              />
-              {fieldState.error && (
-                <FormError>{fieldState.error.message}</FormError>
-              )}
-            </FormField>
-          </>
+              }}
+              placeholder="Select identity element"
+              selected={
+                identityElementOptions.find(
+                  (opt) => opt.value === field.value
+                ) ?? null
+              }
+              valueFn={(item) => (item as IdentityElementOption).label}
+            />
+            {fieldState.error && (
+              <FormError>{fieldState.error.message}</FormError>
+            )}
+          </FormField>
         )}
       />
 
@@ -71,25 +73,22 @@ export const AttributeMappingSection = ({ control, watch }: Props) => {
           control={control}
           name="saml.user_id_attribute"
           render={({ field, fieldState }) => (
-            <>
-              <FormLabel className={styles.formLabel}>Attribute Name</FormLabel>
-              <FormField
-                className={styles.formFieldText}
-                error={!!fieldState.error}
-              >
-                <TextField
-                  onChange={field.onChange}
-                  placeholder="Enter an attribute name"
-                  value={field.value ?? ''}
-                />
-                {fieldState.error && (
-                  <FormError>{fieldState.error.message}</FormError>
-                )}
-                <p className={styles.helperText}>
-                  {idpConfiguration.attributeNameHelperText}
-                </p>
-              </FormField>
-            </>
+            <FormField
+              className={styles.formFieldText}
+              error={!!fieldState.error}
+              label-position="top"
+            >
+              <FormLabel slot="label">Attribute Name</FormLabel>
+              <TextField
+                onChange={field.onChange}
+                placeholder="Enter an attribute name"
+                value={field.value ?? ''}
+              />
+              {fieldState.error && (
+                <FormError>{fieldState.error.message}</FormError>
+              )}
+              <p className={styles.helperText}>{ATTRIBUTE_NAME_HELPER_TEXT}</p>
+            </FormField>
           )}
         />
       )}

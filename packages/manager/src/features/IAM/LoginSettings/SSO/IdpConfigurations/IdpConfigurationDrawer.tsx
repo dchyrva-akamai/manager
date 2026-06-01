@@ -22,7 +22,12 @@ import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import type { Resolver } from 'react-hook-form';
 
-import { idpConfiguration } from '../../constants';
+import {
+  ALL_CERTIFICATES_DELETED_ERROR,
+  CREATE_SUCCESS,
+  IDENTITY_PROVIDER_DESCRIPTION,
+  UPDATE_SUCCESS,
+} from '../../constants';
 import { AttributeMappingSection } from './AttributeMappingSection';
 import { CertificatesSection } from './CertificatesSection';
 import styles from './IdpConfigurationDrawer.module.css';
@@ -126,7 +131,7 @@ export const IdpConfigurationDrawer = ({
 
       if (remainingExisting.length === 0 && newCerts.length === 0) {
         setError('root', {
-          message: idpConfiguration.allCertificatesDeletedError,
+          message: ALL_CERTIFICATES_DELETED_ERROR,
         });
         return;
       }
@@ -146,12 +151,9 @@ export const IdpConfigurationDrawer = ({
       } else {
         await createIdpConfig(payload);
       }
-      enqueueSnackbar(
-        isEdit
-          ? idpConfiguration.updateSuccess
-          : idpConfiguration.createSuccess,
-        { variant: 'success' }
-      );
+      enqueueSnackbar(isEdit ? UPDATE_SUCCESS : CREATE_SUCCESS, {
+        variant: 'success',
+      });
       handleClose();
     } catch (errors) {
       const apiErrors = Array.isArray(errors) ? errors : [];
@@ -215,22 +217,21 @@ export const IdpConfigurationDrawer = ({
           control={control}
           name="label"
           render={({ field, fieldState }) => (
-            <>
-              <FormLabel className={styles.formLabel}>Label</FormLabel>
-              <FormField
-                className={styles.formFieldText}
-                error={!!fieldState.error}
-              >
-                <TextField
-                  onChange={field.onChange}
-                  placeholder="Enter a label"
-                  value={field.value}
-                />
-                {fieldState.error && (
-                  <FormError>{fieldState.error.message}</FormError>
-                )}
-              </FormField>
-            </>
+            <FormField
+              className={styles.formFieldText}
+              error={!!fieldState.error}
+              label-position="top"
+            >
+              <FormLabel slot="label">Label</FormLabel>
+              <TextField
+                onChange={field.onChange}
+                placeholder="Enter a label"
+                value={field.value}
+              />
+              {fieldState.error && (
+                <FormError>{fieldState.error.message}</FormError>
+              )}
+            </FormField>
           )}
         />
 
@@ -241,29 +242,28 @@ export const IdpConfigurationDrawer = ({
           Identity provider details
         </h3>
         <p className={styles.sectionDescription}>
-          {idpConfiguration.identityProviderDescription}
+          {IDENTITY_PROVIDER_DESCRIPTION}
         </p>
 
         <Controller
           control={control}
           name="saml.entity_id"
           render={({ field, fieldState }) => (
-            <>
-              <FormLabel className={styles.formLabel}>Entity ID</FormLabel>
-              <FormField
-                className={styles.formFieldTextSpaced}
-                error={!!fieldState.error}
-              >
-                <TextField
-                  onChange={field.onChange}
-                  placeholder="Enter an entity ID"
-                  value={field.value}
-                />
-                {fieldState.error && (
-                  <FormError>{fieldState.error.message}</FormError>
-                )}
-              </FormField>
-            </>
+            <FormField
+              className={styles.formFieldTextSpaced}
+              error={!!fieldState.error}
+              label-position="top"
+            >
+              <FormLabel slot="label">Entity ID</FormLabel>
+              <TextField
+                onChange={field.onChange}
+                placeholder="Enter an entity ID"
+                value={field.value}
+              />
+              {fieldState.error && (
+                <FormError>{fieldState.error.message}</FormError>
+              )}
+            </FormField>
           )}
         />
 
@@ -271,22 +271,21 @@ export const IdpConfigurationDrawer = ({
           control={control}
           name="saml.idp_url"
           render={({ field, fieldState }) => (
-            <>
-              <FormLabel className={styles.formLabel}>IDP URL</FormLabel>
-              <FormField
-                className={styles.formFieldText}
-                error={!!fieldState.error}
-              >
-                <TextField
-                  onChange={field.onChange}
-                  placeholder="Enter an IDP URL"
-                  value={field.value}
-                />
-                {fieldState.error && (
-                  <FormError>{fieldState.error.message}</FormError>
-                )}
-              </FormField>
-            </>
+            <FormField
+              className={styles.formFieldText}
+              error={!!fieldState.error}
+              label-position="top"
+            >
+              <FormLabel slot="label">IDP URL</FormLabel>
+              <TextField
+                onChange={field.onChange}
+                placeholder="Enter an IDP URL"
+                value={field.value}
+              />
+              {fieldState.error && (
+                <FormError>{fieldState.error.message}</FormError>
+              )}
+            </FormField>
           )}
         />
 

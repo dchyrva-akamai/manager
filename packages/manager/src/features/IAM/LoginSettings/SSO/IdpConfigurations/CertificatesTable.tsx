@@ -16,11 +16,12 @@ import { DateTimeDisplay } from 'src/features/IAM/Shared/DateTimeDisplay';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 
 import { StatusIcon } from '../../../Shared/StatusIcon/StatusIcon';
-import { idpConfiguration } from '../../constants';
+import { ALL_CERTIFICATES_DELETED_ERROR } from '../../constants';
 import styles from './CertificatesTable.module.css';
 import CertificateTableLandingRow from './CertificateTableLandingRow';
+import idpConfigurationDrawerStyles from './IdpConfigurationDrawer.module.css';
 import { getCertificateStatus } from './idpConfigurationDrawer.utils';
-import idpConfigurationStyles from './IdpConfigurations.module.css';
+import { NoCertificates } from './NoCertificates';
 
 import type { IdpCertificate } from '@linode/api-v4';
 
@@ -38,8 +39,14 @@ interface LandingModeProps {
 }
 
 type Props = EditModeProps | LandingModeProps;
+interface ExtraProps {
+  activeCertificateCount?: number;
+  ssoEnabled?: boolean;
+}
 
-export const CertificatesTable = (props: Props) => {
+type CombinedProps = Props & ExtraProps;
+
+export const CertificatesTable = (props: CombinedProps) => {
   const { certificates, mode } = props;
   const isLandingMode = mode === 'landing';
 
@@ -79,7 +86,7 @@ export const CertificatesTable = (props: Props) => {
   return (
     <>
       {!isLandingMode && (
-        <h3 className={idpConfigurationStyles.sectionHeading}>
+        <h3 className={idpConfigurationDrawerStyles.sectionHeading}>
           SAML Certificates
         </h3>
       )}
@@ -121,78 +128,92 @@ export const CertificatesTable = (props: Props) => {
         </TableHead>
 
         <TableBody>
-          {sortedCertificates.map((cert, index) => {
-            const status = getCertificateStatus(cert.not_after);
-            const isLastRow = index === sortedCertificates.length - 1;
-
-            if (isLandingMode) {
-              return (
-                <CertificateTableLandingRow
-                  cert={cert}
-                  isMobileScreen={isMobileScreen}
-                  isSmallScreen={isSmallScreen}
-                  key={cert.id}
-                  status={status}
+          {isLandingMode && sortedCertificates.length === 0 ? (
+            <TableRow rowborder>
+              <TableCell className={styles.emptyStateCell}>
+                <NoCertificates
+                  idpConfigId={(props as LandingModeProps).idpConfigId}
                 />
-              );
-            }
+              </TableCell>
+            </TableRow>
+          ) : (
+            sortedCertificates.map((cert, index) => {
+              const status = getCertificateStatus(cert.not_after);
+              const isLastRow = index === sortedCertificates.length - 1;
 
-            const isDeleted = props.deletedIds.has(cert.id);
-
-            return (
-              <TableRow
-                hoverable
-                key={cert.id}
-                rowborder={!(allDeleted && isLastRow)}
-              >
-                <TableCell
-                  className={`${styles.certCell} ${
-                    isDeleted ? styles.deletedCell : ''
-                  }`}
-                >
-                  {truncateMiddle(cert.certificate, 24)}
-                </TableCell>
-
-                <TableCell className={styles.expirationCell}>
-                  <StatusIcon
-                    className={isDeleted ? styles.deletedOpacity : undefined}
-                    pulse={false}
+              if (isLandingMode) {
+                return (
+                  <CertificateTableLandingRow
+                    activeCertificateCount={props.activeCertificateCount}
+                    cert={cert}
+                    idpConfigId={props.idpConfigId}
+                    isMobileScreen={isMobileScreen}
+                    isSmallScreen={isSmallScreen}
+                    key={cert.id}
+                    ssoEnabled={props.ssoEnabled}
                     status={status}
-                    style={{ marginRight: Spacing.S0 }}
+                    totalCertificateCount={certificates.length}
                   />
+                );
+              }
 
-                  <DateTimeDisplay
-                    className={isDeleted ? styles.deletedCell : undefined}
-                    displayTime={false}
-                    value={cert.not_after}
-                  />
-                </TableCell>
+              const isDeleted = props.deletedIds.has(cert.id);
 
-                <TableCell className={styles.actionCell}>
-                  <Button
-                    onClick={() => props.onToggleDelete(cert.id)}
-                    style={{ lineHeight: 1 }}
-                    type="button"
-                    variant="link"
+              return (
+                <TableRow
+                  hoverable
+                  key={cert.id}
+                  rowborder={!(allDeleted && isLastRow)}
+                >
+                  <TableCell
+                    className={`${styles.certCell} ${
+                      isDeleted ? styles.deletedCell : ''
+                    }`}
                   >
-                    {isDeleted ? (
-                      <>
-                        <Icon icon="undo" size="xs" /> Undo
-                      </>
-                    ) : (
-                      'Delete'
-                    )}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            );
-          })}
+                    {truncateMiddle(cert.certificate, 24)}
+                  </TableCell>
+
+                  <TableCell className={styles.expirationCell}>
+                    <StatusIcon
+                      className={isDeleted ? styles.deletedOpacity : undefined}
+                      pulse={false}
+                      status={status}
+                      style={{ marginRight: Spacing.S0 }}
+                    />
+
+                    <DateTimeDisplay
+                      className={isDeleted ? styles.deletedCell : undefined}
+                      displayTime={false}
+                      value={cert.not_after}
+                    />
+                  </TableCell>
+
+                  <TableCell className={styles.actionCell}>
+                    <Button
+                      onClick={() => props.onToggleDelete(cert.id)}
+                      style={{ lineHeight: 1 }}
+                      type="button"
+                      variant="link"
+                    >
+                      {isDeleted ? (
+                        <>
+                          <Icon icon="undo" size="xs" /> Undo
+                        </>
+                      ) : (
+                        'Delete'
+                      )}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })
+          )}
         </TableBody>
       </Table>
 
       {allDeleted && (
         <FormError className={styles.tableErrorMessage}>
-          {idpConfiguration.allCertificatesDeletedError}
+          {ALL_CERTIFICATES_DELETED_ERROR}
         </FormError>
       )}
     </>

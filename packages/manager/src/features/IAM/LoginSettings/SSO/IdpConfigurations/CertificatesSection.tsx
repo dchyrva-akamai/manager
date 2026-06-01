@@ -11,7 +11,7 @@ import * as React from 'react';
 import { Controller, useFieldArray } from 'react-hook-form';
 import type { Control } from 'react-hook-form';
 
-import { idpConfiguration } from '../../constants';
+import { ADD_BUTTON_MAX_TOOLTIP } from '../../constants';
 import { CertificatesTable } from './CertificatesTable';
 import styles from './IdpConfigurationDrawer.module.css';
 
@@ -68,50 +68,49 @@ export const CertificatesSection = (props: Props) => {
           key={certificateField.id}
           name={`saml.public_certificates.${index}.certificate`}
           render={({ field, fieldState }) => (
-            <>
-              <FormLabel
-                className={`${styles.formLabel} ${
-                  index === 0
-                    ? styles.firstCertificateLabel
-                    : styles.nextCertificateLabel
-                }`}
-              >
-                SAML Public Certificate
-              </FormLabel>
-
-              <div className={styles.certificateRow}>
-                <div className={styles.certificateField}>
-                  <FormField
-                    className={styles.formFieldCertificate}
-                    error={!!fieldState.error}
+            <div className={styles.certificateRow}>
+              <div className={styles.certificateField}>
+                <FormField
+                  className={styles.formFieldCertificate}
+                  error={!!fieldState.error}
+                  label-position="top"
+                >
+                  <FormLabel
+                    className={
+                      index === 0
+                        ? styles.firstCertificateLabel
+                        : styles.nextCertificateLabel
+                    }
+                    slot="label"
                   >
-                    <TextArea
-                      aria-invalid={!!fieldState.error}
-                      onChange={field.onChange}
-                      placeholder="Enter a SAML public certificate"
-                      rows={4}
-                      value={field.value ?? ''}
-                    />
+                    SAML Public Certificate
+                  </FormLabel>
+                  <TextArea
+                    aria-invalid={!!fieldState.error}
+                    onChange={field.onChange}
+                    placeholder="Enter a SAML public certificate"
+                    rows={4}
+                    value={field.value ?? ''}
+                  />
 
-                    {fieldState.error && (
-                      <FormError>{fieldState.error.message}</FormError>
-                    )}
-                  </FormField>
-                </div>
-
-                {canRemoveCertificate && (
-                  <Button
-                    aria-label={`Remove SAML public certificate ${index + 1}`}
-                    className={styles.removeCertificateButton}
-                    onClick={() => removeCertificate(index)}
-                    type="button"
-                    variant="icon"
-                  >
-                    <Icon icon="delete" size="m" />
-                  </Button>
-                )}
+                  {fieldState.error && (
+                    <FormError>{fieldState.error.message}</FormError>
+                  )}
+                </FormField>
               </div>
-            </>
+
+              {canRemoveCertificate && (
+                <Button
+                  aria-label={`Remove SAML public certificate ${index + 1}`}
+                  className={styles.removeCertificateButton}
+                  onClick={() => removeCertificate(index)}
+                  type="button"
+                  variant="icon"
+                >
+                  <Icon icon="delete" size="m" />
+                </Button>
+              )}
+            </div>
           )}
         />
       ))}
@@ -119,7 +118,7 @@ export const CertificatesSection = (props: Props) => {
       <Tooltip
         disabled={!isMaxCertificatesReached}
         tooltipPlacement="bottom"
-        tooltipText={idpConfiguration.addButtonMaxTooltip}
+        tooltipText={ADD_BUTTON_MAX_TOOLTIP}
       >
         <Button
           aria-disabled={isMaxCertificatesReached}

@@ -1,16 +1,25 @@
 import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
+import { NotificationBanner } from '@akamai/cds-components/react';
 import * as React from 'react';
 
 import { usePermissions } from 'src/features/IAM/hooks/usePermissions';
 import { CopyTooltip } from 'src/features/IAM/Shared/CopyTooltip/CopyTooltip';
 import { Paper } from 'src/features/IAM/Shared/Paper/Paper';
 
-import { idpConfiguration, METADATA_HREF } from '../../constants';
+import {
+  ADD_CERTIFICATE_PERMISSION_ERROR,
+  MAX_CERTIFICATES_REACHED_ERROR,
+  METADATA_HREF,
+  SSO_EXPIRED_ENFORCED,
+  SSO_EXPIRING,
+  SSO_REQUIRES_ACTIVE_CERTIFICATE,
+} from '../../constants';
 import { AddCertificateDrawer } from './AddCertificateDrawer';
 import { CertificatesTable } from './CertificatesTable';
 import { IDPConfigDeleteConfirmation } from './IDPConfigDeleteConfirmation';
 import { IdpConfigurationDrawer } from './IdpConfigurationDrawer';
 import { identityElementOptions } from './idpConfigurationDrawer.utils';
+import { getCertificateStatus } from './idpConfigurationDrawer.utils';
 import styles from './IdpConfigurations.module.css';
 
 import type { IdpConfig } from '@linode/api-v4';
@@ -30,6 +39,25 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
 
   const isMaxCertificatesReached =
     idpConfig.saml.public_certificates.length >= 10;
+  const certs = idpConfig.saml.public_certificates;
+
+  // Count certificates that are not expired (error). Both 'active' and
+  // 'other' (expiring soon) are considered valid for deletion rules.
+  const activeCertificatesCount = certs.filter(
+    (certificate) => getCertificateStatus(certificate.not_after) !== 'error'
+  ).length;
+
+  // Count only currently-active certificates (not 'other' or 'error').
+  // We use this to decide whether to show the banner — if there are no
+  // actively-valid certificates (i.e., only 'other' or 'error'), we
+  // should surface a banner. This ensures a single 'yellow' cert shows
+  // the yellow warning banner.
+  const activeOnlyCount = certs.filter(
+    (certificate) => getCertificateStatus(certificate.not_after) === 'active'
+  ).length;
+
+  const expiredCount = certs.length - activeCertificatesCount;
+  const expiringCount = activeCertificatesCount - activeOnlyCount;
   return (
     <>
       <Paper>
@@ -121,27 +149,59 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
         <div className={styles.certsHeader}>
           <h3>SAML Certificates</h3>
           <Tooltip
-            disabled={!isMaxCertificatesReached}
+            disabled={
+              !(isMaxCertificatesReached || !permissions?.is_account_admin)
+            }
             tooltipPlacement="bottom"
-            tooltipText={idpConfiguration.maxCertificatesReachedError}
+            tooltipText={
+              isMaxCertificatesReached
+                ? MAX_CERTIFICATES_REACHED_ERROR
+                : !permissions?.is_account_admin
+                  ? ADD_CERTIFICATE_PERMISSION_ERROR
+                  : undefined
+            }
           >
             <Button
-              disabled={isMaxCertificatesReached}
+              disabled={
+                isMaxCertificatesReached || !permissions?.is_account_admin
+              }
               onClick={() => setIsAddCertDrawerOpen(true)}
               type="button"
               variant="secondary"
             >
               Add Certificate
-              {isMaxCertificatesReached && (
-                <Icon icon="info-outline" size="m" />
+              {(isMaxCertificatesReached || !permissions?.is_account_admin) && (
+                <Icon icon="info-outline" size="s" />
               )}
             </Button>
           </Tooltip>
         </div>
+        {idpConfig.enabled && activeOnlyCount === 0 && (
+          <NotificationBanner
+            style={{ marginBottom: 'var(--token-global-spacing-s16, 16px)' }}
+            text={
+              // Red only when all certs are expired
+              expiredCount > 0 && expiredCount === certs.length
+                ? SSO_EXPIRED_ENFORCED
+                : // Yellow when there are expiring certs but no active
+                  expiringCount > 0
+                  ? SSO_EXPIRING
+                  : SSO_REQUIRES_ACTIVE_CERTIFICATE
+            }
+            type={
+              expiredCount > 0 && expiredCount === certs.length
+                ? 'error'
+                : 'warning'
+            }
+          />
+        )}
+
         <CertificatesTable
+          activeCertificateCount={activeCertificatesCount}
           certificates={idpConfig.saml.public_certificates}
           idpConfigId={idpConfig.id}
           mode="landing"
+          ssoEnabled={idpConfig.enabled}
         />
       </Paper>
       <IdpConfigurationDrawer
