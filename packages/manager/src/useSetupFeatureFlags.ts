@@ -1,10 +1,10 @@
 import { useAccount, useProfile } from '@linode/queries';
-import { useLDClient } from 'launchdarkly-react-client-sdk';
 import * as React from 'react';
 
 import { LAUNCH_DARKLY_API_KEY } from 'src/constants';
 
 import { configureErrorReportingUser } from './exceptionReporting';
+import { FeatureFlagContext } from './featureFlags';
 
 /**
  * This hook uses Linode account data to set Sentry and Launch Darkly context.
@@ -14,8 +14,7 @@ import { configureErrorReportingUser } from './exceptionReporting';
 export const useSetupFeatureFlags = () => {
   const { data: account, error: accountError } = useAccount();
   const { data: profile } = useProfile();
-
-  const client = useLDClient();
+  const featureFlagClient = React.useContext(FeatureFlagContext);
 
   const [areFeatureFlagsLoading, setAreFeatureFlagsLoading] =
     React.useState(true);
@@ -40,6 +39,7 @@ export const useSetupFeatureFlags = () => {
        */
       setAreFeatureFlagsLoading(false);
     } else {
+      featureFlagClient.start();
       /**
        * returns unknown if:
        * 1. We have an error from the API (will happen if you're a restricted user)
@@ -56,13 +56,13 @@ export const useSetupFeatureFlags = () => {
         : account?.tax_id === ''
           ? 'Unknown'
           : account?.tax_id;
-      if (client && country && username && taxID) {
-        client
+      if (featureFlagClient && country && username && taxID) {
+        featureFlagClient
           .identify({
             anonymous: true,
             country,
             kind: 'user',
-            privateAttributes: ['country, taxID'],
+            privateAttributes: ['country', 'taxID'],
             taxID,
           })
           .then(() => setAreFeatureFlagsLoading(false))
@@ -83,12 +83,12 @@ export const useSetupFeatureFlags = () => {
 
         // If we're being honest, featureFlagsLoading shouldn't be tracked by Redux
         // and this code should go away eventually.
-        if (client) {
+        if (featureFlagClient) {
           setAreFeatureFlagsLoading(false);
         }
       }
     }
-  }, [client, username, account, accountError]);
+  }, [username, account, accountError]);
 
   return { areFeatureFlagsLoading };
 };

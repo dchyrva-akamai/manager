@@ -1,3 +1,11 @@
+import {
+  FeatureFlagClient,
+  launchDarklyProvider,
+} from '@akamai/compute-ui-core/feature-flags';
+import React from 'react';
+
+import { LAUNCH_DARKLY_API_KEY } from './constants';
+
 import type { OCA } from './features/OneClickApps/types';
 import type { PriceObject, Region } from '@linode/api-v4';
 import type {
@@ -489,4 +497,35 @@ interface GenerationalPlansFlag extends BaseFeatureFlag {
 interface LinodeCreateBanner extends BaseFeatureFlag {
   message?: string;
   pendo_id?: string;
+}
+
+interface Context {
+  anonymous: boolean;
+  country: string;
+  kind: string;
+  privateAttributes: string[];
+  taxID: string;
+}
+
+
+export const featureFlagClient = new FeatureFlagClient<FlagSet, Context>({
+  provider: launchDarklyProvider({
+    clientId: LAUNCH_DARKLY_API_KEY,
+  }),
+});
+
+export const FeatureFlagContext =
+  React.createContext<FeatureFlagClient<FlagSet, Context>>(null as unknown as FeatureFlagClient<FlagSet, Context>);
+
+interface Props {
+  children: React.ReactNode;
+  client?: FeatureFlagClient<FlagSet, Context>;
+}
+
+export function FeatureFlagProvider({ children, client }: Props) {
+  return (
+    <FeatureFlagContext.Provider value={client ?? featureFlagClient}>
+      {children}
+    </FeatureFlagContext.Provider>
+  );
 }
