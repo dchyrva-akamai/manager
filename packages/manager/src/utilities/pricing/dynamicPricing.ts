@@ -1,6 +1,7 @@
 import { priceIncreaseMap } from '@akamai/compute-ui-core/api';
 
-import type { PriceType, Region, RegionPriceObject } from '@linode/api-v4';
+import type { PriceType } from '@akamai/compute-ui-core/api';
+import type { Region, RegionPriceObject } from '@linode/api-v4';
 
 export interface RegionPrice extends RegionPriceObject {
   id: string;

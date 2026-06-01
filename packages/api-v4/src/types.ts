@@ -1,5 +1,3 @@
-import type { PriceObject, RegionPriceObject } from './linodes/types';
-
 export type {
   APIFieldError as APIError,
   APIWarning,
@@ -11,14 +9,6 @@ export type {
   RequestOptions,
   ResourcePage,
 } from '@akamai/compute-ui-core/api';
-
-export interface PriceType {
-  id: string;
-  label: string;
-  price: PriceObject;
-  region_prices: RegionPriceObject[];
-  transfer: number;
-}
 
 // Credit: https://stackoverflow.com/a/47914643
 //

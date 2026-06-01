@@ -52,6 +52,7 @@ import {
 import { prefixToQueryKey } from './utilities';
 
 import type { BucketsResponse, BucketsResponseType } from './requests';
+import type { PriceType } from '@akamai/compute-ui-core/api';
 import type {
   ACLType,
   APIError,
@@ -68,7 +69,6 @@ import type {
   ObjectStorageObjectList,
   ObjectStorageObjectURL,
   Params,
-  PriceType,
   ResourcePage,
   UpdateObjectStorageBucketAccessPayload,
   UpdateObjectStorageKeyPayload,

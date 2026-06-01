@@ -17,13 +17,14 @@ import {
 } from './utils';
 
 import type { Firewall } from '../firewalls/types';
-import type { Filter, ResourcePage as Page, Params, PriceType } from '../types';
+import type { Filter, ResourcePage as Page, Params } from '../types';
 import type {
   CreateNodeBalancerPayload,
   NodeBalancer,
   NodeBalancerStats,
   NodeBalancerVpcConfig,
 } from './types';
+import type { PriceType } from '@akamai/compute-ui-core/api';
 
 /**
  * getNodeBalancers
