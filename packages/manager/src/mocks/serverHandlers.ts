@@ -3942,6 +3942,22 @@ export const handlers = [
             url: '/v4/linode/instances/4',
           }),
         ];
+      } else if (alertId === '494' && serviceType === 'logs') {
+        entitiesFactory.resetSequenceNumber();
+        entities = [
+          entitiesFactory.build({
+            id: '1',
+            label: 'delivery-1',
+            type: 'logs',
+            url: '/v4/logs/instances/1',
+          }),
+          entitiesFactory.build({
+            id: '2',
+            label: 'delivery-2',
+            type: 'logs',
+            url: '/v4/logs/instances/2',
+          }),
+        ];
       } else if (serviceType === 'linode') {
         // Default linode entities for generic alerts
         entitiesFactory.resetSequenceNumber();

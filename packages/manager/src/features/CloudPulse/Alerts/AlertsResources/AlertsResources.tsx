@@ -542,7 +542,11 @@ export const AlertResources = React.memo((props: AlertResourcesProp) => {
         {maxSelectionCount !== undefined && (
           <GridLegacy item xs={12}>
             <AlertListNoticeMessages
-              errorMessage={`You can select up to ${maxSelectionCount} entities.`}
+              errorMessage={
+                maxSelectionCount < selectedResources.length
+                  ? `This alert has ${selectedResources.length} entities, exceeding the ${maxSelectionCount} limit. Use the API to make changes.`
+                  : `You can select up to ${maxSelectionCount} entities.`
+              }
               style={noticeStyles}
               variant="warning"
             />
