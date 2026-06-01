@@ -13,6 +13,7 @@ import {
   getUserSharegroupToken,
   getUserSharegroupTokens,
   updateSharegroup,
+  updateSharegroupImage,
 } from '@linode/api-v4';
 import { getAll } from '@linode/utilities';
 import { createQueryKeys } from '@lukemorales/query-key-factory';
@@ -35,6 +36,7 @@ import type {
   Sharegroup,
   SharegroupMember,
   SharegroupToken,
+  UpdateSharegroupImagePayload,
   UpdateSharegroupPayload,
 } from '@linode/api-v4';
 import type {
@@ -367,6 +369,35 @@ export const useDeleteShareGroupImageMutation = () => {
       },
     },
   );
+};
+
+export const useUpdateShareGroupImageMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    Image,
+    APIError[],
+    {
+      data: UpdateSharegroupImagePayload;
+      imageId: string;
+      sharegroupId: string;
+    }
+  >({
+    mutationFn: ({ sharegroupId, imageId, data }) =>
+      updateSharegroupImage({ sharegroupId, imageId, data }),
+    onSuccess(_, variables) {
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.images(
+          variables.sharegroupId,
+        ).queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.sharegroup(
+          variables.sharegroupId,
+        ).queryKey,
+      });
+    },
+  });
 };
 
 // Tokens

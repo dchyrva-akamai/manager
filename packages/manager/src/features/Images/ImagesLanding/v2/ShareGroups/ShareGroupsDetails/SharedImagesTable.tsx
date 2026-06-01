@@ -42,6 +42,7 @@ import {
   SHARE_GROUP_DETAILS_PENDO_IDS,
 } from '../../constants';
 import { StyledActionMenuWrapper } from '../ShareGroupTable.styles';
+import { EditImageDetailsDrawer } from './EditImageDetailsDrawer';
 
 import type { Filter, Image } from '@linode/api-v4';
 
@@ -52,7 +53,7 @@ interface Props {
 }
 
 const IMAGES_COLUMNS = [
-  { label: 'Original Image Label', name: 'label' },
+  { label: 'Custom Image Label', name: 'label' },
   { label: 'Created', name: 'created' },
   { label: 'Shared Image ID', name: 'id' },
 ];
@@ -63,6 +64,7 @@ export const SharedImagesTable = (props: Props) => {
   const { data: profile } = useProfile();
   const navigate = useNavigate();
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = React.useState(false);
+  const [isEditDrawerOpen, setIsEditDrawerOpen] = React.useState(false);
   const [selectedImage, setSelectedImage] = React.useState<Image | null>(null);
 
   const search = useSearch({
@@ -301,7 +303,10 @@ export const SharedImagesTable = (props: Props) => {
                   actionsList={[
                     {
                       title: 'Edit Details',
-                      onClick: () => {},
+                      onClick: () => {
+                        setSelectedImage(image);
+                        setIsEditDrawerOpen(true);
+                      },
                       pendoId:
                         SHARE_GROUP_DETAILS_PENDO_IDS.editImagesDetailsButton,
                       disabled: false,
@@ -351,6 +356,12 @@ export const SharedImagesTable = (props: Props) => {
       >
         Are you sure you want to remove this image from this share group?
       </ConfirmationDialog>
+      <EditImageDetailsDrawer
+        image={selectedImage}
+        onClose={() => setIsEditDrawerOpen(false)}
+        open={isEditDrawerOpen}
+        shareGroupId={shareGroupId}
+      />
     </Paper>
   );
 };

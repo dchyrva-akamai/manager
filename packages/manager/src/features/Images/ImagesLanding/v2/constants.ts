@@ -83,3 +83,11 @@ export const REMOVE_IMAGE_DIALOG_PENDO_IDS = {
   removeButton: 'Share Groups Details Remove Image-Remove Button',
   xButton: 'Share Groups Details Remove Image-X Button',
 };
+
+export const EDIT_IMAGE_DETAILS_PENDO_IDS = {
+  label: 'Share Groups Details Edit Image-Label',
+  description: 'Share Groups Details Edit Image-Description',
+  saveButton: 'Share Groups Details Edit Image-Save Button',
+  cancelButton: 'Share Groups Details Edit Image-Cancel Button',
+  xButton: 'Share Groups Details Edit Image-X Button',
+};

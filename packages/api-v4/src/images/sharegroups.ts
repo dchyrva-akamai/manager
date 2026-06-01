@@ -294,7 +294,7 @@ export const updateSharegroupImage = ({
 }: UpdateSharegroupImage) => {
   return Request<Image>(
     setURL(
-      `${BETA_API_ROOT}/images/sharegroup/${encodeURIComponent(sharegroupId)}/images/${encodeURIComponent(imageId)}}`,
+      `${BETA_API_ROOT}/images/sharegroups/${encodeURIComponent(sharegroupId)}/images/${encodeURIComponent(imageId)}`,
     ),
     setMethod('PUT'),
     setData(data, updateSharegroupImageSchema),

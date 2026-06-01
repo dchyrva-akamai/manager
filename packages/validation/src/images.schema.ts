@@ -51,7 +51,7 @@ export const addSharegroupImagesSchema = object({
 });
 
 export const updateSharegroupImageSchema = object({
-  label: labelSchema.optional(),
+  label: labelSchema.required('Label is required.'),
   description: string().optional(),
 });
 
