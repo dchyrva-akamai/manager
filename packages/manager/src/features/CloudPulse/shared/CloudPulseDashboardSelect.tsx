@@ -143,12 +143,21 @@ export const CloudPulseDashboardSelect = React.memo(
         }
         errorText={dashboardsList?.length ? '' : errorText}
         fullWidth
+        getOptionLabel={(option) => {
+          if (option.id === selectedDashboard?.id) {
+            return `${
+              serviceTypeMap.get(option.service_type) ?? option.service_type
+            } - ${option.label}`;
+          }
+
+          return option.label;
+        }}
         groupBy={(option: Dashboard) => option.service_type}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         label="Dashboard"
         loading={dashboardsLoading || serviceTypesLoading}
         noMarginTop
-        onChange={(e, dashboard: Dashboard) => {
+        onChange={(_, dashboard: Dashboard) => {
           setSelectedDashboard(dashboard);
           handleDashboardChange(dashboard, savePreferences);
         }}
@@ -173,6 +182,7 @@ export const CloudPulseDashboardSelect = React.memo(
             {params.children}
           </Box>
         )}
+        renderOption={(props, option) => <li {...props}>{option.label}</li>}
         sx={(theme) => ({
           '& .MuiInputBase-input.Mui-disabled': {
             WebkitTextFillColor: theme.tokens.color.Neutrals.Black,
