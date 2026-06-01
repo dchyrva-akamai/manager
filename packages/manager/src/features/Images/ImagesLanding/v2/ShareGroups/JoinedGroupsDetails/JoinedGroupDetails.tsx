@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@linode/ui';
 import { Grid } from '@mui/material';
-import { useParams } from '@tanstack/react-router';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import * as React from 'react';
 
 import { DocumentTitleSegment } from 'src/components/DocumentTitle';
@@ -24,7 +24,11 @@ import { LandingHeader } from 'src/components/LandingHeader';
 import { StatusIcon } from 'src/components/StatusIcon/StatusIcon';
 import { getIsTableStripingEnabled } from 'src/features/Profile/Settings/TableStriping.utils';
 
-import { SHARE_GROUP_DETAILS_PENDO_IDS } from '../../constants';
+import {
+  JOINED_GROUP_DETAILS_PENDO_IDS,
+  LEAVE_GROUP_DIALOG_PENDO_IDS,
+} from '../../constants';
+import { LeaveGroupOrCancelRequestDialog } from '../LeaveGroupOrCancelRequestDialog';
 import { StyledCopyIcon } from './JoinedGroupDetails.styles';
 import { SharedImagesTable } from './SharedImagesTable';
 
@@ -40,6 +44,8 @@ const statusIconMap: Record<SharegroupToken['status'], Status> = {
 
 export const JoinedGroupDetails = () => {
   const { data: profile } = useProfile();
+
+  const navigate = useNavigate();
 
   const { data: tableStripingPreference } = usePreferences(
     (preferences) => preferences?.isTableStripingEnabled
@@ -71,7 +77,7 @@ export const JoinedGroupDetails = () => {
 
   const { description } = (shareGroup ?? {}) as Sharegroup;
 
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = React.useState(false);
 
   if (isLoading || isShareGroupLoading) {
     return <CircleProgress />;
@@ -83,7 +89,7 @@ export const JoinedGroupDetails = () => {
       <LandingHeader
         docsLabel="Docs"
         docsLink="https://techdocs.akamai.com/cloud-computing/docs/image-sharing"
-        pendoId={SHARE_GROUP_DETAILS_PENDO_IDS.landingHeader}
+        pendoId={JOINED_GROUP_DETAILS_PENDO_IDS.landingHeader}
         spacingBottom={4}
         title={sharegroup_label}
       />
@@ -118,11 +124,9 @@ export const JoinedGroupDetails = () => {
                 <Stack alignItems="center" direction="row" spacing={2}>
                   <Stack alignItems="center" direction="row">
                     <Button
-                      data-pendo-id={
-                        SHARE_GROUP_DETAILS_PENDO_IDS.deleteShareGroupButton
-                      }
+                      data-pendo-id={JOINED_GROUP_DETAILS_PENDO_IDS.leaveGroup}
                       onClick={() => {
-                        setIsDeleteDialogOpen(!isDeleteDialogOpen);
+                        setIsLeaveDialogOpen(!isLeaveDialogOpen);
                       }}
                       style={{ marginRight: '4px' }}
                       variant="link"
@@ -175,7 +179,7 @@ export const JoinedGroupDetails = () => {
                       </Typography>
                       <StyledCopyIcon
                         data-pendo-id={
-                          SHARE_GROUP_DETAILS_PENDO_IDS.copyShareGroupUUIDIcon
+                          JOINED_GROUP_DETAILS_PENDO_IDS.copyShareGroupUUIDIcon
                         }
                         text={sharegroup_uuid ?? ''}
                       />
@@ -198,6 +202,29 @@ export const JoinedGroupDetails = () => {
               isTableStripingEnabled={isTableStripingEnabled}
               tokenUuid={tokenUuid}
             />
+            {isLeaveDialogOpen && (
+              <LeaveGroupOrCancelRequestDialog
+                groupName={sharegroup_label ?? 'share group'}
+                onClose={() => setIsLeaveDialogOpen(false)}
+                onSuccess={() => {
+                  navigate({
+                    to: '/images/share-groups/$shareGroupsType',
+                    params: { shareGroupsType: 'joined-groups' },
+                  });
+                }}
+                open={isLeaveDialogOpen}
+                pendoIDs={{
+                  cancelButton:
+                    LEAVE_GROUP_DIALOG_PENDO_IDS.cancelButton.joinedGroupDetail,
+                  confirmButton:
+                    LEAVE_GROUP_DIALOG_PENDO_IDS.confirmButton
+                      .joinedGroupDetail,
+                  xButton:
+                    LEAVE_GROUP_DIALOG_PENDO_IDS.xButton.joinedGroupDetail,
+                }}
+                tokenUuid={tokenUuid}
+              />
+            )}
           </>
         )}
       </Grid>

@@ -1,5 +1,9 @@
 export const DEFAULT_PAGE_SIZES = [25, 50, 75, 100];
 
+// Paths
+export const JOINED_GROUP_DETAILS_PATH =
+  '/images/share-groups/joined-groups/$tokenUuid';
+
 export const CREATE_SHARE_GROUP_PENDO_IDS = {
   landingHeader: 'Images Share Groups Create-Landing Header',
   label: 'Share Groups Create Images-Label',
@@ -47,6 +51,8 @@ export const EDIT_SHARE_GROUP_PENDO_IDS = {
 };
 
 export const JOINED_GROUP_DETAILS_PENDO_IDS = {
+  landingHeader: 'Images Groups Joined Group Details-Landing Header',
+  copyShareGroupUUIDIcon: 'Images Groups Joined Group Details-Copy UUID',
   searchImagesBar: 'Images Groups Joined Group Details-Search',
   metadataSupportedIcon: 'Images Groups Joined Group Details-Cloud-init',
   replicatedRegionPopover: 'Images Groups Joined Group Details-Replicated in',
@@ -62,6 +68,7 @@ export const JOINED_GROUP_DETAILS_PENDO_IDS = {
     rebuildLinode:
       'Images Groups Joined Group Details-Rebuild an Existing Linode',
   },
+  leaveGroup: 'Images Groups Joined Group Details-Leave Group',
 };
 
 export const ADD_MEMBERS_DRAWER_PENDO_IDS = {
@@ -71,6 +78,30 @@ export const ADD_MEMBERS_DRAWER_PENDO_IDS = {
   cancelButton: 'Share Groups Add Members-Cancel Button',
   xButton: 'Share Groups Add Members-X Button',
 };
+
+export const LEAVE_GROUP_DIALOG_PENDO_IDS = {
+  confirmButton: {
+    joinedGroupLanding: 'Images Groups Joined Leave Group-Confirm Button',
+    joinedGroupDetail: 'Images Groups Joined Detail Leave Group-Confirm Button',
+  },
+  cancelButton: {
+    joinedGroupLanding: 'Images Groups Joined Leave Group-Cancel Button',
+    joinedGroupDetail: 'Images Groups Joined Detail Leave Group-Cancel Button',
+  },
+  xButton: {
+    joinedGroupLanding: 'Images Groups Joined Leave Group-X Button',
+    joinedGroupDetail: 'Images Groups Joined Detail Leave Group-X Button',
+  },
+};
+
+export const CANCEL_MEMBERSHIP_REQUEST_DIALOG_PENDO_IDS = {
+  cancelButton: 'Images Groups Membership Requests-Cancel Membership Request',
+  confirmButton: 'Images Groups Membership Requests-Keep Request',
+  xButton: 'Images Groups Membership Requests-X Button',
+};
+
+export const CANCEL_MEMBERSHIP_REQUEST_DIALOG_COPY =
+  'Are you sure you want to cancel this membership request? The token generated for this request will no longer be valid. To join the share group, you will need to create a new membership request and share the new token with the receiving party.';
 
 export const REVOKE_ACCESS_DIALOG_PENDO_IDS = {
   cancelButton: 'Share Groups Revoke Access-Cancel Button',

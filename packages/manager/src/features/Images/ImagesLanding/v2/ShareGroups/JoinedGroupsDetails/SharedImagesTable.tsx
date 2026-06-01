@@ -22,15 +22,15 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import * as React from 'react';
 
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField/DebouncedSearchTextField';
-import { JOINED_GROUP_DETAILS_PENDO_IDS } from 'src/features/Images/ImagesLanding/v2/constants';
+import {
+  JOINED_GROUP_DETAILS_PATH,
+  JOINED_GROUP_DETAILS_PENDO_IDS,
+} from 'src/features/Images/ImagesLanding/v2/constants';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
 import { RebuildImageDrawer } from '../../../RebuildImageDrawer';
-import {
-  DEFAULT_PAGE_SIZES,
-  SHARE_GROUP_DETAILS_PENDO_IDS,
-} from '../../constants';
+import { DEFAULT_PAGE_SIZES } from '../../constants';
 import { ViewImageDrawer } from '../../ImageLibrary/ViewImageDrawer';
 import { TABLE_CELL_BASE_STYLES } from '../ShareGroupTable.styles';
 import { SharedImageRow } from './SharedImageRow';
@@ -87,7 +87,7 @@ export const SharedImagesTable = (props: Props) => {
   const navigate = useNavigate();
 
   const search = useSearch({
-    from: '/images/share-groups/joined-groups/$tokenUuid',
+    from: JOINED_GROUP_DETAILS_PATH,
   });
 
   const { error: searchParseError, filter: APIfilter } = getAPIFilterFromQuery(
@@ -103,7 +103,7 @@ export const SharedImagesTable = (props: Props) => {
         order: 'asc',
         orderBy: 'label',
       },
-      from: '/images/share-groups/joined-groups/$tokenUuid',
+      from: JOINED_GROUP_DETAILS_PATH,
     },
     preferenceKey: 'joinedGroupDetailsSharedImages',
     prefix: 'images',
@@ -116,7 +116,7 @@ export const SharedImagesTable = (props: Props) => {
   };
 
   const pagination = usePaginationV2({
-    currentRoute: '/images/share-groups/joined-groups/$tokenUuid',
+    currentRoute: JOINED_GROUP_DETAILS_PATH,
     preferenceKey: 'joinedGroupDetailsSharedImages',
     searchParams: (prev) => ({
       ...prev,
@@ -145,7 +145,7 @@ export const SharedImagesTable = (props: Props) => {
         page: undefined,
         imagesQuery: query || undefined,
       }),
-      to: '/images/share-groups/joined-groups/$tokenUuid',
+      to: JOINED_GROUP_DETAILS_PATH,
       params: { tokenUuid },
     });
   };
@@ -209,7 +209,7 @@ export const SharedImagesTable = (props: Props) => {
         isSearching={imagesIsFetching}
         label="Search"
         onSearch={onSearch}
-        pendoId={SHARE_GROUP_DETAILS_PENDO_IDS.imagesSearchField}
+        pendoId={JOINED_GROUP_DETAILS_PENDO_IDS.searchImagesBar}
         placeholder="Search images"
         value={search.imagesQuery ?? ''}
       />

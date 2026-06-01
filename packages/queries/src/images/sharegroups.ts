@@ -4,6 +4,7 @@ import {
   deleteSharegroup,
   deleteSharegroupImage,
   deleteSharegroupMember,
+  deleteSharegroupToken,
   getSharegroup,
   getSharegroupFromToken,
   getSharegroupImages,
@@ -97,7 +98,7 @@ export const shareGroupsQueries = createQueryKeys('sharegroups', {
   tokens: {
     contextQueries: {
       token: (tokenUuid: string) => ({
-        queryFn: async () => getUserSharegroupToken(tokenUuid),
+        queryFn: () => getUserSharegroupToken(tokenUuid),
         queryKey: [tokenUuid],
       }),
       paginated: (params: Params, filters: Filter) => ({
@@ -440,3 +441,19 @@ export const useShareGroupImagesFromTokenQuery = (
     ),
     enabled,
   });
+
+export const useDeleteTokenFromShareGroupMutation = (
+  options: UseMutationOptions<{}, APIError[], { tokenUuid: string }>,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<{}, APIError[], { tokenUuid: string }>({
+    mutationFn: ({ tokenUuid }) => deleteSharegroupToken(tokenUuid),
+    ...options,
+    onSuccess(response, variables, context) {
+      options.onSuccess?.(response, variables, context);
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.tokens._ctx.paginated._def,
+      });
+    },
+  });
+};
