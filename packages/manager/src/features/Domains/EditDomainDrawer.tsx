@@ -1,5 +1,6 @@
 import {
   extendedIPToString,
+  getErrorMap,
   stringToExtendedIP,
 } from '@akamai/compute-ui-core/api';
 import {
@@ -21,7 +22,6 @@ import * as React from 'react';
 
 import { MultipleIPInput } from 'src/components/MultipleIPInput/MultipleIPInput';
 import { TagsInput } from 'src/components/TagsInput/TagsInput';
-import { getErrorMap } from 'src/utilities/errorUtils';
 import { handleFormikBlur } from 'src/utilities/formikTrimUtil';
 
 import { transferHelperText as helperText } from './domainUtils';

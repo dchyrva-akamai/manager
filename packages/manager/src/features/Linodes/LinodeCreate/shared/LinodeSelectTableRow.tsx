@@ -1,7 +1,9 @@
-import { formatStorageUnits } from '@akamai/compute-ui-core/api';
+import {
+  formatStorageUnits,
+  getFormattedStatus,
+} from '@akamai/compute-ui-core/api';
 import { useImageQuery, useRegionsQuery, useTypeQuery } from '@linode/queries';
 import { FormControlLabel, Radio } from '@linode/ui';
-import { getFormattedStatus } from '@linode/utilities';
 import React from 'react';
 
 import { InlineMenuAction } from 'src/components/InlineMenuAction/InlineMenuAction';

@@ -1,3 +1,4 @@
+import { getErrorStringOrDefault } from '@akamai/compute-ui-core/api';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getLiveChatToken, uploadAttachment } from '@linode/api-v4/lib/support';
 import { useCreateSupportTicketMutation } from '@linode/queries';
@@ -20,7 +21,6 @@ import { debounce } from 'throttle-debounce';
 
 import { teardownLiveChat } from 'src/hooks/useLiveChatBootstrap';
 import { sendSupportTicketExitEvent } from 'src/utilities/analytics/customEventAnalytics';
-import { getErrorStringOrDefault } from 'src/utilities/errorUtils';
 import { storage, supportTicketStorageDefaults } from 'src/utilities/storage';
 
 import { AttachFileForm } from '../AttachFileForm';

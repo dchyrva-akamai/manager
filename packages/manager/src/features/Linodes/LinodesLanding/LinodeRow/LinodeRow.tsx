@@ -1,8 +1,10 @@
-import { formatStorageUnits } from '@akamai/compute-ui-core/api';
+import {
+  formatStorageUnits,
+  getFormattedStatus,
+} from '@akamai/compute-ui-core/api';
 import { useTypeQuery } from '@linode/queries';
 import { Tooltip, TooltipIcon, Typography } from '@linode/ui';
 import { Hidden } from '@linode/ui';
-import { getFormattedStatus } from '@linode/utilities';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 

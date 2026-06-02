@@ -1,5 +1,6 @@
 import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
+import { getErrorStringOrDefault } from '@akamai/compute-ui-core/api';
 import { downloadFile } from '@akamai/compute-ui-core/browser';
 import { getSSLFields } from '@linode/api-v4/lib/databases/databases';
 import { styled } from '@mui/material/styles';
@@ -7,7 +8,6 @@ import { useSnackbar } from 'notistack';
 import * as React from 'react';
 
 import DownloadIcon from 'src/assets/icons/lke-download.svg';
-import { getErrorStringOrDefault } from 'src/utilities/errorUtils';
 
 import type { Database, SSLFields } from '@linode/api-v4';
 

@@ -1,3 +1,4 @@
+import { getErrorMap } from '@akamai/compute-ui-core/api';
 import {
   useAllLinodeDisksQuery,
   useLinodeChangePasswordMutation,
@@ -12,7 +13,6 @@ import * as React from 'react';
 
 import { SuspenseLoader } from 'src/components/SuspenseLoader';
 import { usePermissions } from 'src/features/IAM/hooks/usePermissions';
-import { getErrorMap } from 'src/utilities/errorUtils';
 
 const PasswordInput = React.lazy(() =>
   import('src/components/PasswordInput/PasswordInput').then((module) => ({

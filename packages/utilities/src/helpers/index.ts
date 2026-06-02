@@ -13,7 +13,6 @@ export * from './env';
 export * from './errors';
 export * from './escapeRegExp';
 export * from './evenizeNumber';
-export * from './formatStatus';
 export * from './formatUptime';
 export * from './getAll';
 export * from './getDisplayName';

@@ -1,3 +1,4 @@
+import { getErrorText } from '@akamai/compute-ui-core/api';
 import { CloseIcon } from '@linode/ui';
 import _Drawer from '@mui/material/Drawer';
 import Grid from '@mui/material/Grid';
@@ -5,7 +6,6 @@ import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 
 import ChevronLeftIcon from '../../assets/icons/chevron-left.svg';
-import { getErrorText } from '../../utilities/error';
 import { convertForAria } from '../../utilities/stringUtils';
 import { Box } from '../Box';
 import { CircleProgress } from '../CircleProgress';

@@ -1,5 +1,6 @@
 import {
   extendedIPToString,
+  getErrorMap,
   stringToExtendedIP,
 } from '@akamai/compute-ui-core/api';
 import {
@@ -33,7 +34,6 @@ import { MultipleIPInput } from 'src/components/MultipleIPInput/MultipleIPInput'
 import { reportException } from 'src/exceptionReporting';
 import { NodeBalancerSelect } from 'src/features/NodeBalancers/NodeBalancerSelect';
 import { sendCreateDomainEvent } from 'src/utilities/analytics/customEventAnalytics';
-import { getErrorMap } from 'src/utilities/errorUtils';
 import {
   handleFieldErrors,
   handleGeneralErrors,

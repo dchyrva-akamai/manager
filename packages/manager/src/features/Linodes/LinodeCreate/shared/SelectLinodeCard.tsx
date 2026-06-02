@@ -1,7 +1,10 @@
-import { formatStorageUnits } from '@akamai/compute-ui-core/api';
+import {
+  formatStorageUnits,
+  getFormattedStatus,
+} from '@akamai/compute-ui-core/api';
 import { useImageQuery, useRegionsQuery, useTypeQuery } from '@linode/queries';
 import { Button, Stack } from '@linode/ui';
-import { getFormattedStatus, isNotNullOrUndefined } from '@linode/utilities';
+import { isNotNullOrUndefined } from '@linode/utilities';
 import Grid from '@mui/material/Grid';
 import React from 'react';
 

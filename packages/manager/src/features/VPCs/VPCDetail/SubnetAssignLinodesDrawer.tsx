@@ -1,3 +1,4 @@
+import { getErrorMap } from '@akamai/compute-ui-core/api';
 import { appendConfigInterface } from '@linode/api-v4';
 import { createLinodeInterface } from '@linode/api-v4';
 import {
@@ -41,7 +42,6 @@ import {
 } from 'src/features/VPCs/constants';
 import { useUnassignLinode } from 'src/hooks/useUnassignLinode';
 import { useVPCDualStack } from 'src/hooks/useVPCDualStack';
-import { getErrorMap } from 'src/utilities/errorUtils';
 import { SUBNET_LINODE_CSV_HEADERS } from 'src/utilities/subnets';
 
 import { PublicAccess } from '../components/PublicAccess';
