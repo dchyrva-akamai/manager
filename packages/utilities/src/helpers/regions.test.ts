@@ -13,6 +13,7 @@ describe('getRegionsByRegionId', () => {
         id: 'us-east',
         label: 'Newark, NJ',
         placement_group_limits: {
+          maximum_linodes_per_flexible_pg: 5,
           maximum_linodes_per_pg: 10,
           maximum_pgs_per_customer: 5,
         },
@@ -27,6 +28,7 @@ describe('getRegionsByRegionId', () => {
         id: 'us-southeast',
         label: 'Atlanta, GA',
         placement_group_limits: {
+          maximum_linodes_per_flexible_pg: 5,
           maximum_linodes_per_pg: 10,
           maximum_pgs_per_customer: 5,
         },
@@ -44,6 +46,7 @@ describe('getRegionsByRegionId', () => {
         id: 'us-east',
         label: 'Newark, NJ',
         placement_group_limits: {
+          maximum_linodes_per_flexible_pg: 5,
           maximum_linodes_per_pg: 10,
           maximum_pgs_per_customer: 5,
         },
@@ -58,6 +61,7 @@ describe('getRegionsByRegionId', () => {
         id: 'us-southeast',
         label: 'Atlanta, GA',
         placement_group_limits: {
+          maximum_linodes_per_flexible_pg: 5,
           maximum_linodes_per_pg: 10,
           maximum_pgs_per_customer: 5,
         },

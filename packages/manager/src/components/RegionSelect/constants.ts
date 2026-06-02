@@ -13,6 +13,7 @@ export const regionSelectGlobalOption: Region = {
   id: GLOBAL_QUOTA_VALUE,
   label: GLOBAL_QUOTA_LABEL,
   placement_group_limits: {
+    maximum_linodes_per_flexible_pg: 0,
     maximum_linodes_per_pg: 0,
     maximum_pgs_per_customer: 0,
   },
