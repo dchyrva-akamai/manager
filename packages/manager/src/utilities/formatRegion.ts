@@ -2,6 +2,7 @@ import {
   CONTINENT_CODE_TO_CONTINENT,
   COUNTRY_CODE_TO_CONTINENT_CODE,
   GLOBAL_QUOTA_VALUE,
+  isEURegion,
 } from '@akamai/compute-ui-core/api';
 
 import type { Region } from '@linode/api-v4';
@@ -57,10 +58,6 @@ export const getSelectedRegionGroup = (
   }
 
   return getRegionCountryGroup(selectedRegion);
-};
-
-export const isEURegion = (regionContinent: string | undefined): boolean => {
-  return regionContinent === CONTINENT_CODE_TO_CONTINENT.EU;
 };
 
 /**

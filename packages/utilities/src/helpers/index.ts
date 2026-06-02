@@ -41,7 +41,6 @@ export * from './replaceNewlinesWithLineBreaks';
 export * from './scrollErrorIntoView';
 export * from './scrollErrorIntoViewV2';
 export * from './scrollTo';
-export * from './statMetrics';
 export * from './stringUtils';
 export * from './stripImageName';
 export * from './tail';

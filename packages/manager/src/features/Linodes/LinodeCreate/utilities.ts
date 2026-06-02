@@ -1,3 +1,4 @@
+import { isPrivateIP } from '@akamai/compute-ui-core/api';
 import {
   accountQueries,
   firewallQueries,
@@ -13,7 +14,6 @@ import type { FieldErrors } from 'react-hook-form';
 
 import { sendCreateLinodeEvent } from 'src/utilities/analytics/customEventAnalytics';
 import { sendLinodeCreateFormErrorEvent } from 'src/utilities/analytics/formEventAnalytics';
-import { isPrivateIP } from 'src/utilities/ipUtils';
 
 import {
   getDefaultInterfacePayload,

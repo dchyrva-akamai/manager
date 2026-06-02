@@ -45,6 +45,7 @@ import { CloudPulseWidgetCSVDownloader } from './csv/CloudPulseWidgetCSVDownload
 import type { FilterValueType } from '../Dashboard/CloudPulseDashboardLanding';
 import type { CloudPulseResources } from '../shared/CloudPulseResourcesSelect';
 import type { MetricsDimensionFilter } from './components/DimensionFilters/types';
+import type { Metrics } from '@akamai/compute-ui-core/api';
 import type {
   CloudPulseServiceType,
   DateTimeWithPreset,
@@ -53,7 +54,6 @@ import type {
   TimeGranularity,
   Widgets,
 } from '@linode/api-v4';
-import type { Metrics } from '@linode/utilities';
 import type {
   AreaProps,
   ChartVariant,
