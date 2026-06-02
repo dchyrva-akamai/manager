@@ -286,6 +286,8 @@ export const DISALLOWED_IMAGE_REGIONS = [
   'sg-sin-2',
   'jp-tyo-3',
   'fr-par-2',
+  'us-iad-2',
+  'de-fra-2',
 ];
 
 // Default tooltip text for actions without permission
