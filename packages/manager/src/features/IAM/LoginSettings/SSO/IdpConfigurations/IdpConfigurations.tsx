@@ -1,5 +1,9 @@
-import { Button, Icon, Tooltip } from '@akamai/cds-components/react';
-import { NotificationBanner } from '@akamai/cds-components/react';
+import {
+  Button,
+  Icon,
+  NotificationBanner,
+  Tooltip,
+} from '@akamai/cds-components/react';
 import * as React from 'react';
 
 import { usePermissions } from 'src/features/IAM/hooks/usePermissions';
@@ -18,8 +22,10 @@ import { AddCertificateDrawer } from './AddCertificateDrawer';
 import { CertificatesTable } from './CertificatesTable';
 import { IDPConfigDeleteConfirmation } from './IDPConfigDeleteConfirmation';
 import { IdpConfigurationDrawer } from './IdpConfigurationDrawer';
-import { identityElementOptions } from './idpConfigurationDrawer.utils';
-import { getCertificateStatus } from './idpConfigurationDrawer.utils';
+import {
+  getCertificateStatus,
+  identityElementOptions,
+} from './idpConfigurationDrawer.utils';
 import styles from './IdpConfigurations.module.css';
 
 import type { IdpConfig } from '@linode/api-v4';
@@ -44,7 +50,8 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
   // Count certificates that are not expired (error). Both 'active' and
   // 'other' (expiring soon) are considered valid for deletion rules.
   const activeCertificatesCount = certs.filter(
-    (certificate) => getCertificateStatus(certificate.not_after) !== 'error'
+    (certificate) =>
+      getCertificateStatus(certificate.not_after).status !== 'error'
   ).length;
 
   // Count only currently-active certificates (not 'other' or 'error').
@@ -53,7 +60,8 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
   // should surface a banner. This ensures a single 'yellow' cert shows
   // the yellow warning banner.
   const activeOnlyCount = certs.filter(
-    (certificate) => getCertificateStatus(certificate.not_after) === 'active'
+    (certificate) =>
+      getCertificateStatus(certificate.not_after).status === 'active'
   ).length;
 
   const expiredCount = certs.length - activeCertificatesCount;

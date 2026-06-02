@@ -138,7 +138,10 @@ export const CertificatesTable = (props: CombinedProps) => {
             </TableRow>
           ) : (
             sortedCertificates.map((cert, index) => {
-              const status = getCertificateStatus(cert.not_after);
+              const status = getCertificateStatus(
+                cert.not_after,
+                cert.not_before
+              ).status;
               const isLastRow = index === sortedCertificates.length - 1;
 
               if (isLandingMode) {

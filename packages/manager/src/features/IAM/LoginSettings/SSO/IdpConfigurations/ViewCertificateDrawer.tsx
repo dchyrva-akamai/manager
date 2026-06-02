@@ -1,0 +1,73 @@
+import { Button } from '@akamai/cds-components/react';
+import { truncateMiddle } from '@akamai/compute-ui-core/formatting';
+import { Drawer } from '@linode/ui';
+import * as React from 'react';
+
+import { CopyTooltip } from 'src/features/IAM/Shared/CopyTooltip/CopyTooltip';
+import { DateTimeDisplay } from 'src/features/IAM/Shared/DateTimeDisplay/DateTimeDisplay';
+import { StatusIcon } from 'src/features/IAM/Shared/StatusIcon/StatusIcon';
+
+import { getCertificateStatus } from './idpConfigurationDrawer.utils';
+import styles from './ViewCertificateDrawer.module.css';
+
+import type { IdpCertificate } from '@linode/api-v4';
+
+interface Props {
+  cert: IdpCertificate;
+  onClose: () => void;
+  open: boolean;
+}
+
+export const ViewCertificateDrawer = ({ cert, onClose, open }: Props) => {
+  const handleClose = () => {
+    onClose();
+  };
+
+  return (
+    // TODO: UIE-10784 - replace with CDS Drawer when available
+    <Drawer onClose={handleClose} open={open} title="View Details">
+      <div className={styles.viewCertContainer}>
+        <p>
+          <strong>Created by:</strong> {cert.created_by}
+        </p>
+        <p>
+          <strong>Created:</strong>{' '}
+          <DateTimeDisplay displayTime={false} value={cert.created} />
+        </p>
+        <p>
+          <strong>Valid From:</strong>{' '}
+          <DateTimeDisplay displayTime={false} value={cert.not_before} />
+        </p>
+        <p>
+          <strong>Expiration Date:</strong>{' '}
+          <DateTimeDisplay displayTime={false} value={cert.not_after} />
+        </p>
+        <p className={styles.viewCertFlex}>
+          <strong>Status:</strong>{' '}
+          <span>
+            {getCertificateStatus(cert.not_after, cert.not_before).text}
+          </span>
+          <StatusIcon
+            pulse={false}
+            status={
+              getCertificateStatus(cert.not_after, cert.not_before).status
+            }
+          />
+        </p>
+        <p className={styles.viewCertFlex}>
+          <strong>ID:</strong> {cert.id}
+          <CopyTooltip text={cert.id} />
+        </p>
+        <p className={styles.viewCertFlex}>
+          <strong>Certificate:</strong> {truncateMiddle(cert.certificate, 38)}
+          <CopyTooltip text={cert.certificate} />
+        </p>
+      </div>
+      <div className={styles.actions}>
+        <Button onClick={handleClose} variant="secondary">
+          Close
+        </Button>
+      </div>
+    </Drawer>
+  );
+};

@@ -21,6 +21,7 @@ import {
 } from '../../constants';
 import styles from './CertificatesTable.module.css';
 import { DeleteCertificateDialog } from './DeleteCertificateDialog';
+import { ViewCertificateDrawer } from './ViewCertificateDrawer';
 
 import type { IdpCertificate } from '@linode/api-v4';
 import type { Status } from 'src/features/IAM/Shared/StatusIcon/StatusIcon';
@@ -52,6 +53,8 @@ const CertificateTableLanding = ({
   const [deleteCert, setDeleteCert] = React.useState<IdpCertificate | null>(
     null
   );
+  const [isViewCertDrawerOpen, setIsViewCertDrawerOpen] = React.useState(false);
+
   const isSsoEnabled = !!ssoEnabled;
   const activeCount = activeCertificateCount ?? 0;
   const totalCount = totalCertificateCount ?? 0;
@@ -72,6 +75,8 @@ const CertificateTableLanding = ({
   const ssoBlocksDelete = blocksDueToOnlyTotal || blocksDueToOnlyValid;
 
   const deleteDisabled = !canDelete || ssoBlocksDelete;
+
+
   return (
     <>
       <TableRow hoverable key={cert.id} rowborder>
@@ -95,7 +100,7 @@ const CertificateTableLanding = ({
           >
             <Button
               disabled={!permissions?.is_account_admin}
-              onClick={() => {}}
+              onClick={() => setIsViewCertDrawerOpen(true)}
               style={{
                 paddingRight: 'var(--token-global-spacing-s8, 8px)',
               }}
@@ -144,6 +149,11 @@ const CertificateTableLanding = ({
         idpConfigId={idpConfigId}
         onClose={() => setDeleteCert(null)}
         open={!!deleteCert}
+      />
+      <ViewCertificateDrawer
+        cert={cert}
+        onClose={() => setIsViewCertDrawerOpen(false)}
+        open={isViewCertDrawerOpen}
       />
     </>
   );

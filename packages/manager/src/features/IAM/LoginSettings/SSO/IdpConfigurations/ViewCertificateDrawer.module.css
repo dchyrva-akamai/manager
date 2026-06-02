@@ -1,0 +1,22 @@
+.viewCertContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--token-global-spacing-s8, 8px);
+  margin: var(--token-global-spacing-s24, 24px) 0;
+  padding: var(--token-global-spacing-s8, 8px) 0;
+
+  p {
+    margin: 0;
+  }
+}
+
+.viewCertFlex {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--token-global-spacing-s4, 4px);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
