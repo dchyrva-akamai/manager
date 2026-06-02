@@ -4,17 +4,30 @@ import React from 'react';
 
 import { accountEntityFactory } from 'src/factories/accountEntities';
 import { userRolesFactory } from 'src/factories/userRoles';
-import { renderWithTheme } from 'src/utilities/testHelpers';
+import { mockMatchMedia, renderWithTheme } from 'src/utilities/testHelpers';
 
 import { AssignedEntitiesTable } from '../../Shared/AssignedEntitiesTable/AssignedEntitiesTable';
 
+vi.mock('src/OAuth/oauthClient', () => ({
+  getIsAdminToken: vi.fn(),
+  oauthClient: {},
+}));
+
 const queryMocks = vi.hoisted(() => ({
   useAllAccountEntities: vi.fn().mockReturnValue({}),
+  useIsDefaultDelegationRolesForChildAccount: vi
+    .fn()
+    .mockReturnValue({ isDefaultDelegationRolesForChildAccount: false }),
   useParams: vi.fn().mockReturnValue({}),
+  usePermissions: vi.fn().mockReturnValue({
+    data: { is_account_admin: true, list_entities: true },
+  }),
   useSearch: vi.fn().mockReturnValue({}),
   useNavigate: vi.fn(() => vi.fn()),
   useUserRoles: vi.fn().mockReturnValue({}),
 }));
+
+beforeAll(() => mockMatchMedia());
 
 vi.mock('@linode/queries', async () => {
   const actual = await vi.importActual<any>('@linode/queries');
@@ -29,6 +42,19 @@ vi.mock('src/queries/entities/entities', async () => {
   return {
     ...actual,
     useAllAccountEntities: queryMocks.useAllAccountEntities,
+  };
+});
+
+vi.mock('src/features/IAM/hooks/useDelegationRole', () => ({
+  useIsDefaultDelegationRolesForChildAccount:
+    queryMocks.useIsDefaultDelegationRolesForChildAccount,
+}));
+
+vi.mock('src/features/IAM/hooks/usePermissions', async () => {
+  const actual = await vi.importActual('src/features/IAM/hooks/usePermissions');
+  return {
+    ...actual,
+    usePermissions: queryMocks.usePermissions,
   };
 });
 

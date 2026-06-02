@@ -5,7 +5,7 @@ import React from 'react';
 import { accountEntityFactory } from 'src/factories/accountEntities';
 import { accountRolesFactory } from 'src/factories/accountRoles';
 import { userRolesFactory } from 'src/factories/userRoles';
-import { renderWithTheme } from 'src/utilities/testHelpers';
+import { mockMatchMedia, renderWithTheme } from 'src/utilities/testHelpers';
 
 import {
   ERROR_STATE_TEXT,
@@ -23,19 +23,31 @@ const mockEntities = [
 ];
 
 const queryMocks = vi.hoisted(() => ({
+  useAccountUser: vi.fn().mockReturnValue({ error: null }),
   useAllAccountEntities: vi.fn().mockReturnValue({}),
+  useIsDefaultDelegationRolesForChildAccount: vi
+    .fn()
+    .mockReturnValue({ isDefaultDelegationRolesForChildAccount: false }),
   useParams: vi.fn().mockReturnValue({}),
   useSearch: vi.fn().mockReturnValue({}),
   useAccountRoles: vi.fn().mockReturnValue({}),
-  useUserRoles: vi.fn().mockReturnValue({}),
+  useUserRoles: vi.fn().mockReturnValue({ isLoading: false }),
   usePermissions: vi.fn().mockReturnValue({}),
 }));
 
-vi.mock('@linode/queries', async () => {
-  const actual = await vi.importActual('@linode/queries');
+beforeAll(() => mockMatchMedia());
+
+vi.mock('src/features/IAM/hooks/useDelegationRole', () => ({
+  useIsDefaultDelegationRolesForChildAccount:
+    queryMocks.useIsDefaultDelegationRolesForChildAccount,
+}));
+
+vi.mock('@linode/queries', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@linode/queries')>();
   return {
     ...actual,
     useAccountRoles: queryMocks.useAccountRoles,
+    useAccountUser: queryMocks.useAccountUser,
     useUserRoles: queryMocks.useUserRoles,
   };
 });

@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import React from 'react';
 
 import { expectNotificationBannerText } from 'src/features/IAM/utilities/testHelpers';
-import { renderWithTheme } from 'src/utilities/testHelpers';
+import { mockMatchMedia, renderWithTheme } from 'src/utilities/testHelpers';
 
 import {
   ERROR_STATE_TEXT,
@@ -61,12 +61,18 @@ vi.mock('@tanstack/react-router', async () => {
   };
 });
 
+beforeAll(() => mockMatchMedia());
+
 describe('DefaultEntityAccess', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
     queryMocks.usePermissions.mockReturnValue({
-      data: { view_default_delegate_access: true },
+      data: {
+        list_entities: true,
+        update_default_delegate_access: true,
+        view_default_delegate_access: true,
+      },
       isLoading: false,
     });
   });
@@ -87,7 +93,7 @@ describe('DefaultEntityAccess', () => {
     ).toBeVisible();
     expect(screen.getByPlaceholderText('Search')).toBeVisible();
     expect(container.querySelector('cds-select')).toBeVisible();
-    expect(screen.getByRole('table')).toBeVisible();
+    expect(screen.getByLabelText('Assigned Entities')).toBeVisible();
   });
   it('should render empty state', async () => {
     queryMocks.useGetDefaultDelegationAccessQuery.mockReturnValue({

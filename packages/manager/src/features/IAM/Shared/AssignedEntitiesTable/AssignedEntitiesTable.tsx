@@ -1,25 +1,20 @@
-import { Select } from '@akamai/cds-components/react';
+import {
+  Pagination,
+  Select,
+  Table,
+  TableBody,
+} from '@akamai/cds-components/react';
 import {
   useGetDefaultDelegationAccessQuery,
   useUserRoles,
 } from '@linode/queries';
-import { Typography, useTheme } from '@linode/ui';
+import { useTheme } from '@linode/ui';
 import Grid from '@mui/material/Grid';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import React from 'react';
 
 import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextField';
-import { PaginationFooter } from 'src/components/PaginationFooter/PaginationFooter';
 import { PAGE_SIZES } from 'src/components/PaginationFooter/PaginationFooter.constants';
-import { Table } from 'src/components/Table';
-import { TableBody } from 'src/components/TableBody';
-import { TableCell } from 'src/components/TableCell';
-import { TableHead } from 'src/components/TableHead';
-import { TableRow } from 'src/components/TableRow/TableRow';
-import { TableRowEmpty } from 'src/components/TableRowEmpty/TableRowEmpty';
-import { TableRowError } from 'src/components/TableRowError/TableRowError';
-import { TableRowLoading } from 'src/components/TableRowLoading/TableRowLoading';
-import { TableSortCell } from 'src/components/TableSortCell';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 import { useAllAccountEntities } from 'src/queries/entities/entities';
 
@@ -33,11 +28,11 @@ import { ENTITIES_TABLE_PREFERENCE_KEY } from '../constants';
 import { RemoveAssignmentConfirmationDialog } from '../RemoveAssignmentConfirmationDialog/RemoveAssignmentConfirmationDialog';
 import {
   getFilteredRoles,
-  getFormattedEntityType,
   groupAccountEntitiesByType,
   mapEntityTypesForSelect,
 } from '../utilities';
-import { AssignedEntitiesActionMenu } from './AssignedEntitiesActionMenu';
+import { AssignedEntitiesTableBody } from './AssignedEntitiesTableBody';
+import { AssignedEntitiesTableHead } from './AssignedEntitiesTableHead';
 import { ChangeRoleForEntityDrawer } from './ChangeRoleForEntityDrawer';
 
 import type { DrawerModes, EntitiesRole } from '../types';
@@ -49,6 +44,8 @@ const ALL_ENTITIES_OPTION: SelectOption = {
   value: 'all',
 };
 
+type SortOrder = 'asc' | 'desc';
+
 type OrderByKeys = 'entity_name' | 'entity_type' | 'role_name';
 
 interface Props {
@@ -57,6 +54,7 @@ interface Props {
 
 const DEFAULTS_ENTITIES_URL = '/iam/roles/defaults/entity-access';
 const USER_ENTITIES_URL = '/iam/users/$username/entities';
+const MIN_PAGE_SIZE = 25;
 
 export const AssignedEntitiesTable = ({ username }: Props) => {
   const theme = useTheme();
@@ -82,7 +80,7 @@ export const AssignedEntitiesTable = ({ username }: Props) => {
       : USER_ENTITIES_URL,
   });
 
-  const order: 'asc' | 'desc' = orderParam ?? 'asc';
+  const order: SortOrder = orderParam ?? 'asc';
 
   const ORDERABLE_KEYS = ['entity_name', 'entity_type', 'role_name'] as const;
   const isValidOrderBy = (v: unknown): v is OrderByKeys =>
@@ -91,9 +89,7 @@ export const AssignedEntitiesTable = ({ username }: Props) => {
     ? orderByParam
     : 'entity_name';
 
-  const handleOrderChange = (newOrderBy: OrderByKeys) => {
-    const nextOrder: 'asc' | 'desc' =
-      orderBy === newOrderBy ? (order === 'asc' ? 'desc' : 'asc') : 'asc';
+  const handleOrderChange = (key: string, order?: SortOrder | undefined) => {
     navigate({
       to: isDefaultDelegationRolesForChildAccount
         ? DEFAULTS_ENTITIES_URL
@@ -103,13 +99,12 @@ export const AssignedEntitiesTable = ({ username }: Props) => {
         : { username: username || '' },
       search: (prev) => ({
         ...prev,
-        order: nextOrder,
-        orderBy: newOrderBy,
+        order,
+        orderBy: key,
       }),
     });
   };
 
-  // Use the router `query` param, falling back to `selectedRole` for initial value
   const appliedQuery = queryParam ?? selectedRoleSearchParam ?? '';
 
   const [drawerMode, setDrawerMode] =
@@ -236,59 +231,6 @@ export const AssignedEntitiesTable = ({ username }: Props) => {
     return filteredAndSortedRoles.length;
   }, [filteredAndSortedRoles]);
 
-  const renderTableBody = () => {
-    if (entitiesLoading || loading) {
-      return <TableRowLoading columns={4} rows={1} />;
-    }
-
-    if (entitiesError || error) {
-      return (
-        <TableRowError
-          colSpan={4}
-          message="Unable to load the assigned entities. Please try again."
-        />
-      );
-    }
-
-    if (!entities || !assignedRoles || filteredRoles.length === 0) {
-      return <TableRowEmpty colSpan={4} message={'No items to display.'} />;
-    }
-
-    if (assignedRoles && entities) {
-      return (
-        <>
-          {pagination.paginatedData.map((el: EntitiesRole) => {
-            return (
-              <TableRow key={el.id}>
-                <TableCell>
-                  <Typography>{el.entity_name}</Typography>
-                </TableCell>
-                <TableCell sx={{ display: { sm: 'table-cell', xs: 'none' } }}>
-                  <Typography>
-                    {getFormattedEntityType(el.entity_type)}
-                  </Typography>
-                </TableCell>
-                <TableCell sx={{ display: { sm: 'table-cell', xs: 'none' } }}>
-                  <Typography>{el.role_name}</Typography>
-                </TableCell>
-                <TableCell actionCell>
-                  <AssignedEntitiesActionMenu
-                    assignment={el}
-                    handleChangeRole={handleChangeRole}
-                    handleRemoveAssignment={handleRemoveAssignment}
-                    permissions={permissions}
-                  />
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </>
-      );
-    }
-
-    return null;
-  };
-
   return (
     <Grid>
       <Grid
@@ -362,40 +304,26 @@ export const AssignedEntitiesTable = ({ username }: Props) => {
         />
       </Grid>
       <Table aria-label="Assigned Entities">
-        <TableHead>
-          <TableRow>
-            <TableSortCell
-              active={orderBy === 'entity_name'}
-              direction={order}
-              handleClick={() => handleOrderChange('entity_name')}
-              label="entity"
-              style={{ width: '35%' }}
-            >
-              Entity
-            </TableSortCell>
-            <TableSortCell
-              active={orderBy === 'entity_type'}
-              direction={order}
-              handleClick={() => handleOrderChange('entity_type')}
-              label="entityType"
-              style={{ width: '35%' }}
-              sx={{ display: { sm: 'table-cell', xs: 'none' } }}
-            >
-              Entity Type
-            </TableSortCell>
-            <TableSortCell
-              active={orderBy === 'role_name'}
-              direction={order}
-              handleClick={() => handleOrderChange('role_name')}
-              label="role"
-              sx={{ display: { sm: 'table-cell', xs: 'none' } }}
-            >
-              Assigned Role
-            </TableSortCell>
-            <TableCell />
-          </TableRow>
-        </TableHead>
-        <TableBody>{renderTableBody()}</TableBody>
+        <AssignedEntitiesTableHead
+          handleOrderChange={handleOrderChange}
+          order={order}
+          orderBy={orderBy}
+        />
+        <TableBody>
+          <AssignedEntitiesTableBody
+            assignedRoles={assignedRoles}
+            entities={entities}
+            entitiesError={entitiesError}
+            entitiesLoading={entitiesLoading}
+            error={error}
+            filteredRoles={filteredRoles}
+            handleChangeRole={handleChangeRole}
+            handleRemoveAssignment={handleRemoveAssignment}
+            loading={loading}
+            paginatedData={pagination.paginatedData}
+            permissions={permissions}
+          />
+        </TableBody>
       </Table>
       <ChangeRoleForEntityDrawer
         mode={drawerMode}
@@ -411,12 +339,18 @@ export const AssignedEntitiesTable = ({ username }: Props) => {
         username={username}
       />
       {filteredAndSortedRolesCount > PAGE_SIZES[0] && (
-        <PaginationFooter
+        <Pagination
           count={filteredAndSortedRolesCount}
-          handlePageChange={pagination.handlePageChange}
-          handleSizeChange={pagination.handlePageSizeChange}
+          onPageChange={(e: CustomEvent<number>) =>
+            pagination.handlePageChange(Number(e.detail))
+          }
+          onPageSizeChange={(
+            e: CustomEvent<{ page: number; pageSize: number }>
+          ) => pagination.handlePageSizeChange(Number(e.detail.pageSize))}
           page={pagination.page}
           pageSize={pagination.pageSize}
+          pageSizes={[MIN_PAGE_SIZE, 50, 75, 100]}
+          style={{ borderBottom: 0 }}
         />
       )}
     </Grid>
