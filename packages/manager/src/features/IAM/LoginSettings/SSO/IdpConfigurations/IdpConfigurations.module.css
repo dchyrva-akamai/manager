@@ -22,6 +22,7 @@
   align-items: center;
   gap: var(--global-spacing-s8, 8px);
   margin-bottom: var(--global-spacing-s8, 8px);
+  flex-wrap: wrap;
 }
 .detailRow p{
   padding: var(--token-global-spacing-s0, 0px);
@@ -32,6 +33,9 @@
 }
 .detailLabel {
   font-weight: var(--token-global-font-font-weight-bold, bold);
+}
+.detailValue {
+  word-break: break-word;
 }
 
 .certsHeader {

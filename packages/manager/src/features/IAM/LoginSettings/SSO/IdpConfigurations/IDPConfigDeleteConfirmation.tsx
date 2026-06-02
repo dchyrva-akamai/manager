@@ -74,7 +74,7 @@ export const IDPConfigDeleteConfirmation = (props: Props) => {
   return (
     <Modal
       className={styles.removeAssignmentDialog}
-      height={typeToConfirmPreference ? '469px' : '275px'}
+      height={typeToConfirmPreference ? '500px' : '275px'}
       onModalClosed={onClose}
       open={open}
       role="dialog"
@@ -90,7 +90,7 @@ export const IDPConfigDeleteConfirmation = (props: Props) => {
         </NotificationBanner>
         {typeToConfirmPreference && (
           <>
-            <p style={{ margin: `${Spacing.S24} 0` }}>
+            <p style={{ margin: `${Spacing.S24} 0`, wordBreak: 'break-word' }}>
               To confirm deletion, type the label of the IDP configuration{' '}
               <strong>({idpConfigLabel})</strong> in the field below:
             </p>
