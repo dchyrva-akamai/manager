@@ -1,4 +1,7 @@
-import { UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
+import {
+  getDCSpecificPriceByType,
+  UNKNOWN_PRICE,
+} from '@akamai/compute-ui-core/api';
 import { ActionsPanel, Notice, Typography } from '@linode/ui';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
@@ -7,7 +10,6 @@ import { ConfirmationDialog } from 'src/components/ConfirmationDialog/Confirmati
 import { Link } from 'src/components/Link';
 import { useObjectStorageTypesQuery } from 'src/queries/object-storage/queries';
 import { PRICES_RELOAD_ERROR_NOTICE_TEXT } from 'src/utilities/pricing/constants';
-import { getDCSpecificPriceByType } from 'src/utilities/pricing/dynamicPricing';
 
 import type { Region } from '@linode/api-v4';
 

@@ -4,7 +4,7 @@ import type { LockType } from '../locks/types';
 import type { IPAddress, IPRange } from '../networking/types';
 import type { LinodePlacementGroupPayload } from '../placement-groups/types';
 import type { Region, RegionSite } from '../regions';
-import type { LinodeType, StatsData } from '@akamai/compute-ui-core/api';
+import type { LinodeType, NetStats, StatsData } from '@akamai/compute-ui-core/api';
 import type {
   CreateLinodeInterfaceSchema,
   ModifyLinodeInterfaceSchema,
@@ -504,14 +504,7 @@ export interface Kernel {
   version: string;
 }
 
-export interface NetStats {
-  in: [number, number][];
-  out: [number, number][];
-  private_in: [number, number][];
-  private_out: [number, number][];
-}
-
-export type { StatsData };
+export type { NetStats, StatsData };
 
 export interface Stats {
   data: StatsData;

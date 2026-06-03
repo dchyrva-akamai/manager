@@ -26,10 +26,9 @@ import {
   isSpecialPrefixList,
 } from './shared';
 
-import type { ExtendedPL } from '@akamai/compute-ui-core/api';
+import type { ExtendedPL, PrefixListRuleReference } from '@akamai/compute-ui-core/api';
 import type { FirewallPrefixList } from '@linode/api-v4';
 import type { Theme } from '@mui/material/styles';
-import type { PrefixListRuleReference } from 'src/features/Firewalls/shared';
 
 const useStyles = makeStyles()((theme: Theme) => ({
   addPL: {

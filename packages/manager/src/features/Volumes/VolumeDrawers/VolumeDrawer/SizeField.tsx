@@ -1,4 +1,7 @@
-import { UNKNOWN_PRICE } from '@akamai/compute-ui-core/api';
+import {
+  getDCSpecificPriceByType,
+  UNKNOWN_PRICE,
+} from '@akamai/compute-ui-core/api';
 import { useVolumeTypesQuery } from '@linode/queries';
 import {
   Box,
@@ -12,7 +15,6 @@ import * as React from 'react';
 import { makeStyles } from 'tss-react/mui';
 
 import { MAX_VOLUME_SIZE } from 'src/constants';
-import { getDCSpecificPriceByType } from 'src/utilities/pricing/dynamicPricing';
 
 import { SIZE_FIELD_WIDTH } from '../../constants';
 

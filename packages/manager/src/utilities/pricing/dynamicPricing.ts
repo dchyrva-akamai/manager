@@ -1,5 +1,3 @@
-import { priceIncreaseMap } from '@akamai/compute-ui-core/api';
-
 import type { PriceType } from '@akamai/compute-ui-core/api';
 import type { Region, RegionPriceObject } from '@linode/api-v4';
 
@@ -47,69 +45,3 @@ export interface DataCenterPricingByTypeOptions {
    */
   type: PriceType | undefined;
 }
-
-/**
- * This function is used to calculate the dynamic pricing for a given entity, based on potential region increased costs.
- * @example
- * const price = getDCSpecificPrice({
- *   basePrice: getVolumePrice(20),
- *   regionId: 'us-east',
- * });
- * @returns a data center specific price
- */
-export const getDCSpecificPrice = ({
-  basePrice,
-  regionId,
-}: DataCenterPricingOptions) => {
-  if (!regionId || !basePrice) {
-    return undefined;
-  }
-
-  if (regionId in priceIncreaseMap) {
-    const increaseFactor =
-      priceIncreaseMap[regionId as keyof typeof priceIncreaseMap];
-
-    if (increaseFactor !== undefined) {
-      // If increaseFactor is defined, it means the region has a price increase and we should apply it.
-      const increase = basePrice * increaseFactor;
-
-      return (basePrice + increase).toFixed(2);
-    }
-  }
-
-  return basePrice.toFixed(2);
-};
-
-/**
- * This function is used to calculate the dynamic pricing for a given entity, based on potential region increased costs.
- * @example
- * const price = getDCSpecificPriceByType({
- *   size: 20,
- *   type: volumeType, // From the volumes/types endpoint
- *   regionId: 'us-east',
- * });
- * @returns a data center specific price or undefined if this cannot be calculated
- */
-export const getDCSpecificPriceByType = ({
-  decimalPrecision = 2,
-  interval = 'monthly',
-  regionId,
-  size,
-  type,
-}: DataCenterPricingByTypeOptions): string | undefined => {
-  if (!regionId || !type) {
-    return undefined;
-  }
-  // Apply the DC-specific price if it exists; otherwise, use the base price.
-  const price =
-    type.region_prices.find((region_price: RegionPrice) => {
-      return region_price.id === regionId;
-    })?.[interval] ?? type.price?.[interval];
-
-  // If pricing is determined by size of the entity
-  if (size && price) {
-    return (size * price).toFixed(decimalPrecision);
-  }
-
-  return price?.toFixed(decimalPrecision) ?? undefined;
-};

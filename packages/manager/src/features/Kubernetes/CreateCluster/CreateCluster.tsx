@@ -1,4 +1,5 @@
 import {
+  getDCSpecificPriceByType,
   getErrorMap,
   stringToExtendedIP,
   UNKNOWN_PRICE,
@@ -59,7 +60,6 @@ import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 import { extendType } from 'src/utilities/extendType';
 import { filterCurrentTypes } from 'src/utilities/filterCurrentLinodeTypes';
 import { DOCS_LINK_LABEL_DC_PRICING } from 'src/utilities/pricing/constants';
-import { getDCSpecificPriceByType } from 'src/utilities/pricing/dynamicPricing';
 import { reportAgreementSigningError } from 'src/utilities/reportAgreementSigningError';
 
 import {

@@ -1,4 +1,7 @@
-import { renderMonthlyPriceToCorrectDecimalPlace } from '@akamai/compute-ui-core/api';
+import {
+  getDCSpecificPriceByType,
+  renderMonthlyPriceToCorrectDecimalPlace,
+} from '@akamai/compute-ui-core/api';
 import {
   useAccountAgreements,
   useMutateAccountAgreements,
@@ -50,7 +53,6 @@ import {
   DOCS_LINK_LABEL_DC_PRICING,
   PRICE_ERROR_TOOLTIP_TEXT,
 } from 'src/utilities/pricing/constants';
-import { getDCSpecificPriceByType } from 'src/utilities/pricing/dynamicPricing';
 import { reportAgreementSigningError } from 'src/utilities/reportAgreementSigningError';
 
 import { EUAgreementCheckbox } from '../Account/Agreements/EUAgreementCheckbox';

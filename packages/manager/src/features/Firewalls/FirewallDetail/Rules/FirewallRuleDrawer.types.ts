@@ -1,8 +1,8 @@
-import type { FirewallOptionItem, PrefixListRuleReference } from '../../shared';
+import type { FirewallOptionItem } from '../../shared';
 import type { PrefixListDrawerContext } from './FirewallPrefixListDrawer';
 import type { ExtendedFirewallRule } from './firewallRuleEditor';
 import type { Category, FirewallRuleError } from './shared';
-import type { ExtendedIP, ExtendedPL } from '@akamai/compute-ui-core/api';
+import type { ExtendedIP, ExtendedPL, PrefixListRuleReference } from '@akamai/compute-ui-core/api';
 import type {
   FirewallPolicyType,
   FirewallRuleType,
