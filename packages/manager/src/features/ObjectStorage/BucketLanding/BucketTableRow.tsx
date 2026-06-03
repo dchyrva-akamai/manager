@@ -1,8 +1,10 @@
-import { readableBytes } from '@akamai/compute-ui-core/api';
+import {
+  getRegionsByRegionId,
+  readableBytes,
+} from '@akamai/compute-ui-core/api';
 import { useRegionsQuery } from '@linode/queries';
 import { Stack, Typography } from '@linode/ui';
 import { Hidden } from '@linode/ui';
-import { getRegionsByRegionId } from '@linode/utilities';
 import * as React from 'react';
 
 import { DateTimeDisplay } from 'src/components/DateTimeDisplay';

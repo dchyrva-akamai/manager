@@ -35,7 +35,6 @@ export * from './queryParams';
 export * from './random';
 export * from './redactAccessToken';
 export * from './reduceAsync';
-export * from './regions';
 export * from './replaceNewlinesWithLineBreaks';
 export * from './scrollErrorIntoView';
 export * from './scrollErrorIntoViewV2';

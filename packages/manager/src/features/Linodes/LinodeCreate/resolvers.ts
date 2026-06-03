@@ -1,9 +1,7 @@
-import { isEURegion } from '@akamai/compute-ui-core/api';
+import { getRegionCountryGroup, isEURegion } from '@akamai/compute-ui-core/api';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { accountQueries, regionQueries } from '@linode/queries';
 import type { FieldErrors, Resolver } from 'react-hook-form';
-
-import { getRegionCountryGroup } from 'src/utilities/formatRegion';
 
 import { getCleanedLinodeInterfaceValues } from './Networking/utilities';
 import {

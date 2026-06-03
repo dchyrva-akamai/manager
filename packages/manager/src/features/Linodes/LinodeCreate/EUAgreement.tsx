@@ -1,4 +1,4 @@
-import { isEURegion } from '@akamai/compute-ui-core/api';
+import { getRegionCountryGroup, isEURegion } from '@akamai/compute-ui-core/api';
 import { useAccountAgreements, useRegionsQuery } from '@linode/queries';
 import { Notice, Paper, Stack, Typography } from '@linode/ui';
 import React from 'react';
@@ -6,7 +6,6 @@ import { useController, useWatch } from 'react-hook-form';
 
 import { EUAgreementCheckbox } from 'src/features/Account/Agreements/EUAgreementCheckbox';
 import { usePermissions } from 'src/features/IAM/hooks/usePermissions';
-import { getRegionCountryGroup } from 'src/utilities/formatRegion';
 
 import type { LinodeCreateFormValues } from './utilities';
 

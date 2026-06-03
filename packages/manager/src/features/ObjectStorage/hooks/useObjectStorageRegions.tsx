@@ -1,5 +1,5 @@
+import { getRegionsByRegionId } from '@akamai/compute-ui-core/api';
 import { useRegionsQuery } from '@linode/queries';
-import { getRegionsByRegionId } from '@linode/utilities';
 import * as React from 'react';
 
 import { filterRegionsByEndpoints } from 'src/features/ObjectStorage/utilities';

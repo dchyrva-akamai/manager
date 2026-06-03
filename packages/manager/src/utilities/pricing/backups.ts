@@ -1,4 +1,5 @@
-import type { ExtendedType } from '../extendType';
+import { getMonthlyBackupsPrice } from '@akamai/compute-ui-core/api';
+
 import type { Linode, LinodeType, PriceObject } from '@linode/api-v4';
 
 /**
@@ -27,26 +28,6 @@ export const getLinodeBackupPrice = (
   }
 
   return type.addons.backups.price;
-};
-
-interface BackupsPriceOptions {
-  region: string | undefined;
-  type: ExtendedType | LinodeType | undefined;
-}
-
-/**
- * @returns The monthly backup price for a single linode without backups enabled;
- * if price cannot be calculated, returns undefined.
- */
-export const getMonthlyBackupsPrice = ({
-  region,
-  type,
-}: BackupsPriceOptions): PriceObject['monthly'] | undefined => {
-  if (!region || !type) {
-    return undefined;
-  }
-
-  return getLinodeBackupPrice(type, region)?.monthly;
 };
 
 export interface TotalBackupsPriceOptions {
