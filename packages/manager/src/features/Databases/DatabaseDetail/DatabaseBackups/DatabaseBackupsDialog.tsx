@@ -1,8 +1,11 @@
-import { NotificationBanner } from '@akamai/cds-components/react';
+import {
+  Button,
+  Modal,
+  NotificationBanner,
+} from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { useProfile, useRestoreFromBackupMutation } from '@linode/queries';
-import { ActionsPanel, Dialog, Typography } from '@linode/ui';
 import { useNavigate } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
@@ -82,58 +85,59 @@ export const DatabaseBackupsDialog = (props: Props) => {
     database.private_network !== null && database.region !== region;
 
   return (
-    <Dialog
-      onClose={_onClose}
+    <Modal
+      closeModal={_onClose}
       open={open}
-      subtitle={formattedDate && `From ${formattedDate} (UTC)`}
+      size="medium"
       title={`Restore ${database.label}`}
     >
-      {error && (
-        <NotificationBanner
-          style={{ marginBottom: Spacing.S16 }}
-          text={
-            getAPIErrorOrDefault(error, 'Unable to restore this backup.')[0]
-              .reason
-          }
-          type="error"
-        />
-      )}
-      {isClusterWithVPCAndForkingToDifferentRegion && ( // Show warning when forking a cluster with VPC to a different region
-        <NotificationBanner
-          style={{ marginBottom: Spacing.S16 }}
-          type="warning"
+      <span slot="title">{`Restore ${database.label}`}</span>
+
+      <div slot="body">
+        <p>{formattedDate && `From ${formattedDate} (UTC)`}</p>
+        {error && (
+          <NotificationBanner
+            style={{ marginBottom: Spacing.S16 }}
+            text={
+              getAPIErrorOrDefault(error, 'Unable to restore this backup.')[0]
+                .reason
+            }
+            type="error"
+          />
+        )}
+        {isClusterWithVPCAndForkingToDifferentRegion && ( // Show warning when forking a cluster with VPC to a different region
+          <NotificationBanner
+            style={{ marginBottom: Spacing.S16 }}
+            type="warning"
+          >
+            The database cluster is currently assigned to a VPC. When you
+            restore the cluster into a different region, it will not be assigned
+            to a VPC by default. If your workflow requires a VPC, go to the
+            cluster’s Networking tab after the restore is complete and assign
+            the cluster to a VPC.
+          </NotificationBanner>
+        )}
+        <p style={{ marginBottom: Spacing.S32 }}>
+          Restoring a backup creates a fork from this backup. If you proceed and
+          the fork is created successfully, you should remove the original
+          database cluster. Failing to do so will lead to additional billing
+          caused by two running clusters instead of one.
+        </p>
+      </div>
+
+      <div slot="actions" style={{ display: 'flex', alignItems: 'center' }}>
+        <Button data-testid="cancel" onClick={_onClose} variant="link">
+          Cancel
+        </Button>
+        <Button
+          data-testid="submit"
+          onClick={handleRestoreDatabase}
+          processing={isPending}
+          variant="primary"
         >
-          The database cluster is currently assigned to a VPC. When you restore
-          the cluster into a different region, it will not be assigned to a VPC
-          by default. If your workflow requires a VPC, go to the cluster’s
-          Networking tab after the restore is complete and assign the cluster to
-          a VPC.
-        </NotificationBanner>
-      )}
-      <Typography sx={(theme) => ({ marginBottom: theme.spacingFunction(32) })}>
-        Restoring a backup creates a fork from this backup. If you proceed and
-        the fork is created successfully, you should remove the original
-        database cluster. Failing to do so will lead to additional billing
-        caused by two running clusters instead of one.
-      </Typography>
-      <ActionsPanel
-        primaryButtonProps={{
-          'data-testid': 'submit',
-          label: 'Restore',
-          loading: isPending,
-          onClick: handleRestoreDatabase,
-        }}
-        secondaryButtonProps={{
-          'data-testid': 'cancel',
-          label: 'Cancel',
-          onClick: _onClose,
-        }}
-        sx={{
-          display: 'flex',
-          marginBottom: '0',
-          paddingBottom: '0',
-        }}
-      />
-    </Dialog>
+          Restore
+        </Button>
+      </div>
+    </Modal>
   );
 };

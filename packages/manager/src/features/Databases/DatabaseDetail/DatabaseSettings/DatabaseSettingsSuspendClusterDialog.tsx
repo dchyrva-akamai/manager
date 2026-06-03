@@ -1,13 +1,14 @@
-import { Checkbox, NotificationBanner } from '@akamai/cds-components/react';
+import {
+  Button,
+  Checkbox,
+  Modal,
+  NotificationBanner,
+} from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
 import { useSuspendDatabaseMutation } from '@linode/queries';
-import { ActionsPanel, Typography } from '@linode/ui';
 import { useNavigate } from '@tanstack/react-router';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';
-
-import { ConfirmationDialog } from 'src/components/ConfirmationDialog/ConfirmationDialog';
-import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
 import type { Engine } from '@linode/api-v4/lib/databases';
 
@@ -63,47 +64,51 @@ export const DatabaseSettingsSuspendClusterDialog = (
   const SUSPENDED_CLUSTER_COPY =
     "A suspended cluster stops immediately and you won't be billed for it. You can resume the cluster within 180 days from its suspension. After that time, the cluster will be deleted permanently.";
 
-  const actions = (
-    <ActionsPanel
-      primaryButtonProps={{
-        disabled: !hasConfirmed,
-        label: 'Suspend Cluster',
-        loading: isPending,
-        onClick: onSuspendCluster,
-      }}
-      secondaryButtonProps={{
-        label: 'Cancel',
-        onClick: onCancel,
-      }}
-      style={{ padding: 0 }}
-    />
-  );
-
   return (
-    <ConfirmationDialog
-      actions={actions}
-      error={
-        error ? getAPIErrorOrDefault(error, defaultError)[0].reason : undefined
-      }
-      maxWidth="sm"
-      onClose={onClose}
+    <Modal
+      closeModal={onCancel}
       open={open}
+      size="medium"
       title={`Suspend ${databaseLabel} cluster?`}
     >
-      <NotificationBanner style={{ marginBottom: Spacing.S16 }} type="warning">
-        <Typography style={{ fontSize: '0.875rem' }}>
-          <b>{SUSPENDED_CLUSTER_COPY}</b>
-        </Typography>
-      </NotificationBanner>
-      <Checkbox
-        checked={hasConfirmed}
-        data-testid="database-suspend-confirmation-checkbox"
-        onChange={(e) => {
-          setHasConfirmed((e as CustomEvent<boolean>).detail);
-        }}
-      >
-        I understand the effects of this action.
-      </Checkbox>
-    </ConfirmationDialog>
+      <span slot="title">Suspend {databaseLabel} cluster?</span>
+      <div slot="body" style={{ overflowY: 'hidden' }}>
+        {error ? (
+          <NotificationBanner type="error">
+            {error[0].reason || defaultError}
+          </NotificationBanner>
+        ) : undefined}
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
+          type="warning"
+        >
+          <p style={{ fontSize: '0.875rem' }}>
+            <b>{SUSPENDED_CLUSTER_COPY}</b>
+          </p>
+        </NotificationBanner>
+        <Checkbox
+          checked={hasConfirmed}
+          data-testid="database-suspend-confirmation-checkbox"
+          onChange={(e) => {
+            setHasConfirmed((e as CustomEvent<boolean>).detail);
+          }}
+        >
+          I understand the effects of this action.
+        </Checkbox>
+      </div>
+      <div slot="actions" style={{ display: 'flex', alignItems: 'center' }}>
+        <Button onClick={onCancel} variant="link">
+          Cancel
+        </Button>
+        <Button
+          disabled={!hasConfirmed}
+          onClick={onSuspendCluster}
+          processing={isPending}
+          variant="primary"
+        >
+          Suspend Cluster
+        </Button>
+      </div>
+    </Modal>
   );
 };

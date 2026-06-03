@@ -27,7 +27,7 @@ import { useDatabaseDetailContext } from '../DatabaseDetailContext';
 import { DatabaseSettingsDeleteClusterDialog } from './DatabaseSettingsDeleteClusterDialog';
 import { DatabaseSettingsMaintenance } from './DatabaseSettingsMaintenance';
 import DatabaseSettingsMenuItem from './DatabaseSettingsMenuItem';
-import DatabaseSettingsResetPasswordDialog from './DatabaseSettingsResetPasswordDialog';
+import { DatabaseSettingsResetPasswordDialog } from './DatabaseSettingsResetPasswordDialog';
 import { DatabaseSettingsSuspendClusterDialog } from './DatabaseSettingsSuspendClusterDialog';
 import { MaintenanceWindow } from './MaintenanceWindow';
 

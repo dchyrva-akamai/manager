@@ -27,12 +27,11 @@ const getCdsCheckboxInput = (host: HTMLElement) =>
 
 describe('DatabaseSettingsSuspendClusterDialog', () => {
   it('renders the dialog with text', async () => {
-    const { getByTestId, getByText } = renderWithTheme(
+    const { getByText } = renderWithTheme(
       <DatabaseSettingsSuspendClusterDialog {...props} />
     );
     expect(getByText(`Suspend ${mockLabel} cluster?`)).toBeVisible();
     expect(getByText('Suspend Cluster')).toBeVisible();
-    expect(getByTestId('CloseIcon')).toBeVisible();
   });
 
   it('should initialize with unchecked checkbox and disabled submit button', async () => {
@@ -42,12 +41,12 @@ describe('DatabaseSettingsSuspendClusterDialog', () => {
     const confirmationHost = getByTestId(
       'database-suspend-confirmation-checkbox'
     );
-    const suspendButton = getByText(/Suspend Cluster/i).closest('button');
+    const suspendButton = getByText(/Suspend Cluster/i).closest('cds-button');
     await customElements.whenDefined('cds-checkbox');
     await waitFor(() => {
       expect(confirmationHost).toHaveProperty('checked', false);
     });
-    expect(suspendButton).toHaveAttribute('aria-disabled', 'true');
+    expect(suspendButton).toHaveAttribute('disabled', '');
   });
 
   it('should enable submit button when checkbox is checked', async () => {
@@ -57,7 +56,7 @@ describe('DatabaseSettingsSuspendClusterDialog', () => {
     const confirmationHost = getByTestId(
       'database-suspend-confirmation-checkbox'
     );
-    const suspendButton = getByText(/Suspend Cluster/i).closest('button');
+    const suspendButton = getByText(/Suspend Cluster/i).closest('cds-button');
     await customElements.whenDefined('cds-checkbox');
     await waitFor(() => {
       expect(getCdsCheckboxInput(confirmationHost)).toBeTruthy();
@@ -66,7 +65,7 @@ describe('DatabaseSettingsSuspendClusterDialog', () => {
     expect(confirmationInput).toBeTruthy();
     await userEvent.click(confirmationInput!);
     expect(confirmationInput!.checked).toBeTruthy();
-    expect(suspendButton).toHaveAttribute('aria-disabled', 'false');
+    expect(suspendButton).not.toHaveAttribute('disabled');
   });
 
   it('should call onClose after suspend call is successful', async () => {
@@ -81,8 +80,8 @@ describe('DatabaseSettingsSuspendClusterDialog', () => {
       'database-suspend-confirmation-checkbox'
     );
     const suspendButton = getByText(/Suspend Cluster/i).closest(
-      'button'
-    ) as HTMLButtonElement;
+      'cds-button'
+    ) as HTMLElement;
 
     await customElements.whenDefined('cds-checkbox');
     await waitFor(() => {
@@ -99,15 +98,15 @@ describe('DatabaseSettingsSuspendClusterDialog', () => {
     suspendSpy.mockRestore();
   });
 
-  it('closes the confirmaton dialog if the X button is clicked', async () => {
-    const { getByTestId } = renderWithTheme(
+  it('closes the confirmaton dialog if the Cancel button is clicked', async () => {
+    const { getByText } = renderWithTheme(
       <DatabaseSettingsSuspendClusterDialog {...props} />
     );
 
-    const closeButton = getByTestId('CloseIcon');
-    expect(closeButton).toBeVisible();
+    const cancelButton = getByText('Cancel').closest('cds-button');
+    expect(cancelButton).toBeVisible();
 
-    await userEvent.click(closeButton);
+    await userEvent.click(cancelButton!);
     expect(props.onClose).toHaveBeenCalled();
   });
 });
