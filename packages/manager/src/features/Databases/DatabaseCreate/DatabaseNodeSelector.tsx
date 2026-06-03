@@ -1,12 +1,10 @@
-import { Badge, NotificationBanner } from '@akamai/cds-components/react';
-import { Spacing } from '@akamai/cds-tokens';
 import {
-  FormControl,
-  FormControlLabel,
-  Radio,
+  Badge,
+  NotificationBanner,
+  RadioButton,
   RadioGroup,
-  Typography,
-} from '@linode/ui';
+} from '@akamai/cds-components/react';
+import { Spacing } from '@akamai/cds-tokens';
 import React from 'react';
 
 import { determineInitialPlanCategoryTab } from 'src/features/components/PlansPanel/utils';
@@ -97,7 +95,7 @@ export const DatabaseNodeSelector = (props: Props) => {
     const options = [
       {
         label: (
-          <Typography component="div">
+          <div>
             <span>1 Node {` `}</span>
             {currentClusterSize === 1 && currentChip}
             <br />
@@ -106,7 +104,7 @@ export const DatabaseNodeSelector = (props: Props) => {
                 nodePricing?.single?.hourly || 0
               }/hr`}
             </span>
-          </Typography>
+          </div>
         ),
         value: 1,
       },
@@ -120,7 +118,7 @@ export const DatabaseNodeSelector = (props: Props) => {
     if (displayTwoNodesOption) {
       options.push({
         label: (
-          <Typography component="div">
+          <div>
             <span>2 Nodes - High Availability</span>
             {currentClusterSize === 2 && currentChip}
             <br />
@@ -129,7 +127,7 @@ export const DatabaseNodeSelector = (props: Props) => {
                 nodePricing?.double?.hourly || 0
               }/hr`}
             </span>
-          </Typography>
+          </div>
         ),
         value: 2,
       });
@@ -137,7 +135,7 @@ export const DatabaseNodeSelector = (props: Props) => {
 
     options.push({
       label: (
-        <Typography component="div">
+        <div>
           <span>3 Nodes - High Availability (recommended)</span>
           {currentClusterSize === 3 && currentChip}
           <br />
@@ -146,7 +144,7 @@ export const DatabaseNodeSelector = (props: Props) => {
               nodePricing?.multi?.hourly || 0
             }/hr`}
           </span>
-        </Typography>
+        </div>
       ),
       value: 3,
     });
@@ -162,19 +160,12 @@ export const DatabaseNodeSelector = (props: Props) => {
 
   return (
     <>
-      <Typography style={{ marginBottom: 4 }} variant="h2">
-        Set Number of Nodes
-      </Typography>
-      <Typography style={{ marginBottom: 8 }}>
+      <h2 style={{ marginBottom: 4 }}>Set Number of Nodes</h2>
+      <p style={{ marginBottom: 8 }}>
         We recommend 3 nodes in a database cluster to avoid downtime during
         upgrades and maintenance.
-      </Typography>
-      <FormControl
-        disabled={isRestricted || disabled}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          handleNodeChange(+e.target.value as ClusterSize);
-        }}
-      >
+      </p>
+      <>
         {error ? (
           <NotificationBanner
             style={{ marginBottom: Spacing.S16 }}
@@ -185,22 +176,34 @@ export const DatabaseNodeSelector = (props: Props) => {
         <RadioGroup
           aria-disabled={isRestricted || disabled}
           data-testid="database-nodes"
+          onChange={(e: CustomEvent) => {
+            handleNodeChange(+e.detail.value as ClusterSize);
+          }}
           style={{ marginBottom: 0, marginTop: 0 }}
-          value={selectedClusterSize ?? ''}
+          value={selectedClusterSize?.toString() || ''}
         >
           {nodeOptions.map((nodeOption) => (
-            <FormControlLabel
-              control={<Radio />}
-              data-qa-radio={nodeOption.label}
-              data-testid={`database-node-${nodeOption.value}`}
+            <div
               key={nodeOption.value}
-              label={nodeOption.label}
-              sx={(theme) => ({ marginBottom: theme.spacing() })}
-              value={nodeOption.value}
-            />
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: Spacing.S8,
+              }}
+            >
+              <RadioButton
+                checked={selectedClusterSize === nodeOption.value}
+                data-qa-dbaas-radio={nodeOption.label}
+                data-testid={`database-node-${nodeOption.value}`}
+                disabled={isRestricted || disabled}
+                value={nodeOption.value.toString()}
+              />
+              <label>{nodeOption.label}</label>
+            </div>
           ))}
         </RadioGroup>
-      </FormControl>
+      </>
     </>
   );
 };

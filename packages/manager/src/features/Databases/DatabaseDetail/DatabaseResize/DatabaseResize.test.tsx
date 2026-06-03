@@ -313,8 +313,8 @@ describe('database resize', () => {
       await waitForElementToBeRemoved(getByTestId(loadingTestId));
       const selectedNodeRadioButton = getByTestId(
         `database-node-${mockDatabase.cluster_size}`
-      ).children[0].children[0] as HTMLInputElement;
-      expect(selectedNodeRadioButton).toBeChecked();
+      );
+      expect(selectedNodeRadioButton).toHaveAttribute('checked');
     });
 
     it('should set price, enable resize button, and update resize summary when a new number of nodes is selected', async () => {
@@ -333,9 +333,12 @@ describe('database resize', () => {
       );
       await waitForElementToBeRemoved(getByTestId(loadingTestId));
       // Mock clicking 3 Nodes option
-      const selectedNodeRadioButton = getByTestId('database-node-3').children[0]
-        .children[0] as HTMLInputElement;
-      await userEvent.click(selectedNodeRadioButton);
+      const nodeHost = getByTestId('database-node-3');
+      const nodeInput = await getShadowRootElement<HTMLInputElement>(
+        nodeHost,
+        'input'
+      );
+      await userEvent.click(nodeInput!);
 
       const buttonHost = getByTestId('resize-database-button');
       const resizeButton = await getShadowRootElement(buttonHost, 'button');
@@ -366,9 +369,12 @@ describe('database resize', () => {
       );
       await waitForElementToBeRemoved(getByTestId(loadingTestId));
       // Mock clicking 3 Nodes option
-      const threeNodesRadioButton = getByTestId('database-node-3').children[0]
-        .children[0] as HTMLInputElement;
-      await userEvent.click(threeNodesRadioButton);
+      const threeNodesHost = getByTestId('database-node-3');
+      const threeNodesInput = await getShadowRootElement<HTMLInputElement>(
+        threeNodesHost,
+        'input'
+      );
+      await userEvent.click(threeNodesInput!);
 
       const buttonHost = getByTestId('resize-database-button');
       const resizeButton = await getShadowRootElement(buttonHost, 'button');
@@ -376,9 +382,12 @@ describe('database resize', () => {
       expect(resizeButton).toBeEnabled();
 
       // Mock clicking 1 Node option
-      const oneNodeRadioButton = getByTestId('database-node-1').children[0]
-        .children[0] as HTMLInputElement;
-      await userEvent.click(oneNodeRadioButton);
+      const oneNodeHost = getByTestId('database-node-1');
+      const oneNodeInput = await getShadowRootElement<HTMLInputElement>(
+        oneNodeHost,
+        'input'
+      );
+      await userEvent.click(oneNodeInput!);
 
       expect(resizeButton).toBeDisabled();
     });
@@ -645,10 +654,7 @@ describe('database resize', () => {
       expect(getByTestId(loadingTestId)).toBeInTheDocument();
       await waitForElementToBeRemoved(getByTestId(loadingTestId));
 
-      expect(getByTestId('database-nodes')).toHaveAttribute(
-        'aria-disabled',
-        'true'
-      );
+      expect(getByTestId('database-nodes')).toHaveAttribute('aria-disabled');
       const expectedMessage =
         'Warning: Your current plan is currently unavailable and it can\u{2019}t be used to resize the cluster. You can only resize the cluster using other available plans.';
       const unavailableNotice = getAllByText(expectedMessage);

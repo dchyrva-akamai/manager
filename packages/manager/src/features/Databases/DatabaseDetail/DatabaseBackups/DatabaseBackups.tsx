@@ -1,7 +1,11 @@
 import {
   Button,
+  FormError,
+  FormField,
   Icon,
   NotificationBanner,
+  RadioButton,
+  RadioGroup,
   Select,
   TimePicker,
   Tooltip,
@@ -10,14 +14,7 @@ import { Spacing } from '@akamai/cds-tokens';
 import { formatDate } from '@akamai/compute-ui-core/datetime';
 import { useDatabaseQuery, useProfile, useRegionsQuery } from '@linode/queries';
 import { useIsGeckoEnabled } from '@linode/shared';
-import { Box, InputLabel, Typography } from '@linode/ui';
-import {
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  Radio,
-  RadioGroup,
-} from '@mui/material';
+import { Box, InputLabel } from '@linode/ui';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { useParams } from '@tanstack/react-router';
@@ -31,12 +28,10 @@ import {
   StyledDateCalendar,
   StyledDateTimeStack,
   StyledRegionStack,
-  StyledTypography,
 } from 'src/features/Databases/DatabaseDetail/DatabaseBackups/DatabaseBackups.style';
 import {
   isDateOutsideBackup,
   isTimeOutsideBackup,
-  useIsDatabasesEnabled,
 } from 'src/features/Databases/utilities';
 
 import {
@@ -69,7 +64,6 @@ export const DatabaseBackups = () => {
   const { databaseId, engine } = useParams({
     from: '/databases/$engine/$databaseId',
   });
-  const { isDatabasesV2GA } = useIsDatabasesEnabled();
 
   const flags = useFlags();
   const { isGeckoLAEnabled } = useIsGeckoEnabled(
@@ -81,9 +75,8 @@ export const DatabaseBackups = () => {
   const { data: regionsData } = useRegionsQuery();
 
   const [isRestoreDialogOpen, setIsRestoreDialogOpen] = React.useState(false);
-  const [versionOption, setVersionOption] = React.useState<VersionOption>(
-    isDatabasesV2GA ? 'newest' : 'dateTime'
-  );
+  const [versionOption, setVersionOption] =
+    React.useState<VersionOption>('newest');
 
   const { data: database } = useDatabaseQuery(engine, Number(databaseId));
 
@@ -170,11 +163,8 @@ export const DatabaseBackups = () => {
     return isOnMaxDate ? today : undefined;
   };
 
-  const handleOnVersionOptionChange = (
-    _: React.ChangeEvent<HTMLInputElement>,
-    value: VersionOption
-  ) => {
-    setVersionOption(value);
+  const handleOnVersionOptionChange = (e: CustomEvent) => {
+    setVersionOption(e.detail.value);
     setValue('date', null);
     setValue('time', null);
     clearErrors('time');
@@ -216,38 +206,39 @@ export const DatabaseBackups = () => {
     <Paper>
       {!isValkeyDatabase && (
         <>
-          <Typography variant="h2">Summary</Typography>
-          <StyledTypography>
+          <h2 style={{ margin: 0 }}>Summary</h2>
+          <p style={{ marginTop: Spacing.S4 }}>
             Databases are automatically backed-up with full daily backups for
             the past 14 days, and binary logs recorded continuously. Full
             backups are version-specific binary backups, which when combined
             with binary logs allow for consistent recovery to a specific point
             in time (PITR).
-          </StyledTypography>
+          </p>
           <Divider marginBottom={Spacing.S24} marginTop={Spacing.S24} />
-          <Typography variant="h2">Restore a Backup</Typography>
-          <StyledTypography>
-            The newest full backup plus incremental is selected by default. Or,
-            select any date and time within the last 14 days you want to create
-            a fork from.
-          </StyledTypography>
+          <h2 style={{ margin: 0 }}>Restore a Backup</h2>
+          <p style={{ marginTop: Spacing.S4 }}>
+            <span>
+              The newest full backup plus incremental is selected by default.
+              Or, select any date and time within the last 14 days you want to
+              create a fork from.
+            </span>
+          </p>
         </>
       )}
       {isValkeyDatabase && (
         <>
-          <Typography variant="h2">Restore a Backup</Typography>
-          <StyledTypography>
+          <h2 style={{ margin: 0 }}>Restore a Backup</h2>
+          <p style={{ marginTop: Spacing.S4 }}>
             Valkey databases automatically backup data every 12 hours and
             support configurable data persistence using Redis Database Backup
             (RDB). You can change the default 12 hours to 24 hours using
             Advanced Configuration settings. Learn more.
-          </StyledTypography>
-          <StyledTypography
+          </p>
+          <p style={{ marginTop: Spacing.S4 }}>
             paddingBottom={unableToRestoreCopy ? Spacing.S8 : Spacing.S20}
             paddingTop={Spacing.S16}
-          >
             Select the restore time and region you want to create a fork for.
-          </StyledTypography>
+          </p>
         </>
       )}
       {unableToRestoreCopy && (
@@ -267,22 +258,28 @@ export const DatabaseBackups = () => {
                 onChange={handleOnVersionOptionChange}
                 value={versionOption}
               >
-                <FormControlLabel
-                  control={<Radio />}
-                  data-qa-dbaas-radio="Newest"
-                  disabled={disabled}
-                  label="Newest full backup plus incremental"
-                  value="newest"
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  data-qa-dbaas-radio="DateTime"
-                  disabled={disabled}
-                  label="Specific date & time"
-                  value="dateTime"
-                />
+                <div style={{ marginBottom: Spacing.S16 }}>
+                  <RadioButton
+                    data-qa-dbaas-radio="Newest"
+                    disabled={disabled}
+                    id="newest"
+                    value="newest"
+                  />
+                  <label htmlFor="newest">
+                    Newest full backup plus incremental
+                  </label>
+                </div>
+                <div style={{ marginBottom: Spacing.S16 }}>
+                  <RadioButton
+                    data-qa-dbaas-radio="DateTime"
+                    disabled={disabled}
+                    id="dateTime"
+                    value="dateTime"
+                  />
+                  <label htmlFor="dateTime">Specific date & time</label>
+                </div>
               </RadioGroup>
-              <Typography variant="h3">Date</Typography>
+              <h3 style={{ margin: 0 }}>Date</h3>
               <StyledDateTimeStack>
                 <Controller
                   control={control}
@@ -310,8 +307,8 @@ export const DatabaseBackups = () => {
                   control={control}
                   name="time"
                   render={({ field, fieldState }) => (
-                    <FormControl style={{ marginTop: 0 }}>
-                      <Typography variant="h3">Time (UTC)</Typography>
+                    <FormField style={{ marginTop: 0 }}>
+                      <h3 style={{ margin: 0 }}>Time (UTC)</h3>
                       <TimePicker
                         dateTime={toPickerDate(field.value) ?? null}
                         disabled={
@@ -351,11 +348,11 @@ export const DatabaseBackups = () => {
                       {versionOption === 'dateTime' &&
                         date &&
                         fieldState.error?.message && (
-                          <FormHelperText error sx={{ marginLeft: 0 }}>
+                          <FormError slot="error" style={{ marginLeft: 0 }}>
                             {fieldState.error.message}
-                          </FormHelperText>
+                          </FormError>
                         )}
-                    </FormControl>
+                    </FormField>
                   )}
                 />
               </StyledDateTimeStack>
