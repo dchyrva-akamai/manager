@@ -66,8 +66,6 @@ export const LinodeRow = (props: Props) => {
     (e) => e.entity?.type === 'linode' && e.entity.id === id
   );
 
-  const isBareMetalInstance = linodeType?.class === 'metal';
-
   const isTransitioning = linodeInTransition(status, recentEvent);
 
   const maintenanceStartTime = maintenance?.start_time || maintenance?.when;
@@ -174,7 +172,6 @@ export const LinodeRow = (props: Props) => {
         <TableCell>
           <BackupStatus
             backupsEnabled={backups.enabled}
-            isBareMetalInstance={isBareMetalInstance}
             linodeId={id}
             mostRecentBackup={backups.last_successful}
           />

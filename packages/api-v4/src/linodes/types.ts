@@ -4,7 +4,7 @@ import type { LockType } from '../locks/types';
 import type { IPAddress, IPRange } from '../networking/types';
 import type { LinodePlacementGroupPayload } from '../placement-groups/types';
 import type { Region, RegionSite } from '../regions';
-import type { StatsData } from '@akamai/compute-ui-core/api';
+import type { LinodeType, StatsData } from '@akamai/compute-ui-core/api';
 import type {
   CreateLinodeInterfaceSchema,
   ModifyLinodeInterfaceSchema,
@@ -567,30 +567,10 @@ export interface BaseType {
   memory: number;
   vcpus: number;
 }
-export interface LinodeType extends BaseType {
-  accelerated_devices: number;
-  addons: {
-    backups: { price: PriceObject; region_prices: RegionPriceObject[] };
-  };
-  class: LinodeTypeClass;
-  gpus: number;
-  network_out: number;
-  price: PriceObject;
-  region_prices: RegionPriceObject[];
-  successor: null | string;
-  transfer: number;
-}
 
-export type LinodeTypeClass =
-  | 'accelerated'
-  | 'dedicated'
-  | 'gpu'
-  | 'highmem'
-  | 'metal'
-  | 'nanode'
-  | 'premium'
-  | 'prodedicated'
-  | 'standard';
+export type { LinodeType };
+
+export type LinodeTypeClass = LinodeType['class'];
 
 export interface IPAllocationRequest {
   public: boolean;

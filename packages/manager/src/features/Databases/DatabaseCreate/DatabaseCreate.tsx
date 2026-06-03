@@ -167,7 +167,7 @@ export const DatabaseCreate = () => {
         (cluster) => cluster.quantity === 1
       );
       const price = singleNodePricing?.price ?? {
-        hourly: null,
+        hourly: 0,
         monthly: null,
       };
       const subHeadings = [

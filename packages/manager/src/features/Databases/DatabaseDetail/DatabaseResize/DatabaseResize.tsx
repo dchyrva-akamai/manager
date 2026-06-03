@@ -313,7 +313,7 @@ export const DatabaseResize = () => {
       );
 
       const price = nodePricing?.price ?? {
-        hourly: null,
+        hourly: 0,
         monthly: null,
       };
       const subHeadings = [

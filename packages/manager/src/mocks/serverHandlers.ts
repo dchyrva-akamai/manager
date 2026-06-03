@@ -28,7 +28,6 @@ import {
   nodeBalancerFactory,
   pickRandom,
   premiumTypeFactory,
-  proDedicatedTypeFactory,
   profileFactory,
   regionAvailabilityFactory,
   regions,
@@ -769,7 +768,6 @@ const marketplace = [
 const nanodeType = linodeTypeFactory.build({ id: 'g6-nanode-1' });
 const standardTypes = linodeTypeFactory.buildList(7);
 const dedicatedTypes = dedicatedTypeFactory.buildList(7);
-const proDedicatedType = proDedicatedTypeFactory.build();
 const gpuTypesAda = gpuTypeAdaFactory.buildList(7);
 const gpuTypesRX = gpuTypeRtxFactory.buildList(7);
 const premiumTypes = [
@@ -1032,7 +1030,6 @@ export const handlers = [
         ...gpuTypesRX,
         ...premiumTypes,
         ...acceleratedType,
-        proDedicatedType,
         ...monthlyBillingSupportedTypes,
         ...hourlyBillingSupportedTypes,
       ])
@@ -1041,16 +1038,11 @@ export const handlers = [
   http.get('*/linode/types-legacy', () => {
     return HttpResponse.json(makeResourcePage(linodeTypeFactory.buildList(0)));
   }),
-  ...[
-    nanodeType,
-    ...standardTypes,
-    ...dedicatedTypes,
-    ...premiumTypes,
-    proDedicatedType,
-  ].map((type) =>
-    http.get(`*/linode/types/${type.id}`, () => {
-      return HttpResponse.json(type);
-    })
+  ...[nanodeType, ...standardTypes, ...dedicatedTypes, ...premiumTypes].map(
+    (type) =>
+      http.get(`*/linode/types/${type.id}`, () => {
+        return HttpResponse.json(type);
+      })
   ),
   http.get(`*/linode/types/*`, () => {
     return HttpResponse.json(linodeTypeFactory.build());
