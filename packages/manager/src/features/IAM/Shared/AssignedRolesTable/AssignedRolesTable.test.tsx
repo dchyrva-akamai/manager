@@ -5,7 +5,7 @@ import React from 'react';
 import { accountEntityFactory } from 'src/factories/accountEntities';
 import { accountRolesFactory } from 'src/factories/accountRoles';
 import { userRolesFactory } from 'src/factories/userRoles';
-import { renderWithTheme } from 'src/utilities/testHelpers';
+import { mockMatchMedia, renderWithTheme } from 'src/utilities/testHelpers';
 
 import { AssignedRolesTable } from './AssignedRolesTable';
 
@@ -20,7 +20,12 @@ const queryMocks = vi.hoisted(() => ({
   useIsDefaultDelegationRolesForChildAccount: vi.fn().mockReturnValue({
     isDefaultDelegationRolesForChildAccount: false,
   }),
+  usePermissions: vi.fn().mockReturnValue({
+    data: { is_account_admin: true, update_default_delegate_access: true },
+  }),
 }));
+
+beforeAll(() => mockMatchMedia());
 
 vi.mock('@linode/queries', async () => {
   const actual = await vi.importActual('@linode/queries');
@@ -55,6 +60,14 @@ vi.mock('../../hooks/useDelegationRole', () => ({
   useIsDefaultDelegationRolesForChildAccount:
     queryMocks.useIsDefaultDelegationRolesForChildAccount,
 }));
+
+vi.mock('../../hooks/usePermissions', async () => {
+  const actual = await vi.importActual('src/features/IAM/hooks/usePermissions');
+  return {
+    ...actual,
+    usePermissions: queryMocks.usePermissions,
+  };
+});
 
 const mockEntities = [
   accountEntityFactory.build({
@@ -149,12 +162,12 @@ describe('AssignedRolesTable', () => {
       data: mockEntities,
     });
 
-    renderWithTheme(<AssignedRolesTable />);
-
     queryMocks.useSearch.mockReturnValue({ query: 'account_linode_admin' });
 
+    renderWithTheme(<AssignedRolesTable />);
+
     await waitFor(() => {
-      expect(screen.queryByText('account_linode_admin')).toBeVisible();
+      expect(screen.getByText('account_linode_admin')).toBeVisible();
     });
   });
 
@@ -171,11 +184,12 @@ describe('AssignedRolesTable', () => {
       data: mockEntities,
     });
 
+    queryMocks.useSearch.mockReturnValue({ roleType: 'firewall' });
+
     renderWithTheme(<AssignedRolesTable />);
 
-    queryMocks.useSearch.mockReturnValue({ roleType: 'firewall' });
     await waitFor(() => {
-      expect(screen.queryByText('account_firewall_creator')).toBeVisible();
+      expect(screen.getByText('account_firewall_creator')).toBeVisible();
     });
   });
 

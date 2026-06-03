@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -13,6 +13,23 @@ import {
   NO_ASSIGNED_ROLES_TEXT,
 } from '../../Shared/constants';
 import { UserRoles } from './UserRoles';
+
+const mockMatchMedia = () => {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    addEventListener: vi.fn(),
+    addListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+    matches: true,
+    media: query,
+    onchange: null,
+    removeEventListener: vi.fn(),
+    removeListener: vi.fn(),
+  })) as unknown as typeof window.matchMedia;
+};
+
+beforeAll(() => {
+  mockMatchMedia();
+});
 
 const mockEntities = [
   accountEntityFactory.build({
@@ -118,8 +135,9 @@ describe('UserRoles', () => {
       screen.getByText('View and manage roles assigned to the user.')
     ).toBeVisible();
 
-    expect(screen.getByText(/All Entities/i)).toBeVisible();
-    expect(screen.getByText('account_admin')).toBeVisible();
+    const table = screen.getByLabelText('collapsible table');
+    expect(within(table).getByText('All Entities')).toBeVisible();
+    expect(within(table).getByText('account_admin')).toBeVisible();
   });
 
   it('should display table if no account access roles are assigned to user', async () => {

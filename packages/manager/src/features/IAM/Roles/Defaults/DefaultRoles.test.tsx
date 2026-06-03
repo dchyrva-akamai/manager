@@ -1,8 +1,9 @@
-import { screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
+import { accountRolesFactory } from 'src/factories/accountRoles';
 import { expectNotificationBannerText } from 'src/features/IAM/utilities/testHelpers';
-import { renderWithTheme } from 'src/utilities/testHelpers';
+import { mockMatchMedia, renderWithTheme } from 'src/utilities/testHelpers';
 
 import {
   ERROR_STATE_TEXT,
@@ -11,9 +12,9 @@ import {
 } from '../../Shared/constants';
 import { DefaultRoles } from './DefaultRoles';
 
-const loadingTestId = 'circle-progress';
-
 const queryMocks = vi.hoisted(() => ({
+  useAccountRoles: vi.fn().mockReturnValue({ isLoading: false }),
+  useAllAccountEntities: vi.fn().mockReturnValue({ isLoading: false }),
   useGetDefaultDelegationAccessQuery: vi.fn().mockReturnValue({}),
   useLocation: vi.fn().mockReturnValue({}),
   useSearch: vi.fn().mockReturnValue({}),
@@ -38,8 +39,17 @@ vi.mock('@linode/queries', async () => {
   const actual = await vi.importActual<any>('@linode/queries');
   return {
     ...actual,
+    useAccountRoles: queryMocks.useAccountRoles,
     useGetDefaultDelegationAccessQuery:
       queryMocks.useGetDefaultDelegationAccessQuery,
+  };
+});
+
+vi.mock('src/queries/entities/entities', async () => {
+  const actual = await vi.importActual('src/queries/entities/entities');
+  return {
+    ...actual,
+    useAllAccountEntities: queryMocks.useAllAccountEntities,
   };
 });
 
@@ -55,12 +65,18 @@ vi.mock('src/features/IAM/hooks/useDelegationRole', () => ({
   useIsDefaultDelegationRolesForChildAccount:
     queryMocks.useIsDefaultDelegationRolesForChildAccount,
 }));
+beforeAll(() => mockMatchMedia());
+
 describe('DefaultRoles', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
     queryMocks.usePermissions.mockReturnValue({
-      data: { view_default_delegate_access: true },
+      data: {
+        is_account_admin: true,
+        update_default_delegate_access: true,
+        view_default_delegate_access: true,
+      },
       isLoading: false,
     });
   });
@@ -76,10 +92,14 @@ describe('DefaultRoles', () => {
       },
       isLoading: false,
     });
-    const { queryByTestId } = renderWithTheme(<DefaultRoles />);
-    await waitForElementToBeRemoved(queryByTestId(loadingTestId));
+    queryMocks.useAccountRoles.mockReturnValue({
+      data: accountRolesFactory.build(),
+      isLoading: false,
+    });
+    renderWithTheme(<DefaultRoles />);
+
     expect(screen.getByText('Default Roles for Delegate Users')).toBeVisible();
-    expect(screen.getByRole('table')).toBeVisible();
+    expect(screen.getByText('Role')).toBeVisible();
   });
   it('should render empty state', async () => {
     queryMocks.useLocation.mockReturnValue({
