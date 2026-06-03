@@ -1,14 +1,62 @@
-import type { IdpConfig } from '@linode/api-v4';
+import { getCertificateStatus } from './IdpConfigurations/idpConfigurationDrawer.utils';
+
+import type { IdpCertificate, IdpConfig } from '@linode/api-v4';
+
+export interface CertificateCounts {
+  /** Certs not yet expired ('active' or 'other') */
+  activeCertificatesCount: number;
+  /** Certs with status 'active' only (valid for > 90 days) */
+  activeOnlyCount: number;
+  /** Certs with status 'error' (already expired) */
+  expiredCount: number;
+  /** Certs with status 'other' (expiring within 90 days) */
+  expiringCount: number;
+}
+
+// Count the number of certificates in each status category for a given array of certs.
+export const getCertificateCounts = (
+  certs: IdpCertificate[]
+): CertificateCounts => {
+  // Count certificates that are not expired (error). Both 'active' and
+  // 'other' (expiring soon) are considered valid for deletion rules.
+  const activeCertificatesCount = certs.filter(
+    (cert) =>
+      getCertificateStatus(cert.not_after, cert.not_before).status !==
+        'error' &&
+      getCertificateStatus(cert.not_after, cert.not_before).status !==
+        'inactive'
+  ).length;
+
+  // Count only currently-active certificates (not 'other', 'inactive', or 'error').
+  // We use this to decide whether to show the banner — if there are no
+  // actively-valid certificates (i.e., only 'other' or 'error'), we
+  // should surface a banner. This ensures a single 'yellow' cert shows
+  // the yellow warning banner.
+  const activeOnlyCount = certs.filter(
+    (cert) =>
+      getCertificateStatus(cert.not_after, cert.not_before).status === 'active'
+  ).length;
+
+  const expiredCount = certs.length - activeCertificatesCount;
+  const expiringCount = activeCertificatesCount - activeOnlyCount;
+  return {
+    activeCertificatesCount,
+    activeOnlyCount,
+    expiredCount,
+    expiringCount,
+  };
+};
 
 // Determine if there is no valid certificates: either there are no certificates at all,
-//  or all certificates are expired.
+//  or all certificates are expired or not yet valid.
 export const hasNoValidCertificates = (idpConfig: IdpConfig) => {
   const certs = idpConfig.saml.public_certificates;
 
   if (certs.length === 0) return true;
 
-  const now = new Date().toISOString();
-  return certs.every((cert) => cert.not_after < now);
+  const { activeCertificatesCount } = getCertificateCounts(certs);
+
+  return activeCertificatesCount === 0;
 };
 
 export interface SummaryStatusConfig {

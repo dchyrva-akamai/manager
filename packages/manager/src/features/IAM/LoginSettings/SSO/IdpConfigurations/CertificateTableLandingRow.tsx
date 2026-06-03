@@ -37,7 +37,7 @@ interface CertificateTableLandingProps {
   totalCertificateCount?: number;
 }
 
-const CertificateTableLanding = ({
+export const CertificateTableLandingRow = ({
   cert,
   isSmallScreen,
   isMobileScreen,
@@ -59,7 +59,7 @@ const CertificateTableLanding = ({
   const activeCount = activeCertificateCount ?? 0;
   const totalCount = totalCertificateCount ?? 0;
 
-  const isCertValid = status !== 'error';
+  const isCertValid = status !== 'error' && status !== 'inactive';
 
   // Deletion is disabled when:
   // - SSO is enabled and deleting this certificate would leave zero valid certificates (i.e.,
@@ -157,5 +157,3 @@ const CertificateTableLanding = ({
     </>
   );
 };
-
-export default CertificateTableLanding;

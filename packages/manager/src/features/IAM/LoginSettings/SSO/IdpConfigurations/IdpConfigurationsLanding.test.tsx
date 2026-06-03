@@ -6,7 +6,7 @@ import {
   ERROR_STATE_TITLE,
 } from 'src/features/IAM/Shared/constants';
 import { getCdsButtonByText } from 'src/features/IAM/utilities/testHelpers';
-import { renderWithTheme } from 'src/utilities/testHelpers';
+import { mockMatchMedia, renderWithTheme } from 'src/utilities/testHelpers';
 
 import { IdpConfigurationsLanding } from './IdpConfigurationsLanding';
 
@@ -30,19 +30,6 @@ vi.mock('src/features/IAM/hooks/usePermissions', async () => {
     usePermissions: queryMocks.usePermissions,
   };
 });
-
-function mockMatchMedia() {
-  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
-    matches: true,
-    media: query,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-    onchange: null,
-  })) as unknown as typeof window.matchMedia;
-}
 
 describe('IdpConfigurationsLanding', () => {
   beforeEach(() => {

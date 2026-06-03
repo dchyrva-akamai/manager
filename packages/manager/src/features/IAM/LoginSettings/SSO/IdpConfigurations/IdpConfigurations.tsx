@@ -18,14 +18,12 @@ import {
   SSO_EXPIRING,
   SSO_REQUIRES_ACTIVE_CERTIFICATE,
 } from '../../constants';
+import { getCertificateCounts } from '../../SSO/utilities';
 import { AddCertificateDrawer } from './AddCertificateDrawer';
 import { CertificatesTable } from './CertificatesTable';
 import { IDPConfigDeleteConfirmation } from './IDPConfigDeleteConfirmation';
 import { IdpConfigurationDrawer } from './IdpConfigurationDrawer';
-import {
-  getCertificateStatus,
-  identityElementOptions,
-} from './idpConfigurationDrawer.utils';
+import { identityElementOptions } from './idpConfigurationDrawer.utils';
 import styles from './IdpConfigurations.module.css';
 
 import type { IdpConfig } from '@linode/api-v4';
@@ -47,25 +45,13 @@ export const IdpConfigurations = ({ idpConfig }: { idpConfig: IdpConfig }) => {
     idpConfig.saml.public_certificates.length >= 10;
   const certs = idpConfig.saml.public_certificates;
 
-  // Count certificates that are not expired (error). Both 'active' and
-  // 'other' (expiring soon) are considered valid for deletion rules.
-  const activeCertificatesCount = certs.filter(
-    (certificate) =>
-      getCertificateStatus(certificate.not_after).status !== 'error'
-  ).length;
+  const {
+    activeCertificatesCount,
+    activeOnlyCount,
+    expiredCount,
+    expiringCount,
+  } = getCertificateCounts(certs);
 
-  // Count only currently-active certificates (not 'other' or 'error').
-  // We use this to decide whether to show the banner — if there are no
-  // actively-valid certificates (i.e., only 'other' or 'error'), we
-  // should surface a banner. This ensures a single 'yellow' cert shows
-  // the yellow warning banner.
-  const activeOnlyCount = certs.filter(
-    (certificate) =>
-      getCertificateStatus(certificate.not_after).status === 'active'
-  ).length;
-
-  const expiredCount = certs.length - activeCertificatesCount;
-  const expiringCount = activeCertificatesCount - activeOnlyCount;
   return (
     <>
       <Paper>

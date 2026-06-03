@@ -18,7 +18,7 @@ import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { StatusIcon } from '../../../Shared/StatusIcon/StatusIcon';
 import { ALL_CERTIFICATES_DELETED_ERROR } from '../../constants';
 import styles from './CertificatesTable.module.css';
-import CertificateTableLandingRow from './CertificateTableLandingRow';
+import { CertificateTableLandingRow } from './CertificateTableLandingRow';
 import idpConfigurationDrawerStyles from './IdpConfigurationDrawer.module.css';
 import { getCertificateStatus } from './idpConfigurationDrawer.utils';
 import { NoCertificates } from './NoCertificates';

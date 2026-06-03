@@ -10,7 +10,8 @@ import { ErrorState } from '../Shared/ErrorState/ErrorState';
 import { Link } from '../Shared/Link/Link';
 import { Paper } from '../Shared/Paper/Paper';
 import { StatusIcon } from '../Shared/StatusIcon/StatusIcon';
-import { getSummaryStatus } from './SSO/utilities';
+import { SSO_EXPIRING } from './constants';
+import { getCertificateCounts, getSummaryStatus } from './SSO/utilities';
 
 import type { IdpConfig } from '@linode/api-v4';
 
@@ -33,6 +34,11 @@ export const LoginSettingsLanding = () => {
     idpConfig?.enabled &&
     idpConfig.enforce &&
     idpConfig.excluded_users_count === 0;
+
+  const certs = idpConfig?.saml?.public_certificates ?? [];
+  const { activeOnlyCount, expiringCount } = getCertificateCounts(certs);
+  const hasCertExpiringWarning =
+    idpConfig?.enabled && activeOnlyCount === 0 && expiringCount > 0;
 
   if (isLoading) {
     return <CircleProgress />;
@@ -77,6 +83,13 @@ export const LoginSettingsLanding = () => {
           There are no excluded users. Not recommended.{' '}
           <Link to={SSO_ENFORCEMENT_LINK}>Learn more.</Link>
         </NotificationBanner>
+      )}
+      {hasCertExpiringWarning && (
+        <NotificationBanner
+          style={{ marginBottom: Spacing.S16 }}
+          text={SSO_EXPIRING}
+          type="warning"
+        />
       )}
       <Button
         onClick={() => navigate({ to: '/iam/settings/sso/idp-configurations' })}
