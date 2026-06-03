@@ -25,12 +25,12 @@ import { PORT_PRESETS, sortString } from './shared';
 
 import type { FormState } from './FirewallRuleDrawer.types';
 import type { ExtendedFirewallRule } from './firewallRuleEditor';
+import type { ExtendedIP, ExtendedPL } from '@akamai/compute-ui-core/api';
 import type {
   FirewallRuleProtocol,
   FirewallRuleType,
 } from '@linode/api-v4/lib/firewalls';
 import type { FirewallOptionItem } from 'src/features/Firewalls/shared';
-import type { ExtendedIP, ExtendedPL } from 'src/utilities/ipUtils';
 
 /**
  * Derive the appropriate value of the "Type" field based on selected form

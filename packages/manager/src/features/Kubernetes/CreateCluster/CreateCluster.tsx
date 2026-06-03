@@ -81,6 +81,7 @@ import { HAControlPlane } from './HAControlPlane';
 import { NodePoolPanel } from './NodePoolPanel';
 
 import type { NodePoolConfigDrawerMode } from '../KubernetesPlansPanel/NodePoolConfigDrawer';
+import type { ExtendedIP } from '@akamai/compute-ui-core/api';
 import type {
   APIError,
   CreateKubeClusterPayload,
@@ -89,7 +90,6 @@ import type {
   KubernetesTier,
   Region,
 } from '@linode/api-v4';
-import type { ExtendedIP } from 'src/utilities/ipUtils';
 
 export interface CreateClusterFormValues {
   nodePools: CreateNodePoolData[];

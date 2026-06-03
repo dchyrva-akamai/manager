@@ -24,8 +24,8 @@ import {
 import { isDefaultDatabase } from 'src/features/Databases/utilities';
 import { enforceIPMasks } from 'src/features/Firewalls/FirewallDetail/Rules/FirewallRuleDrawer.utils';
 
+import type { ExtendedIP } from '@akamai/compute-ui-core/api';
 import type { APIError, Database, DatabaseInstance } from '@linode/api-v4';
-import type { ExtendedIP } from 'src/utilities/ipUtils';
 
 interface Props {
   database: Database | DatabaseInstance;

@@ -46,6 +46,7 @@ import { DatabaseCreateAccessControls } from './DatabaseCreateAccessControls';
 import { DatabaseCreateNetworkingConfiguration } from './DatabaseCreateNetworkingConfiguration';
 
 import type { AccessProps } from './DatabaseCreateAccessControls';
+import type { ExtendedIP } from '@akamai/compute-ui-core/api';
 import type {
   ClusterSize,
   CreateDatabasePayload,
@@ -55,7 +56,6 @@ import type {
 } from '@linode/api-v4/lib/databases/types';
 import type { APIError } from '@linode/api-v4/lib/types';
 import type { PlanSelectionWithDatabaseType } from 'src/features/components/PlansPanel/types';
-import type { ExtendedIP } from 'src/utilities/ipUtils';
 
 export interface DatabaseCreateValues {
   allow_list: ExtendedIP[];

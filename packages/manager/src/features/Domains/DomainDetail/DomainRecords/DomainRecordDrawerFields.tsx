@@ -14,7 +14,7 @@ import type {
   DomainRecordDrawerProps,
   EditableDomainFields,
 } from './DomainRecordDrawer';
-import type { ExtendedIP } from 'src/utilities/ipUtils';
+import type { ExtendedIP } from '@akamai/compute-ui-core/api';
 
 interface AdjustedTextFieldProps {
   errorText?: string;

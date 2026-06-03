@@ -59,6 +59,7 @@ import { AssignIPRanges } from './AssignIPRanges';
 import { StyledButtonBox } from './SubnetAssignLinodesDrawer.styles';
 import { SubnetLinodeActionNotice } from './SubnetLinodeActionNotice';
 
+import type { ExtendedIP } from '@akamai/compute-ui-core/api';
 import type {
   APIError,
   Config,
@@ -68,7 +69,6 @@ import type {
   LinodeInterface,
   Subnet,
 } from '@linode/api-v4';
-import type { ExtendedIP } from 'src/utilities/ipUtils';
 
 // @TODO VPC: if all subnet action menu item related components use (most of) this as their props, might be worth
 // putting this in a common file and naming it something like SubnetActionMenuItemProps or something

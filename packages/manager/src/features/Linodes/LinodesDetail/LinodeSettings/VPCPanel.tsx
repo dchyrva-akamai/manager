@@ -27,7 +27,7 @@ import {
 import { AssignIPRanges } from 'src/features/VPCs/VPCDetail/AssignIPRanges';
 import { getAPIErrorOrDefault } from 'src/utilities/errorUtils';
 
-import type { ExtendedIP } from 'src/utilities/ipUtils';
+import type { ExtendedIP } from '@akamai/compute-ui-core/api';
 
 export interface VPCPanelProps {
   additionalIPv4RangesForVPC: ExtendedIP[];

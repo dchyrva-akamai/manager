@@ -26,8 +26,8 @@ import { handleFormikBlur } from 'src/utilities/formikTrimUtil';
 
 import { transferHelperText as helperText } from './domainUtils';
 
+import type { ExtendedIP } from '@akamai/compute-ui-core/api';
 import type { APIError, Domain, UpdateDomainPayload } from '@linode/api-v4';
-import type { ExtendedIP } from 'src/utilities/ipUtils';
 
 interface EditDomainDrawerProps {
   domain: Domain | undefined;

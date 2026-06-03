@@ -33,11 +33,11 @@ import type {
   FormState,
 } from './FirewallRuleDrawer.types';
 import type { ValidateFormOptions } from './FirewallRuleDrawer.utils';
+import type { ExtendedIP, ExtendedPL } from '@akamai/compute-ui-core/api';
 import type {
   FirewallRuleProtocol,
   FirewallRuleType,
 } from '@linode/api-v4/lib/firewalls';
-import type { ExtendedIP, ExtendedPL } from 'src/utilities/ipUtils';
 
 // =============================================================================
 // <FirewallRuleDrawer />

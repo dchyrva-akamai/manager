@@ -42,6 +42,7 @@ import { handleFormikBlur } from 'src/utilities/formikTrimUtil';
 
 import { generateDefaultDomainRecords } from '../domainUtils';
 
+import type { ExtendedIP } from '@akamai/compute-ui-core/api';
 import type { Linode } from '@linode/api-v4';
 import type {
   CreateDomainPayload,
@@ -51,7 +52,6 @@ import type {
 import type { NodeBalancer } from '@linode/api-v4/lib/nodebalancers';
 import type { APIError } from '@linode/api-v4/lib/types';
 import type { DomainState } from 'src/routes/domains';
-import type { ExtendedIP } from 'src/utilities/ipUtils';
 
 interface DefaultRecordsSetting {
   label: string;
