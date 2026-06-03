@@ -76,7 +76,6 @@ const CertificateTableLanding = ({
 
   const deleteDisabled = !canDelete || ssoBlocksDelete;
 
-
   return (
     <>
       <TableRow hoverable key={cert.id} rowborder>

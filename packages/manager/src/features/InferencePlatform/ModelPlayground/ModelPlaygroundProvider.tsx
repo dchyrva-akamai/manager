@@ -1,4 +1,5 @@
 import { createChatCompletion } from '@linode/api-v4';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import React, { useState } from 'react';
 
 import { getExtraPresets, isMSWEnabled } from 'src/dev-tools/utils';
@@ -24,10 +25,23 @@ interface Props {
 }
 
 export const ModelPlaygroundProvider = ({ children }: Props) => {
+  const { model: modelFromUrl } = useSearch({
+    from: '/inference-platform/model-playground',
+  });
+  const navigate = useNavigate();
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState('');
+  const [selectedModel, setSelectedModel] = useState(modelFromUrl ?? '');
+
+  const onModelChange = (model: string) => {
+    setSelectedModel(model);
+    navigate({
+      search: (prev) => ({ ...prev, model }),
+      to: '/inference-platform/model-playground',
+    });
+  };
 
   const onSend = async () => {
     const trimmed = inputValue.trim();
@@ -96,7 +110,7 @@ export const ModelPlaygroundProvider = ({ children }: Props) => {
         isLoading,
         messages,
         onInputChange: setInputValue,
-        onModelChange: setSelectedModel,
+        onModelChange,
         onSend,
         selectedModel,
       }}

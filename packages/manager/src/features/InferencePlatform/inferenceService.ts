@@ -24,8 +24,16 @@ export interface InferenceChatMessage {
 }
 
 export interface InferenceModel {
+  /** Unix timestamp (seconds) when the model was registered in vLLM. */
+  created?: number;
   id: string;
+  /** Maximum context window in tokens as configured in vLLM at deploy time. */
+  max_model_len?: number;
   object: string;
+  /** Always "vllm" on this backend. */
+  owned_by?: string;
+  /** Full HuggingFace repo path, e.g. "moonshotai/Kimi-K2.6". */
+  root?: string;
 }
 
 export interface InferenceModelsResponse {

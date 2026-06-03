@@ -122,7 +122,6 @@ export const wrapWithTheme = (ui: any, options: Options = {}) => {
 
     getFlags() {
       return options.flags ?? {};
-
     }
     async identify() {}
     async start() {}
@@ -132,7 +131,7 @@ export const wrapWithTheme = (ui: any, options: Options = {}) => {
   }
 
   const featureFlagClient = new FeatureFlagClient<FlagSet, unknown>({
-    provider: () => new MockFlagProvider()
+    provider: () => new MockFlagProvider(),
   });
 
   return (

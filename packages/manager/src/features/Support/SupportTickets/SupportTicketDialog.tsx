@@ -302,6 +302,12 @@ export const SupportTicketDialog = (props: SupportTicketDialogProps) => {
   ).current;
 
   React.useEffect(() => {
+    return () => {
+      debouncedSave.cancel();
+    };
+  }, [debouncedSave]);
+
+  React.useEffect(() => {
     // Store in-progress work to localStorage
     debouncedSave(form.getValues());
   }, [
