@@ -1004,6 +1004,11 @@ export const handlers = [
   http.get('*/images/sharegroups/tokens/:token/sharegroup', () => {
     return HttpResponse.json(sharegroupFactory.build());
   }),
+  http.post('*/images/sharegroups/tokens', () => {
+    const newToken = sharegroupTokenFactory.build();
+
+    return HttpResponse.json(newToken);
+  }),
   http.post<any, UpdateImageRegionsPayload>(
     '*/v4/images/:id/regions',
     async ({ request }) => {

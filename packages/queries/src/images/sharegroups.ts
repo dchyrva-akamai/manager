@@ -5,6 +5,7 @@ import {
   deleteSharegroupImage,
   deleteSharegroupMember,
   deleteSharegroupToken,
+  generateSharegroupToken,
   getSharegroup,
   getSharegroupFromToken,
   getSharegroupImages,
@@ -441,6 +442,20 @@ export const useShareGroupImagesFromTokenQuery = (
     ),
     enabled,
   });
+
+export const useGenerateShareGroupTokenMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<SharegroupToken, APIError[], { sharegroupUuid: string }>({
+    mutationFn: ({ sharegroupUuid }) =>
+      generateSharegroupToken({ valid_for_sharegroup_uuid: sharegroupUuid }),
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.tokens._ctx.paginated._def,
+      });
+    },
+  });
+};
 
 export const useDeleteTokenFromShareGroupMutation = (
   options: UseMutationOptions<{}, APIError[], { tokenUuid: string }>,

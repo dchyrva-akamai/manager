@@ -13,6 +13,7 @@ import { getSubTabIndex } from 'src/features/Images/utils';
 
 import { DeleteShareGroupDialog } from './DeleteShareGroupDialog';
 import { EditShareGroupDrawer } from './EditShareGroupDrawer';
+import { MembershipRequestDrawer } from './MembershipRequestsDrawer/MembershipRequestDrawer';
 import { AddMembersDrawer } from './ShareGroupsDetails/AddMembersDrawer';
 import { shareGroupsSubTabs as subTabs } from './shareGroupsTabsConfig';
 import { ShareGroupsView } from './ShareGroupsView';
@@ -152,6 +153,7 @@ export const ShareGroupsTabs = () => {
         open={ownedGroupsActionParams?.action === 'add-members'}
         shareGroupId={ownedGroupsActionParams?.shareGroupId}
       />
+      <MembershipRequestDrawer />
     </Stack>
   );
 };

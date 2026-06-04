@@ -115,6 +115,31 @@ export const REMOVE_IMAGE_DIALOG_PENDO_IDS = {
   xButton: 'Share Groups Details Remove Image-X Button',
 };
 
+export const REQUEST_MEMBERSHIP_DRAWER_INITIAL_COPY =
+  'Generate a one-time token and share it with the group owner to join the share group and access shared images.';
+
+export const REQUEST_MEMBERSHIP_DRAWER_FINAL_STEP_COPY = `Copy the token and share it with the group owner to join the share group. You can use the draft email below. 
+The token is valid for 30 days (starting ${new Date().toLocaleDateString()}).
+You'll get an email when the group owner grants your access.`;
+
+export const REQUEST_MEMBERSHIP_DRAWER_INFO_NOTICE =
+  "To keep your data secure, this token will be displayed only once. Store it in a secure manner, and note that it can't be recovered after closing this window.";
+
+export const REQUEST_MEMBERSHIP_DRAWER_PENDO_IDS = {
+  xButton: 'Images Groups Membership Requests Drawer-X button',
+  shareGroupUuid: 'Images Groups Membership Requests Drawer-Share Group UUID',
+  generateToken: 'Images Groups Membership Requests Drawer-Generate Token',
+  notificationBanner:
+    'Images Groups Membership Requests Drawer-Notification Banner',
+  copyToken: 'Images Groups Membership Requests Drawer-Copy Token icon',
+  copyTokenButton: 'Images Groups Membership Requests Drawer-Copy Token Button',
+  copyDraftEmail:
+    'Images Groups Membership Requests Drawer-Copy Draft Email icon',
+  copyDraftEmailButton:
+    'Images Groups Membership Requests Drawer-Copy Draft Email Button',
+  closeButton: 'Images Groups Membership Requests Drawer-Close Button',
+};
+
 export const EDIT_IMAGE_DETAILS_PENDO_IDS = {
   label: 'Share Groups Details Edit Image-Label',
   description: 'Share Groups Details Edit Image-Description',

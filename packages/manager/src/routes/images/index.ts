@@ -378,6 +378,23 @@ const shareGroupActionRoute = createRoute({
   ).then((m) => m.shareGroupsTabsLazyRoute)
 );
 
+const shareGroupsMembershipRequestRoute = createRoute({
+  beforeLoad: ({ params }) => {
+    if (params.shareGroupsType !== 'membership-requests') {
+      throw redirect({
+        params: { shareGroupsType: 'membership-requests' },
+        to: '/images/share-groups/$shareGroupsType',
+      });
+    }
+  },
+  getParentRoute: () => shareGroupsTypeRoute,
+  path: 'request',
+}).lazy(() =>
+  import(
+    'src/features/Images/ImagesLanding/v2/ShareGroups/shareGroupsTabsLazyRoute'
+  ).then((m) => m.shareGroupsTabsLazyRoute)
+);
+
 const shareGroupDetailsRoute = createRoute({
   getParentRoute: () => imagesRoute,
   params: {
@@ -422,7 +439,9 @@ export const imagesRouteTree = imagesRoute.addChildren([
     ]),
   ]),
   shareGroupsLandingRoute.addChildren([
-    shareGroupsIndexRoute.addChildren([shareGroupsTypeRoute]),
+    shareGroupsIndexRoute.addChildren([
+      shareGroupsTypeRoute.addChildren([shareGroupsMembershipRequestRoute]),
+    ]),
     shareGroupsCreateRoute,
     shareGroupActionRoute,
     shareGroupDetailsRoute,
