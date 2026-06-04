@@ -64,6 +64,8 @@ describe('ShareGroupsCreate', () => {
   let mockMutateAsync: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
+    Element.prototype.scrollIntoView ??= vi.fn();
+
     mockNavigate = vi.fn();
     mockMutateAsync = vi.fn();
 
