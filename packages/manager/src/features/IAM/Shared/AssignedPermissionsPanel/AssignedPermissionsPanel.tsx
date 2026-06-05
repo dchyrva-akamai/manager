@@ -22,7 +22,7 @@ interface Props {
   onChange?: (value: EntitiesOption[]) => void;
   role: ExtendedRole | ExtendedRoleView;
   showName?: boolean;
-  sx?: React.CSSProperties;
+  style?: React.CSSProperties;
   value?: EntitiesOption[];
 }
 
@@ -33,15 +33,15 @@ export const AssignedPermissionsPanel = ({
   onChange,
   role,
   showName,
-  sx,
+  style,
   value,
 }: Props) => {
   return (
     <Paper
       marginTop={Spacing.S8}
       padding={Spacing.S12}
-      sx={{
-        ...sx,
+      style={{
+        ...style,
         backgroundColor: `var(--token-alias-background-neutral, light-dark(#f7f7fa, #343438))`,
       }}
     >

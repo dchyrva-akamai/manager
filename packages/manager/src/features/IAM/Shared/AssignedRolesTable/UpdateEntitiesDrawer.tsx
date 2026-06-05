@@ -176,7 +176,7 @@ export const UpdateEntitiesDrawer = ({ onClose, open, role }: Props) => {
                 key={role?.name}
                 onChange={field.onChange}
                 role={role!}
-                sx={{ marginBottom: Spacing.S16 }}
+                style={{ marginBottom: Spacing.S16 }}
                 value={field.value}
               />
             )}

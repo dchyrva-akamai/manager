@@ -1,19 +1,11 @@
 import React from 'react';
 
-import { cssPropertyVariablesFromMapping } from '../utilities';
+import { cssVars } from '../cssVars';
 import styles from './paper.module.css';
 
 import type { Spacing } from '@akamai/cds-tokens';
 
 export type PaperSpacing = (typeof Spacing)[keyof typeof Spacing];
-
-const PAPER_SPACING_CSS_PROPERTY_VARIABLES = {
-  marginBottom: '--paper-margin-bottom',
-  marginTop: '--paper-margin-top',
-  padding: '--paper-padding',
-  paddingTop: '--paper-padding-top',
-  paddingBottom: '--paper-padding-bottom',
-} as const;
 
 export interface PaperProps {
   children: React.ReactNode;
@@ -24,7 +16,8 @@ export interface PaperProps {
   padding?: PaperSpacing;
   paddingBottom?: PaperSpacing;
   paddingTop?: PaperSpacing;
-  sx?: React.CSSProperties;
+  /** Merged after spacing CSS variables; use for one-off overrides (e.g. backgroundColor). */
+  style?: React.CSSProperties;
 }
 
 export const Paper = ({
@@ -35,19 +28,24 @@ export const Paper = ({
   paddingBottom,
   children,
   dataTestId,
-  sx,
+  style: styleProp,
   outlined,
 }: PaperProps) => {
-  const style = cssPropertyVariablesFromMapping(
-    { marginBottom, marginTop, padding, paddingTop, paddingBottom },
-    PAPER_SPACING_CSS_PROPERTY_VARIABLES
-  );
+  const spacingStyle = cssVars({
+    '--paper-margin-bottom': marginBottom,
+    '--paper-margin-top': marginTop,
+    '--paper-padding': padding,
+    '--paper-padding-top': paddingTop,
+    '--paper-padding-bottom': paddingBottom,
+  });
+  const style =
+    spacingStyle || styleProp ? { ...spacingStyle, ...styleProp } : undefined;
 
   return (
     <div
       className={`${styles.paper} ${outlined ? styles.outlined : ''}`}
       data-testid={dataTestId ?? 'data-qa-paper'}
-      style={{ ...style, ...sx }}
+      style={style}
     >
       {children}
     </div>

@@ -223,7 +223,7 @@ export const ChangeRoleDrawer = ({ mode, onClose, open, role }: Props) => {
             key={selectedRole.name}
             mode={mode}
             role={selectedRole}
-            sx={{ marginBottom: Spacing.S16 }}
+            style={{ marginBottom: Spacing.S16 }}
             value={formattedAssignedEntities ?? []}
           />
         )}
