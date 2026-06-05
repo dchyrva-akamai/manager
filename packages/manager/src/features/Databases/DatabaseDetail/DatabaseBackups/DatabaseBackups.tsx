@@ -1,5 +1,6 @@
 import {
   Button,
+  Calendar,
   FormError,
   FormField,
   Icon,
@@ -25,14 +26,10 @@ import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { RegionSelect } from 'src/components/RegionSelect/RegionSelect';
 import {
-  StyledDateCalendar,
   StyledDateTimeStack,
   StyledRegionStack,
 } from 'src/features/Databases/DatabaseDetail/DatabaseBackups/DatabaseBackups.style';
-import {
-  isDateOutsideBackup,
-  isTimeOutsideBackup,
-} from 'src/features/Databases/utilities';
+import { isTimeOutsideBackup } from 'src/features/Databases/utilities';
 
 import {
   BACKUPS_INVALID_TIME_VALIDATON_TEXT,
@@ -285,19 +282,22 @@ export const DatabaseBackups = () => {
                   name="date"
                   render={({ field }) => (
                     <LocalizationProvider dateAdapter={AdapterLuxon}>
-                      <StyledDateCalendar
-                        disabled={disabled || versionOption === 'newest'}
-                        onChange={(newDate: DateTime) => {
+                      <Calendar
+                        active={field.value?.toISO() || ''}
+                        disabledFn={() =>
+                          disabled || versionOption === 'newest'
+                        }
+                        max={DateTime.now().toUTC().toISO()}
+                        min={database?.oldest_restore_time ?? undefined}
+                        onSelectedChange={(e: CustomEvent) => {
+                          const newDate = DateTime.fromISO(e.detail.selected, {
+                            zone: 'utc',
+                          });
                           validateDateTime(newDate, time);
                           field.onChange(newDate);
                         }}
-                        shouldDisableDate={(date) =>
-                          isDateOutsideBackup(
-                            date,
-                            oldestBackup?.startOf('day')
-                          )
-                        }
-                        value={field.value}
+                        style={{ marginRight: Spacing.S40, width: '260px' }}
+                        tz="utc"
                       />
                     </LocalizationProvider>
                   )}

@@ -100,9 +100,7 @@ describe('Database Backups (v2)', () => {
     );
 
     await waitFor(() => {
-      expect(
-        container.getElementsByClassName('MuiDateCalendar-root')
-      ).toHaveLength(1);
+      expect(container.querySelector('cds-calendar')).toBeInTheDocument();
     });
   });
 
