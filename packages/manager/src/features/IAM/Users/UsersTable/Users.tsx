@@ -19,7 +19,6 @@ import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
 import { useDelegationRole } from '../../hooks/useDelegationRole';
-import { useIsIAMDelegationEnabled } from '../../hooks/useIsIAMEnabled';
 import { usePermissions } from '../../hooks/usePermissions';
 import {
   IAM_CHILD_USERS_PENDO_IDS,
@@ -44,7 +43,6 @@ const MIN_PAGE_SIZE = 25;
 
 export const UsersLanding = () => {
   const navigate = useNavigate();
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
 
   const { isChildUserType, isDelegateUserType } = useDelegationRole();
 
@@ -79,10 +77,9 @@ export const UsersLanding = () => {
     searchableFieldsWithoutOperator: ['username', 'email'],
   });
 
-  // Determine if the current user is a child or delegate profile with isIAMDelegationEnabled enabled
+  // Determine if the current user is a child or delegate profile
   // If so, we need to show both 'child' and 'delegate_user' users in the table
-  const isChildOrDelegateWithDelegationEnabled =
-    isIAMDelegationEnabled && (isChildUserType || isDelegateUserType);
+  const isChildOrDelegate = isChildUserType || isDelegateUserType;
 
   const filterableOptions = React.useMemo(
     () => [
@@ -118,9 +115,7 @@ export const UsersLanding = () => {
     ['+order']: order.order,
     ['+order_by']: order.orderBy,
     ...filter,
-    ...(isChildOrDelegateWithDelegationEnabled &&
-    userType &&
-    userType.value !== 'all'
+    ...(isChildOrDelegate && userType && userType.value !== 'all'
       ? {
           user_type: userType.value === 'users' ? 'child' : 'delegate',
         }
@@ -201,7 +196,7 @@ export const UsersLanding = () => {
               placeholder="Filter"
               value={query ?? ''}
             />
-            {isChildOrDelegateWithDelegationEnabled && (
+            {isChildOrDelegate && (
               <Select
                 disabled={!permissions?.view_user}
                 items={filterableOptions}

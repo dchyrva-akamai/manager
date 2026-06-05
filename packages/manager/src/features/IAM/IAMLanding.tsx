@@ -11,10 +11,7 @@ import { useFlags } from 'src/hooks/useFlags';
 import { useTabs } from 'src/hooks/useTabs';
 
 import { useDelegationRole } from './hooks/useDelegationRole';
-import {
-  useIsIAMDelegationEnabled,
-  useIsIAMEnabled,
-} from './hooks/useIsIAMEnabled';
+import { useIsIAMEnabled } from './hooks/useIsIAMEnabled';
 import { useIsIAMFederationEnabled } from './hooks/useIsIAMFederationEnabled';
 import { IAM_DOCS_LINK, ROLES_LEARN_MORE_LINK } from './Shared/constants';
 import { DocsLink } from './Shared/DocsLink/DocsLink';
@@ -28,7 +25,6 @@ export const IdentityAccessLanding = React.memo(() => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isParentUserType } = useDelegationRole();
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
   const { isIAMFederationEnabled } = useIsIAMFederationEnabled();
 
   const { tabs, tabIndex, handleTabChange } = useTabs([
@@ -41,7 +37,7 @@ export const IdentityAccessLanding = React.memo(() => {
       title: 'Roles',
     },
     {
-      hide: !isIAMDelegationEnabled || !isParentUserType,
+      hide: !isParentUserType,
       to: `/iam/delegations`,
       title: 'Account Delegations',
     },

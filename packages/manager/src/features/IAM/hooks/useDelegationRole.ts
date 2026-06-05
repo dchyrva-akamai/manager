@@ -1,8 +1,6 @@
 import { useProfile } from '@linode/queries';
 import { useLocation } from '@tanstack/react-router';
 
-import { useIsIAMDelegationEnabled } from './useIsIAMEnabled';
-
 import type { Profile, UserType } from '@linode/api-v4';
 
 type DelegationRole = {
@@ -38,7 +36,6 @@ export const useDelegationRole = (): DelegationRole => {
 
 /**
  * isDefaultDelegationRolesForChildAccount is true if:
- * - IAM Delegation is enabled for the account
  * - The current user is a child or delegate account
  * - The current route includes '/iam/roles/defaults'
  *
@@ -46,14 +43,12 @@ export const useDelegationRole = (): DelegationRole => {
  * instead of regular user roles, and to adjust UI/logic for the delegate context.
  */
 export const useIsDefaultDelegationRolesForChildAccount = () => {
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
   const { isChildUserType, isDelegateUserType } = useDelegationRole();
   const location = useLocation();
 
   return {
     isDefaultDelegationRolesForChildAccount:
-      (isIAMDelegationEnabled &&
-        (isChildUserType || isDelegateUserType) &&
+      ((isChildUserType || isDelegateUserType) &&
         location.pathname.includes('/iam/roles/defaults')) ??
       false,
   };

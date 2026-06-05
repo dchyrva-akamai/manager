@@ -72,7 +72,6 @@ describe('AccountDelegations', () => {
   it('should render the delegations table with data', async () => {
     renderWithTheme(<AccountDelegations />, {
       flags: {
-        iamDelegation: { enabled: true },
         iam: { enabled: true },
       },
       initialRoute: '/iam',
@@ -98,7 +97,7 @@ describe('AccountDelegations', () => {
     });
 
     renderWithTheme(<AccountDelegations />, {
-      flags: { iamDelegation: { enabled: true }, iam: { enabled: true } },
+      flags: { iam: { enabled: true } },
       initialRoute: '/iam',
     });
 
@@ -117,7 +116,7 @@ describe('AccountDelegations', () => {
     });
 
     renderWithTheme(<AccountDelegations />, {
-      flags: { iamDelegation: { enabled: true }, iam: { enabled: true } },
+      flags: { iam: { enabled: true } },
       initialRoute: '/iam',
     });
 

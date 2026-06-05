@@ -89,7 +89,6 @@ const options: { flag: keyof Flags; label: string }[] = [
     flag: 'iamNewBadge',
     label: 'IAM New Badge',
   },
-  { flag: 'iamDelegation', label: 'IAM Delegation (Parent/Child)' },
   {
     flag: 'linodeCloneFirewall',
     label: 'Linode Clone Firewall',

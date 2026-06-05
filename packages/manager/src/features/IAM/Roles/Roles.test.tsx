@@ -95,11 +95,7 @@ describe('RolesLanding', () => {
     });
     queryMocks.useProfile.mockReturnValue({ data: { user_type: 'parent' } });
 
-    renderWithTheme(<RolesLanding />, {
-      flags: {
-        iamDelegation: { enabled: true },
-      },
-    });
+    renderWithTheme(<RolesLanding />);
     expect(
       screen.queryByText(DEFAULT_ROLES_PANEL_TEXT)
     ).not.toBeInTheDocument();
@@ -115,7 +111,6 @@ describe('RolesLanding', () => {
 
     renderWithTheme(<RolesLanding />, {
       flags: {
-        iamDelegation: { enabled: true },
         iam: { enabled: true },
       },
     });

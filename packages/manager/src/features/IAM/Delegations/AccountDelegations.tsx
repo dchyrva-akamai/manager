@@ -11,7 +11,6 @@ import { PaginationFooter } from 'src/components/PaginationFooter/PaginationFoot
 import { useOrderV2 } from 'src/hooks/useOrderV2';
 import { usePaginationV2 } from 'src/hooks/usePaginationV2';
 
-import { useIsIAMDelegationEnabled } from '../hooks/useIsIAMEnabled';
 import { usePermissions } from '../hooks/usePermissions';
 import { Paper } from '../Shared/Paper/Paper';
 import { AccountDelegationsTable } from './AccountDelegationsTable';
@@ -20,7 +19,6 @@ const DELEGATIONS_ROUTE = '/iam/delegations';
 
 export const AccountDelegations = () => {
   const navigate = useNavigate();
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
   const { data: permissions, isLoading: isPermissionsLoading } = usePermissions(
     'account',
     ['list_all_child_accounts']
@@ -93,10 +91,6 @@ export const AccountDelegations = () => {
         type="error"
       />
     );
-  }
-
-  if (!isIAMDelegationEnabled) {
-    return null;
   }
 
   return (

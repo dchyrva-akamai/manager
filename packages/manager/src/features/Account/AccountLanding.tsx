@@ -18,13 +18,11 @@ import { switchAccountSessionContext } from 'src/context/switchAccountSessionCon
 import { useIsParentTokenExpired } from 'src/features/Account/SwitchAccounts/useIsParentTokenExpired';
 import { getRestrictedResourceText } from 'src/features/Account/utils';
 import { useFlags } from 'src/hooks/useFlags';
-import { useRestrictedGlobalGrantCheck } from 'src/hooks/useRestrictedGlobalGrantCheck';
 import { useTabs } from 'src/hooks/useTabs';
 import { sendSwitchAccountEvent } from 'src/utilities/analytics/customEventAnalytics';
 
 import { PlatformMaintenanceBanner } from '../../components/PlatformMaintenanceBanner/PlatformMaintenanceBanner';
 import { useDelegationRole } from '../IAM/hooks/useDelegationRole';
-import { useIsIAMDelegationEnabled } from '../IAM/hooks/useIsIAMEnabled';
 import { usePermissions } from '../IAM/hooks/usePermissions';
 import { SwitchAccountButton } from './SwitchAccountButton';
 import { SwitchAccountDrawer } from './SwitchAccountDrawer';
@@ -58,12 +56,6 @@ export const AccountLanding = () => {
   const showQuotasTab = limitsEvolution?.enabled ?? false;
 
   const isReadOnly = !permissions.make_billing_payment || isChildUserType;
-
-  const isChildAccountAccessRestricted = useRestrictedGlobalGrantCheck({
-    globalGrantType: 'child_account_access',
-  });
-
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
 
   const { isParentTokenExpired } = useIsParentTokenExpired({
     isProxyOrDelegateUserType,
@@ -128,10 +120,7 @@ export const AccountLanding = () => {
   };
 
   const isBillingTabSelected = getTabIndex('/account/billing') === tabIndex;
-  const canSwitchBetweenParentOrProxyAccount = isIAMDelegationEnabled
-    ? isParentUserType
-    : (!isChildAccountAccessRestricted && isParentUserType) ||
-      isProxyOrDelegateUserType;
+  const canSwitchBetweenParentOrProxyAccount = isParentUserType;
 
   const landingHeaderProps: LandingHeaderProps = {
     breadcrumbProps: {

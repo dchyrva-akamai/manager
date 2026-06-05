@@ -70,9 +70,6 @@ describe('UserDelegationsTable', () => {
     renderWithTheme(<UserDelegationsTable />, {
       flags: {
         iam: { enabled: true },
-        iamDelegation: {
-          enabled: true,
-        },
       },
     });
 
@@ -89,9 +86,6 @@ describe('UserDelegationsTable', () => {
     renderWithTheme(<UserDelegationsTable />, {
       flags: {
         iam: { enabled: true },
-        iamDelegation: {
-          enabled: true,
-        },
       },
     });
 
@@ -112,9 +106,6 @@ describe('UserDelegationsTable', () => {
     renderWithTheme(<UserDelegationsTable />, {
       flags: {
         iam: { enabled: true },
-        iamDelegation: {
-          enabled: true,
-        },
       },
     });
 

@@ -15,10 +15,7 @@ import React from 'react';
 import { TabPanels } from 'src/components/Tabs/TabPanels';
 import { Tabs } from 'src/components/Tabs/Tabs';
 import { TanStackTabLinkList } from 'src/components/Tabs/TanStackTabLinkList';
-import {
-  useIsIAMDelegationEnabled,
-  useIsIAMEnabled,
-} from 'src/features/IAM/hooks/useIsIAMEnabled';
+import { useIsIAMEnabled } from 'src/features/IAM/hooks/useIsIAMEnabled';
 import { useFlags } from 'src/hooks/useFlags';
 import { useTabs } from 'src/hooks/useTabs';
 
@@ -42,7 +39,6 @@ export const UserDetailsLanding = () => {
   const { isIAMEnabled } = useIsIAMEnabled();
   const showNewBadge = flags.iamNewBadge && isIAMEnabled;
   const { username } = useParams({ from: '/iam/users/$username' });
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
   const { isParentUserType } = useDelegationRole();
   const { isDelegateUserForChildAccount } = useLoaderData({
     from: '/iam/users/$username',
@@ -65,7 +61,7 @@ export const UserDetailsLanding = () => {
     {
       to: `/iam/users/$username/delegations`,
       title: 'Account Delegations',
-      hide: !isIAMDelegationEnabled || !isParentUserType,
+      hide: !isParentUserType,
     },
   ]);
 

@@ -110,13 +110,12 @@ const iamDefaultsTabsRoute = createRoute({
   getParentRoute: () => iamRoute,
   path: 'roles/defaults',
   beforeLoad: async ({ context }) => {
-    const isDelegationEnabled = context?.flags?.iamDelegation?.enabled;
     const profile = context?.profile;
     const userType = profile?.user_type;
 
     const isChildOrDelegate = userType === 'child' || userType === 'delegate';
 
-    if (!isChildOrDelegate || !isDelegationEnabled) {
+    if (!isChildOrDelegate) {
       throw redirect({
         to: '/iam/roles',
         replace: true,
@@ -161,7 +160,6 @@ const iamDelegationsRoute = createRoute({
   getParentRoute: () => iamTabsRoute,
   path: 'delegations',
   beforeLoad: async ({ context }) => {
-    const isDelegationEnabled = context?.flags?.iamDelegation?.enabled;
     const profile = context?.profile;
 
     const isIAMEnabled = await checkIAMEnabled(
@@ -180,7 +178,7 @@ const iamDelegationsRoute = createRoute({
     const isChildAccount = profile?.user_type === 'child';
     const isDelegateAccount = profile?.user_type === 'delegate';
     const isChildOrDelegate = isChildAccount || isDelegateAccount;
-    if (!isDelegationEnabled || isChildOrDelegate) {
+    if (isChildOrDelegate) {
       throw redirect({
         to: '/iam/users',
         replace: true,
@@ -211,9 +209,8 @@ const iamUserNameRoute = createRoute({
       context.profile
     );
     const { username } = params;
-    const isIAMDelegationEnabled = context.flags?.iamDelegation?.enabled;
 
-    if (isIAMEnabled && username && isIAMDelegationEnabled) {
+    if (isIAMEnabled && username) {
       const profile = await context.queryClient.ensureQueryData(
         queryOptions(profileQueries.profile())
       );
@@ -235,8 +232,7 @@ const iamUserNameRoute = createRoute({
         const isDelegateAccount = profile?.user_type === 'delegate';
         const isDelegateUser = user.user_type === 'delegate';
 
-        // Determine if the current account is a child or delegate profile with isIAMDelegationEnabled enabled
-        // If so, we need to hide 'View User Details' and 'Account Delegations' tabs for delegate users
+        // For child/delegate profiles viewing a delegate user, hide details-oriented tabs
         const isDelegateUserForChildAccount =
           (isChildAccount || isDelegateAccount) && isDelegateUser;
 
@@ -257,7 +253,6 @@ const iamUserNameRoute = createRoute({
         return {
           user,
           profile,
-          isIAMDelegationEnabled,
           isDelegateUserForChildAccount,
         };
       }
@@ -369,12 +364,11 @@ const iamUserNameDelegationsRoute = createRoute({
   getParentRoute: () => iamUserNameRoute,
   path: 'delegations',
   beforeLoad: async ({ context, params }) => {
-    const isDelegationEnabled = context?.flags?.iamDelegation?.enabled;
     const profile = context?.profile;
     const userType = profile?.user_type;
     const { username } = params;
 
-    if (userType !== 'parent' || !isDelegationEnabled) {
+    if (userType !== 'parent') {
       throw redirect({
         to: '/iam/users/$username/details',
         params: { username },

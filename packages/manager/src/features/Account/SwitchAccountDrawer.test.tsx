@@ -10,10 +10,6 @@ import { SwitchAccountDrawer } from './SwitchAccountDrawer';
 const queryMocks = vi.hoisted(() => ({
   useProfile: vi.fn().mockReturnValue({}),
   useMyDelegatedChildAccountsQuery: vi.fn().mockReturnValue({}),
-  useChildAccountsInfiniteQuery: vi.fn().mockReturnValue({}),
-  useIsIAMDelegationEnabled: vi
-    .fn()
-    .mockReturnValue({ isIAMDelegationEnabled: true }),
 }));
 
 vi.mock('@linode/queries', async () => {
@@ -23,17 +19,6 @@ vi.mock('@linode/queries', async () => {
     useProfile: queryMocks.useProfile,
     useMyDelegatedChildAccountsQuery:
       queryMocks.useMyDelegatedChildAccountsQuery,
-    useChildAccountsInfiniteQuery: queryMocks.useChildAccountsInfiniteQuery,
-  };
-});
-
-vi.mock('src/features/IAM/hooks/useIsIAMEnabled', async () => {
-  const actual = await vi.importActual(
-    'src/features/IAM/hooks/useIsIAMEnabled'
-  );
-  return {
-    ...actual,
-    useIsIAMDelegationEnabled: queryMocks.useIsIAMDelegationEnabled,
   };
 });
 
@@ -50,27 +35,10 @@ describe('SwitchAccountDrawer', () => {
 
   beforeEach(() => {
     queryMocks.useProfile.mockReturnValue({});
-    queryMocks.useIsIAMDelegationEnabled.mockReturnValue({
-      isIAMDelegationEnabled: true,
-    });
     queryMocks.useMyDelegatedChildAccountsQuery.mockReturnValue({
       data: { data: accounts, results: accounts.length, page: 1, pages: 1 },
       isLoading: false,
       isRefetching: false,
-    });
-    queryMocks.useChildAccountsInfiniteQuery.mockReturnValue({
-      data: {
-        pages: [
-          { data: accounts, results: accounts.length, page: 1, pages: 1 },
-        ],
-        pageParams: [],
-      },
-      isInitialLoading: false,
-      isRefetching: false,
-      isFetchingNextPage: false,
-      hasNextPage: false,
-      fetchNextPage: vi.fn(),
-      refetch: vi.fn(),
     });
   });
 

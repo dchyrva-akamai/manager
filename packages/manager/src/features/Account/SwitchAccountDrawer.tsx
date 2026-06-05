@@ -1,8 +1,5 @@
 import { getStorage } from '@akamai/compute-ui-core/browser';
-import {
-  useChildAccountsInfiniteQuery,
-  useMyDelegatedChildAccountsQuery,
-} from '@linode/queries';
+import { useMyDelegatedChildAccountsQuery } from '@linode/queries';
 import {
   Box,
   Button,
@@ -21,11 +18,9 @@ import { DebouncedSearchTextField } from 'src/components/DebouncedSearchTextFiel
 import { useParentChildAuthentication } from 'src/features/Account/SwitchAccounts/useParentChildAuthentication';
 import { useSwitchToParentAccount } from 'src/features/Account/SwitchAccounts/useSwitchToParentAccount';
 import { setTokenInLocalStorage } from 'src/features/Account/SwitchAccounts/utils';
-import { useIsIAMDelegationEnabled } from 'src/features/IAM/hooks/useIsIAMEnabled';
 import { sendSwitchToParentAccountEvent } from 'src/utilities/analytics/customEventAnalytics';
 import { storage } from 'src/utilities/storage';
 
-import { ChildAccountList } from './SwitchAccounts/ChildAccountList';
 import { ChildAccountsTable } from './SwitchAccounts/ChildAccountsTable';
 import { updateParentTokenInLocalStorage } from './SwitchAccounts/utils';
 
@@ -54,7 +49,6 @@ export const SwitchAccountDrawer = (props: Props) => {
   const [searchQuery, setSearchQuery] = React.useState<string>('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
   const isParentUserType = userType === 'parent';
   const isProxyUserType = userType === 'proxy';
   const isDelegateUserType = userType === 'delegate';
@@ -89,27 +83,6 @@ export const SwitchAccountDrawer = (props: Props) => {
   };
 
   const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isError: childAccountInfiniteError,
-    isFetchingNextPage,
-    isInitialLoading,
-    isRefetching,
-    refetch: refetchChildAccounts,
-  } = useChildAccountsInfiniteQuery(
-    {
-      filter,
-      headers: isProxyOrDelegateUserType
-        ? {
-            Authorization: currentParentTokenWithBearer,
-          }
-        : undefined,
-    },
-    isIAMDelegationEnabled === false && (isParentUserType || isProxyUserType)
-  );
-
-  const {
     data: delegatedChildAccounts,
     error: delegatedChildAccountsError,
     isLoading: delegatedChildAccountsLoading,
@@ -121,7 +94,7 @@ export const SwitchAccountDrawer = (props: Props) => {
       page_size: pageSize,
     },
     filter,
-    enabled: isIAMDelegationEnabled && isParentUserType,
+    enabled: isParentUserType,
   });
 
   const handleSwitchToChildAccount = React.useCallback(
@@ -149,9 +122,7 @@ export const SwitchAccountDrawer = (props: Props) => {
         const proxyToken = await createToken(euuid);
 
         setTokenInLocalStorage({
-          prefix: isIAMDelegationEnabled
-            ? 'authentication/delegate_token'
-            : 'authentication/proxy_token',
+          prefix: 'authentication/delegate_token',
           token: {
             ...proxyToken,
             token: `Bearer ${proxyToken.token}`,
@@ -159,37 +130,27 @@ export const SwitchAccountDrawer = (props: Props) => {
         });
 
         updateCurrentToken({
-          userType: isIAMDelegationEnabled ? 'delegate' : 'proxy',
+          userType: 'delegate',
         });
         onClose(event);
 
-        // Only redirect to /linodes for IAM delegate users
-        if (isIAMDelegationEnabled) {
-          location.replace('/linodes');
-        } else {
-          location.reload();
-        }
+        location.replace('/linodes');
       } catch {
         // Error is handled by createTokenError.
       }
     },
-    [createToken, isIAMDelegationEnabled, updateCurrentToken, revokeToken]
+    [createToken, updateCurrentToken, revokeToken]
   );
 
   const [isSwitchingChildAccounts, setIsSwitchingChildAccounts] =
     useState<boolean>(false);
 
   const isLoading =
-    isInitialLoading ||
     isSubmitting ||
     isSwitchingChildAccounts ||
-    isRefetching ||
     delegatedChildAccountsLoading ||
     delegatedChildAccountsIsRefetching;
 
-  const refetchFn = isIAMDelegationEnabled
-    ? refetchDelegatedChildAccounts
-    : refetchChildAccounts;
   const handleClose = () => {
     setIsSwitchingChildAccounts(false);
     setSearchQuery('');
@@ -197,11 +158,8 @@ export const SwitchAccountDrawer = (props: Props) => {
   };
 
   const childAccounts = useMemo(() => {
-    if (isIAMDelegationEnabled) {
-      return delegatedChildAccounts?.data || [];
-    }
-    return data?.pages.flatMap((page) => page.data);
-  }, [isIAMDelegationEnabled, delegatedChildAccounts, data]);
+    return delegatedChildAccounts?.data || [];
+  }, [delegatedChildAccounts]);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -217,10 +175,6 @@ export const SwitchAccountDrawer = (props: Props) => {
     setPage(1); // Reset to first page when search query changes
   };
 
-  const hasError = isIAMDelegationEnabled
-    ? delegatedChildAccountsError
-    : childAccountInfiniteError;
-
   return (
     <Drawer onClose={handleClose} open={open} title="Switch Account">
       {createTokenErrorReason && (
@@ -231,7 +185,6 @@ export const SwitchAccountDrawer = (props: Props) => {
       )}
       {childAccounts &&
       childAccounts.length === 0 &&
-      isIAMDelegationEnabled &&
       !isLoading &&
       !Object.prototype.hasOwnProperty.call(filter, 'company') ? (
         <Box alignItems="center" display="flex" flexDirection="column" mt={8}>
@@ -277,7 +230,7 @@ export const SwitchAccountDrawer = (props: Props) => {
             .
           </Typography>
 
-          {hasError ? (
+          {delegatedChildAccountsError ? (
             <Stack alignItems="center" gap={1} justifyContent="center">
               <ErrorStateCloud />
               <Typography>Unable to load data.</Typography>
@@ -286,7 +239,7 @@ export const SwitchAccountDrawer = (props: Props) => {
               </Typography>
               <Button
                 buttonType="primary"
-                onClick={() => refetchFn()}
+                onClick={() => refetchDelegatedChildAccounts()}
                 sx={(theme) => ({
                   marginTop: theme.spacingFunction(16),
                 })}
@@ -310,8 +263,7 @@ export const SwitchAccountDrawer = (props: Props) => {
                   value={searchQuery}
                 />
               )}
-              {isIAMDelegationEnabled &&
-                searchQuery &&
+              {searchQuery &&
                 childAccounts &&
                 childAccounts.length === 0 &&
                 !isLoading && (
@@ -325,7 +277,7 @@ export const SwitchAccountDrawer = (props: Props) => {
                   </Typography>
                 )}
 
-              {isIAMDelegationEnabled && (
+              {
                 <ChildAccountsTable
                   childAccounts={childAccounts}
                   currentTokenWithBearer={
@@ -345,28 +297,7 @@ export const SwitchAccountDrawer = (props: Props) => {
                   totalResults={delegatedChildAccounts?.results || 0}
                   userType={userType}
                 />
-              )}
-              {!isIAMDelegationEnabled && (
-                <ChildAccountList
-                  childAccounts={childAccounts}
-                  currentTokenWithBearer={
-                    isProxyOrDelegateUserType
-                      ? currentParentTokenWithBearer
-                      : currentTokenWithBearer
-                  }
-                  fetchNextPage={fetchNextPage}
-                  filter={filter}
-                  hasNextPage={hasNextPage}
-                  isFetchingNextPage={isFetchingNextPage}
-                  isLoading={isLoading}
-                  isSwitchingChildAccounts={isSwitchingChildAccounts}
-                  onClose={onClose}
-                  onSwitchAccount={handleSwitchToChildAccount}
-                  refetchFn={refetchFn}
-                  setIsSwitchingChildAccounts={setIsSwitchingChildAccounts}
-                  userType={userType}
-                />
-              )}
+              }
             </>
           )}
         </>

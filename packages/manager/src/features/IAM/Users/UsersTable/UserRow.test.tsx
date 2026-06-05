@@ -16,19 +16,8 @@ import { UserRow } from './UserRow';
 beforeAll(() => mockMatchMedia());
 
 const queryMocks = vi.hoisted(() => ({
-  useIsIAMDelegationEnabled: vi.fn().mockReturnValue({}),
   useProfile: vi.fn().mockReturnValue({}),
 }));
-
-vi.mock('src/features/IAM/hooks/useIsIAMEnabled', async () => {
-  const actual = await vi.importActual(
-    'src/features/IAM/hooks/useIsIAMEnabled'
-  );
-  return {
-    ...actual,
-    useIsIAMDelegationEnabled: queryMocks.useIsIAMDelegationEnabled,
-  };
-});
 
 vi.mock('@linode/queries', async () => {
   const actual = await vi.importActual('@linode/queries');
@@ -39,12 +28,6 @@ vi.mock('@linode/queries', async () => {
 });
 
 describe('UserRow', () => {
-  beforeEach(() => {
-    queryMocks.useIsIAMDelegationEnabled.mockReturnValue({
-      isIAMDelegationEnabled: true,
-    });
-  });
-
   it('renders a username and email', async () => {
     const user = accountUserFactory.build();
 
@@ -56,7 +39,7 @@ describe('UserRow', () => {
     expect(getByText(user.email)).toBeVisible();
   });
 
-  it('renders username, email, and user type for a Child user when isIAMDelegationEnabled flag is enabled', async () => {
+  it('renders username, email, and user type for a Child user', async () => {
     const user = accountUserFactory.build({
       user_type: 'child',
     });
@@ -66,11 +49,7 @@ describe('UserRow', () => {
     });
 
     const { getByText } = renderWithTheme(
-      wrapWithTableBody(<UserRow onDelete={vi.fn()} user={user} />, {
-        flags: {
-          iamDelegation: { enabled: true },
-        },
-      })
+      wrapWithTableBody(<UserRow onDelete={vi.fn()} user={user} />)
     );
 
     expect(getByText(user.username)).toBeVisible();
@@ -81,7 +60,7 @@ describe('UserRow', () => {
     });
   });
 
-  it('renders username and user type, and does not render email and last login for a Delegate user when isIAMDelegationEnabled flag is enabled', async () => {
+  it('renders username and user type, and does not render email and last login for a Delegate user', async () => {
     const delegateUser = accountUserFactory.build({
       user_type: 'delegate',
       last_login: null,
@@ -92,11 +71,7 @@ describe('UserRow', () => {
     });
 
     const { getAllByText, getByText, queryByText } = renderWithTheme(
-      wrapWithTableBody(<UserRow onDelete={vi.fn()} user={delegateUser} />, {
-        flags: {
-          iamDelegation: { enabled: true },
-        },
-      })
+      wrapWithTableBody(<UserRow onDelete={vi.fn()} user={delegateUser} />)
     );
 
     expect(getByText(delegateUser.username)).toBeVisible();

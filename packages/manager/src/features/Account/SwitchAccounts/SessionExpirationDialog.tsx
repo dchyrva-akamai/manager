@@ -12,7 +12,6 @@ import { sessionExpirationContext as _sessionExpirationContext } from 'src/conte
 import { useParentChildAuthentication } from 'src/features/Account/SwitchAccounts/useParentChildAuthentication';
 import { setTokenInLocalStorage } from 'src/features/Account/SwitchAccounts/utils';
 import { useDelegationRole } from 'src/features/IAM/hooks/useDelegationRole';
-import { useIsIAMDelegationEnabled } from 'src/features/IAM/hooks/useIsIAMEnabled';
 
 interface SessionExpirationDialogProps {
   isOpen: boolean;
@@ -25,7 +24,6 @@ export const SessionExpirationDialog = React.memo(
       _sessionExpirationContext
     );
     const { isProxyUserType, isDelegateUserType } = useDelegationRole();
-    const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
     const [timeRemaining, setTimeRemaining] = React.useState<{
       minutes: number;
       seconds: number;
@@ -113,11 +111,8 @@ export const SessionExpirationDialog = React.memo(
         });
 
         const proxyToken = await createToken(euuid);
-
-        const tokenPrefix = isIAMDelegationEnabled
-          ? 'authentication/delegate_token'
-          : 'authentication/proxy_token';
-        const tokenUserType = isIAMDelegationEnabled ? 'delegate' : 'proxy';
+        const tokenPrefix = 'authentication/delegate_token';
+        const tokenUserType = 'delegate';
 
         setTokenInLocalStorage({
           prefix: tokenPrefix,

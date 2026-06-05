@@ -40,7 +40,7 @@ export const UserRow = ({ onDelete, user }: Props) => {
   const theme = useTheme();
   const {
     columnWidths,
-    isChildOrDelegateWithDelegationEnabled,
+    isChildOrDelegate,
     showEmail,
     showLastLogin,
     showUserType,
@@ -84,8 +84,7 @@ export const UserRow = ({ onDelete, user }: Props) => {
                           : IAM_PARENT_USERS_PENDO_IDS.parentUsernameLink
                     }
                     to={
-                      isChildOrDelegateWithDelegationEnabled &&
-                      user.user_type === 'delegate'
+                      isChildOrDelegate && user.user_type === 'delegate'
                         ? `/iam/users/${user.username}/roles`
                         : `/iam/users/${user.username}/details`
                     }
@@ -112,9 +111,7 @@ export const UserRow = ({ onDelete, user }: Props) => {
       {showEmail ? (
         <TableCell style={getUsersTableCellStyle(columnWidths.email)}>
           <UserEmailContent
-            isChildOrDelegateWithDelegationEnabled={
-              isChildOrDelegateWithDelegationEnabled
-            }
+            isChildOrDelegate={isChildOrDelegate}
             userEmail={user.email}
             userType={user.user_type}
           />
@@ -179,15 +176,15 @@ const LastLogin = (props: Pick<User, 'last_login' | 'user_type'>) => {
  * - The component renders the user's email with the ability to toggle visibility for all other cases
  */
 const UserEmailContent = ({
-  isChildOrDelegateWithDelegationEnabled,
+  isChildOrDelegate,
   userEmail,
   userType,
 }: {
-  isChildOrDelegateWithDelegationEnabled: boolean;
+  isChildOrDelegate: boolean;
   userEmail: string;
   userType: User['user_type'];
 }) => {
-  if (!isChildOrDelegateWithDelegationEnabled || userType === 'child') {
+  if (!isChildOrDelegate || userType === 'child') {
     return (
       <MaskableText
         isToggleable

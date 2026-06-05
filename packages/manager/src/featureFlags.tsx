@@ -292,7 +292,6 @@ export interface Flags {
   gpuv2: GpuV2;
   hostnameEndpoints: boolean;
   iam: BaseFeatureFlag;
-  iamDelegation: BaseFeatureFlag;
   iamFederation: BaseFeatureFlag;
   iamNewBadge: boolean;
   inferencePlatform: boolean;

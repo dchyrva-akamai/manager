@@ -2,7 +2,6 @@ import type { CSSProperties } from 'react';
 
 import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { useDelegationRole } from '../../hooks/useDelegationRole';
-import { useIsIAMDelegationEnabled } from '../../hooks/useIsIAMEnabled';
 
 export interface UsersTableColumnWidths {
   actions: string;
@@ -80,15 +79,13 @@ export const getUsersTableColumnWidths = ({
 };
 
 export const useUsersTableColumns = () => {
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
   const { isChildUserType, isDelegateUserType } = useDelegationRole();
   const isSMUp = useBreakpoint('up', 'sm');
   const isLGUp = useBreakpoint('up', 'lg');
 
-  const isChildOrDelegateWithDelegationEnabled =
-    isIAMDelegationEnabled && (isChildUserType || isDelegateUserType);
+  const isChildOrDelegate = isChildUserType || isDelegateUserType;
 
-  const showUserType = isChildOrDelegateWithDelegationEnabled && isLGUp;
+  const showUserType = isChildOrDelegate && isLGUp;
   const showEmail = isSMUp;
   const showLastLogin = isLGUp;
 
@@ -100,7 +97,7 @@ export const useUsersTableColumns = () => {
 
   return {
     columnWidths,
-    isChildOrDelegateWithDelegationEnabled,
+    isChildOrDelegate,
     showEmail,
     showLastLogin,
     showUserType,

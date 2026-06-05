@@ -17,7 +17,6 @@ const queryMocks = vi.hoisted(() => ({
   useProfile: vi.fn().mockReturnValue({}),
   useAccountUsers: vi.fn().mockReturnValue({}),
   useSearch: vi.fn().mockReturnValue({}),
-  useIsIAMDelegationEnabled: vi.fn().mockReturnValue({}),
 }));
 
 vi.mock('@tanstack/react-router', async () => {
@@ -38,23 +37,7 @@ vi.mock('@linode/queries', async () => {
   };
 });
 
-vi.mock('src/features/IAM/hooks/useIsIAMEnabled', async () => {
-  const actual = await vi.importActual(
-    'src/features/IAM/hooks/useIsIAMEnabled'
-  );
-  return {
-    ...actual,
-    useIsIAMDelegationEnabled: queryMocks.useIsIAMDelegationEnabled,
-  };
-});
-
 describe('Users', () => {
-  beforeEach(() => {
-    queryMocks.useIsIAMDelegationEnabled.mockReturnValue({
-      isIAMDelegationEnabled: true,
-    });
-  });
-
   it('renders only table and search filter if profile is not a child', async () => {
     const user = accountUserFactory.build();
     queryMocks.useAccountUsers.mockReturnValue({
@@ -83,7 +66,7 @@ describe('Users', () => {
     });
   });
 
-  it('renders table, select, and search filter if profile is a child and isIAMDelegationEnabled flag is enabled', async () => {
+  it('renders table, select, and search filter if profile is a child', async () => {
     const user = accountUserFactory.build();
     queryMocks.useAccountUsers.mockReturnValue({
       data: {
@@ -98,13 +81,7 @@ describe('Users', () => {
     });
 
     const { container, getByPlaceholderText } = renderWithTheme(
-      <UsersLanding />,
-      {
-        initialRoute: '/iam',
-        flags: {
-          iamDelegation: { enabled: true },
-        },
-      }
+      <UsersLanding />
     );
 
     expect(getByPlaceholderText('Filter')).toBeVisible();

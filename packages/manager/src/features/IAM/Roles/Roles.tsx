@@ -9,7 +9,6 @@ import { CircleProgress } from 'src/features/IAM/Shared/CircleProgress/CirclePro
 import { mapAccountPermissionsToRoles } from 'src/features/IAM/Shared/utilities';
 
 import { useDelegationRole } from '../hooks/useDelegationRole';
-import { useIsIAMDelegationEnabled } from '../hooks/useIsIAMEnabled';
 import { usePermissions } from '../hooks/usePermissions';
 import { Paper } from '../Shared/Paper/Paper';
 import { DefaultRolesPanel } from './Defaults/DefaultRolesPanel';
@@ -22,7 +21,6 @@ export const RolesLanding = () => {
   const { data: accountRoles, isLoading } = useAccountRoles(
     permissions?.list_role_permissions
   );
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
   const { isChildUserType, isProfileLoading, isDelegateUserType } =
     useDelegationRole();
 
@@ -49,9 +47,7 @@ export const RolesLanding = () => {
 
   return (
     <>
-      {(isChildUserType || isDelegateUserType) && isIAMDelegationEnabled && (
-        <DefaultRolesPanel />
-      )}
+      {(isChildUserType || isDelegateUserType) && <DefaultRolesPanel />}
       <Paper marginTop={Spacing.S16}>
         <Typography variant="h2">Roles</Typography>
         <RolesTable roles={roles} />

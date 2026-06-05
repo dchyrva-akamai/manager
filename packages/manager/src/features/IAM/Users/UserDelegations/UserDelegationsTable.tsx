@@ -13,7 +13,6 @@ import { TableHead } from 'src/components/TableHead';
 import { TableRow } from 'src/components/TableRow';
 import { TableRowEmpty } from 'src/components/TableRowEmpty/TableRowEmpty';
 import { TableSortCell } from 'src/components/TableSortCell';
-import { useIsIAMDelegationEnabled } from 'src/features/IAM/hooks/useIsIAMEnabled';
 import { NO_ITEMS_TO_DISPLAY_TEXT } from 'src/features/IAM/Shared/constants';
 import { ErrorState } from 'src/features/IAM/Shared/ErrorState/ErrorState';
 import { useOrderV2 } from 'src/hooks/useOrderV2';
@@ -28,7 +27,6 @@ const USER_DELEGATION_ROUTE = '/iam/users/$username/delegations';
 
 export const UserDelegationsTable = () => {
   const { username } = useParams({ from: '/iam/users/$username' });
-  const { isIAMDelegationEnabled } = useIsIAMDelegationEnabled();
   const { company } = useSearch({
     from: USER_DELEGATION_ROUTE,
   });
@@ -85,10 +83,6 @@ export const UserDelegationsTable = () => {
       search: { company: value || undefined },
     });
   };
-
-  if (!isIAMDelegationEnabled) {
-    return null;
-  }
 
   if (isLoadingChildAccounts) {
     return <CircleProgress />;

@@ -127,28 +127,6 @@ describe('UserMenu', () => {
     expect(within(userMenuPopover).getByText('Switch Account')).toBeVisible();
   });
 
-  it('hides Switch Account button in the dropdown menu for parent accounts lacking child_account_access', async () => {
-    server.use(
-      http.get('*/account/users/*/grants', () => {
-        return HttpResponse.json(
-          grantsFactory.build({ global: { child_account_access: false } })
-        );
-      }),
-      http.get('*/profile', () => {
-        return HttpResponse.json(
-          profileFactory.build({ restricted: true, user_type: 'parent' })
-        );
-      })
-    );
-
-    const { findByLabelText, queryByTestId } = renderWithTheme(<UserMenu />);
-
-    const userMenuButton = await findByLabelText('Profile & Account');
-    fireEvent.click(userMenuButton);
-
-    expect(queryByTestId('switch-account-button')).not.toBeInTheDocument();
-  });
-
   it('shows the child company name and Switch Account button in the dropdown menu for a proxy user', async () => {
     server.use(
       http.get('*/account', () => {

@@ -73,9 +73,6 @@ describe('UserDelegations', () => {
     renderWithTheme(<UserDelegations />, {
       flags: {
         iam: { enabled: true },
-        iamDelegation: {
-          enabled: true,
-        },
       },
     });
     expect(screen.getByText('This list is empty')).toBeVisible();
@@ -92,9 +89,6 @@ describe('UserDelegations', () => {
     renderWithTheme(<UserDelegations />, {
       flags: {
         iam: { enabled: true },
-        iamDelegation: {
-          enabled: true,
-        },
       },
     });
 
@@ -111,9 +105,6 @@ describe('UserDelegations', () => {
     renderWithTheme(<UserDelegations />, {
       flags: {
         iam: { enabled: true },
-        iamDelegation: {
-          enabled: true,
-        },
       },
     });
 
