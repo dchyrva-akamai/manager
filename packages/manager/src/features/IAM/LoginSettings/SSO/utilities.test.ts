@@ -15,7 +15,10 @@ const EXPIRING_DATE = (() => {
 })();
 const NOT_YET_VALID_NOT_BEFORE = '2099-01-01T00:00:00.000Z';
 
-const makeCert = (not_after: string, not_before = '2024-01-01T00:00:00.000Z') => ({
+const makeCert = (
+  not_after: string,
+  not_before = '2024-01-01T00:00:00.000Z'
+) => ({
   certificate: 'cert',
   created: '2024-01-01T00:00:00.000Z',
   created_by: 'user',

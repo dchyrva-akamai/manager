@@ -409,8 +409,7 @@ export const DatabaseCreate = () => {
             }}
           >
             <StyledTypography>
-              Your database node(s) will take approximately 15-30 minutes to
-              provision.
+              Database nodes take approximately 15-30 minutes to provision.
             </StyledTypography>
             <StyledCreateBtn
               data-testid="create-database-cluster"

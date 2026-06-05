@@ -108,3 +108,6 @@ export const DISABLE_CREDENTIAL_STATES = [
 export const ERROR_STATE_TITLE = 'An unexpected error occurred.';
 
 export const ERROR_STATE_TEXT = 'Refresh the page or try again later.';
+
+export const STORAGE_COPY =
+  'The usable disk size is smaller than the selected plan capacity due to overhead from the OS.';

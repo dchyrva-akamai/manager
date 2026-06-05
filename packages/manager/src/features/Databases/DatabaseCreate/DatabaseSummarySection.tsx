@@ -105,7 +105,7 @@ export const DatabaseSummarySection = (props: Props) => {
       )}
     </Box>
   ) : (
-    'Please specify your cluster configuration'
+    `Once you configure the cluster, you'll see the summary here.`
   );
 
   const resizeSummary = (

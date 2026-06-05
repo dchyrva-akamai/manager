@@ -137,7 +137,9 @@ const applyConstraints = (validator: any, key: string, field: any) => {
     } else {
       validator = validator.matches(
         new RegExp(pattern),
-        `Please ensure that ${key} follows the format ${field.example}`,
+        field.example
+          ? `Please ensure that ${key} follows the format ${field.example}`
+          : `${key} must be a valid format`,
       );
     }
   }

@@ -1,13 +1,11 @@
 import { Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
-import {
-  convertMegabytesTo,
-  formatStorageUnits,
-} from '@akamai/compute-ui-core/api';
+import { formatStorageUnits } from '@akamai/compute-ui-core/api';
 import { useDatabaseTypesQuery, useRegionsQuery } from '@linode/queries';
 import { Typography } from '@linode/ui';
 import * as React from 'react';
 
+import { STORAGE_COPY } from 'src/features/Databases/constants';
 import { DatabaseStatusDisplay } from 'src/features/Databases/DatabaseDetail/DatabaseStatusDisplay';
 import { DatabaseEngineVersion } from 'src/features/Databases/DatabaseEngineVersion';
 import { useInProgressEvents } from 'src/queries/events/events';
@@ -71,13 +69,6 @@ export const DatabaseSummaryClusterConfiguration = (props: Props) => {
       ? 'Primary (1 Node)'
       : `Primary (+${nodeCount} ${nodeLabel})`;
 
-  const STORAGE_COPY =
-    'The total disk size is smaller than the selected plan capacity due to overhead from the OS.';
-
-  const diskSizeLabel = database.total_disk_size_gb
-    ? 'Total Disk Size'
-    : 'Storage';
-
   return (
     <div style={{ marginBottom: Spacing.S16 }}>
       <Typography marginBottom={2} variant="h3">
@@ -127,27 +118,21 @@ export const DatabaseSummaryClusterConfiguration = (props: Props) => {
         </div>
         <div className={styles.summaryValueColumn}>{type.memory / 1024} GB</div>
         <div className={styles.summaryLabelColumn}>
-          <p>{diskSizeLabel}</p>
+          <p>Usable Disk Size</p>
         </div>
         <div className={styles.summaryValueColumn}>
-          {database.total_disk_size_gb ? (
-            <>
-              {database.total_disk_size_gb} GB
-              <Tooltip
-                style={{ marginLeft: Spacing.S4 }}
-                tooltipPlacement="bottom"
-                tooltipText={STORAGE_COPY}
-              >
-                <Icon
-                  icon="info-outline"
-                  size="m"
-                  style={{ position: 'relative', top: -1 }}
-                />
-              </Tooltip>
-            </>
-          ) : (
-            convertMegabytesTo(type.disk, true)
-          )}
+          {database.total_disk_size_gb} GB
+          <Tooltip
+            style={{ marginLeft: Spacing.S4 }}
+            tooltipPlacement="bottom"
+            tooltipText={STORAGE_COPY}
+          >
+            <Icon
+              icon="info-outline"
+              size="m"
+              style={{ position: 'relative', top: -1 }}
+            />
+          </Tooltip>
         </div>
       </div>
     </div>

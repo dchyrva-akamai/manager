@@ -70,7 +70,7 @@ export const DatabaseSettingsMaintenance = (props: Props) => {
         </div>
       */}
       <div style={{ width: '50%' }}>
-        <StyledTypography variant="h3">Maintenance updates</StyledTypography>
+        <StyledTypography variant="h3">Maintenance Updates</StyledTypography>
         {hasUpdates ? (
           <BoldTypography>
             One or more minor version upgrades or patches will be applied during

@@ -122,7 +122,7 @@ export const DatabaseConfigurationItem = (props: Props) => {
                   ''
               )
             }
-            placeholder={String(configItem.example)}
+            placeholder={String(configItem?.example ?? '')}
             value={configItem.value ? String(configItem.value) : ''}
           />
           <FormError slot="error">{errorText}</FormError>

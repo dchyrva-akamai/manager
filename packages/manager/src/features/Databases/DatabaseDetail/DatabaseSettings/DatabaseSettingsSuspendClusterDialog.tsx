@@ -65,13 +65,8 @@ export const DatabaseSettingsSuspendClusterDialog = (
     "A suspended cluster stops immediately and you won't be billed for it. You can resume the cluster within 180 days from its suspension. After that time, the cluster will be deleted permanently.";
 
   return (
-    <Modal
-      closeModal={onCancel}
-      open={open}
-      size="medium"
-      title={`Suspend ${databaseLabel} cluster?`}
-    >
-      <span slot="title">Suspend {databaseLabel} cluster?</span>
+    <Modal closeModal={onCancel} open={open} size="medium">
+      <span slot="title">Suspend database cluster {databaseLabel}?</span>
       <div slot="body" style={{ overflowY: 'hidden' }}>
         {error ? (
           <NotificationBanner type="error">

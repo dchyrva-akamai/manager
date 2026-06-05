@@ -98,7 +98,7 @@ describe('DatabaseSummaryClusterConfiguration', () => {
       expect(queryAllByText('RAM')).toHaveLength(1);
       expect(queryAllByText('8 GB')).toHaveLength(1);
 
-      expect(queryAllByText('Total Disk Size')).toHaveLength(1);
+      expect(queryAllByText('Usable Disk Size')).toHaveLength(1);
       expect(queryAllByText('130 GB')).toHaveLength(1);
     });
   });

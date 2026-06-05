@@ -11,11 +11,10 @@ import type { SuspendDialogProps } from './DatabaseSettingsSuspendClusterDialog'
 import type { Engine } from '@linode/api-v4';
 
 const mockEngine: Engine = 'mysql';
-const mockLabel = 'database-1';
 const props: SuspendDialogProps = {
   databaseEngine: mockEngine,
   databaseId: 1234,
-  databaseLabel: mockLabel,
+  databaseLabel: 'database-1',
   onClose: vi.fn(),
   open: true,
 };
@@ -30,7 +29,7 @@ describe('DatabaseSettingsSuspendClusterDialog', () => {
     const { getByText } = renderWithTheme(
       <DatabaseSettingsSuspendClusterDialog {...props} />
     );
-    expect(getByText(`Suspend ${mockLabel} cluster?`)).toBeVisible();
+    expect(getByText(`Suspend database cluster database-1?`)).toBeVisible();
     expect(getByText('Suspend Cluster')).toBeVisible();
   });
 

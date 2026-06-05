@@ -218,9 +218,8 @@ export const DatabaseBackups = () => {
           <h2 style={{ margin: 0 }}>Restore a Backup</h2>
           <p style={{ marginTop: Spacing.S4 }}>
             <span>
-              The newest full backup plus incremental is selected by default.
-              Or, select any date and time within the last 14 days you want to
-              create a fork from.
+              Select where you want to create a fork from. For a specific point
+              in time, you can go back up to 14 days.
             </span>
           </p>
         </>

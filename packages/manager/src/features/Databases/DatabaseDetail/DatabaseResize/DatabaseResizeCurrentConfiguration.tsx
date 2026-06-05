@@ -1,14 +1,12 @@
 import { Icon, Tooltip } from '@akamai/cds-components/react';
 import { Spacing } from '@akamai/cds-tokens';
-import {
-  convertMegabytesTo,
-  formatStorageUnits,
-} from '@akamai/compute-ui-core/api';
+import { formatStorageUnits } from '@akamai/compute-ui-core/api';
 import { useDatabaseTypesQuery, useRegionsQuery } from '@linode/queries';
 import { Box } from '@linode/ui';
 import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 
+import { STORAGE_COPY } from 'src/features/Databases/constants';
 import { DatabaseEngineVersion } from 'src/features/Databases/DatabaseEngineVersion';
 import { useInProgressEvents } from 'src/queries/events/events';
 
@@ -66,9 +64,6 @@ export const DatabaseResizeCurrentConfiguration = ({ database }: Props) => {
         ? `Primary (+${database.cluster_size - 1} Nodes)`
         : `Primary (+${database.cluster_size - 1} Node)`;
 
-  const STORAGE_COPY =
-    'The total disk size is smaller than the selected plan capacity due to overhead from the OS.';
-
   return (
     <>
       <StyledTitleTypography variant="h3">
@@ -121,38 +116,29 @@ export const DatabaseResizeCurrentConfiguration = ({ database }: Props) => {
           </StyledSummaryTextTypography>
         </Box>
         <Box key={'disk'} paddingRight={6}>
-          {database.total_disk_size_gb ? (
-            <>
-              <StyledSummaryTextTypography>
-                <span style={{ font: theme.font.bold }}>Total Disk Size</span>{' '}
-                {database.total_disk_size_gb} GB
-                <Tooltip
-                  style={{ marginLeft: Spacing.S4, whiteSpace: 'normal' }}
-                  tooltipText={STORAGE_COPY}
-                >
-                  <Icon
-                    icon="info-outline"
-                    size="m"
-                    style={{
-                      position: 'relative',
-                      top: -2,
-                    }}
-                  />
-                </Tooltip>
-              </StyledSummaryTextTypography>
-              <StyledSummaryTextTypography>
-                <span style={{ font: theme.font.bold }}>Used</span>{' '}
-                {database.used_disk_size_gb !== null
-                  ? `${database.used_disk_size_gb} GB`
-                  : 'N/A'}
-              </StyledSummaryTextTypography>
-            </>
-          ) : (
-            <StyledSummaryTextTypography>
-              <span style={{ font: theme.font.bold }}>Storage</span>{' '}
-              {convertMegabytesTo(type.disk, true)}
-            </StyledSummaryTextTypography>
-          )}
+          <StyledSummaryTextTypography>
+            <span style={{ font: theme.font.bold }}>Usable Disk Size</span>{' '}
+            {database.total_disk_size_gb} GB
+            <Tooltip
+              style={{ marginLeft: Spacing.S4, whiteSpace: 'normal' }}
+              tooltipText={STORAGE_COPY}
+            >
+              <Icon
+                icon="info-outline"
+                size="m"
+                style={{
+                  position: 'relative',
+                  top: -2,
+                }}
+              />
+            </Tooltip>
+          </StyledSummaryTextTypography>
+          <StyledSummaryTextTypography>
+            <span style={{ font: theme.font.bold }}>Used</span>{' '}
+            {database.used_disk_size_gb !== null
+              ? `${database.used_disk_size_gb} GB`
+              : 'N/A'}
+          </StyledSummaryTextTypography>
         </Box>
       </StyledSummaryBox>
     </>
