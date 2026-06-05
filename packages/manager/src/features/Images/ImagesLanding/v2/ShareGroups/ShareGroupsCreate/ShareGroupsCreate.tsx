@@ -86,7 +86,7 @@ export const ShareGroupsCreate = () => {
       <form onSubmit={onSubmit} ref={formContainerRef}>
         <Paper>
           <Stack spacing={2}>
-            <Typography variant="h2">Share group details</Typography>
+            <Typography variant="h2">Share Group Details</Typography>
             <Typography variant="body1">
               Add a name and description for your share group. These details are
               visible to all group members.

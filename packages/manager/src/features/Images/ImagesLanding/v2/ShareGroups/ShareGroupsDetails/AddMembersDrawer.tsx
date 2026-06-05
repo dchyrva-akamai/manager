@@ -74,7 +74,7 @@ export const AddMembersDrawer = (props: Props) => {
       onClose={onClose}
       open={open}
       pendoId={ADD_MEMBERS_DRAWER_PENDO_IDS.xButton}
-      title="Add members"
+      title="Add Members"
     >
       {formErrors?.root?.message && (
         <NotificationBanner

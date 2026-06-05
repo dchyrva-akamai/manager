@@ -69,7 +69,7 @@ export const EditShareGroupDrawer = (props: Props) => {
       onClose={handleClose}
       open={open}
       pendoId={EDIT_SHARE_GROUP_PENDO_IDS.xButton}
-      title="Edit group details"
+      title="Edit Group Details"
     >
       <form onSubmit={onSubmit}>
         {!errors && (

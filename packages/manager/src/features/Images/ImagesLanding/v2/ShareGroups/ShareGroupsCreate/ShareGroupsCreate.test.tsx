@@ -84,7 +84,7 @@ describe('ShareGroupsCreate', () => {
   it('should render the form with all fields, titles, and buttons in their default state', () => {
     const { getByRole, getByText } = renderWithTheme(<ShareGroupsCreate />);
 
-    expect(getByText('Share group details')).toBeVisible();
+    expect(getByText('Share Group Details')).toBeVisible();
     expect(getByText('Images')).toBeVisible();
     expect(getByText('Selected images (0)')).toBeVisible();
 
