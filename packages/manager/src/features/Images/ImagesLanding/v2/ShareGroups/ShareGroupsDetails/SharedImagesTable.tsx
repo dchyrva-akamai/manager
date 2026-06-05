@@ -47,6 +47,7 @@ import { EditImageDetailsDrawer } from './EditImageDetailsDrawer';
 import type { Filter, Image } from '@linode/api-v4';
 
 interface Props {
+  handleAddImagesClick: () => void;
   isTableStripingEnabled: boolean;
   shareGroupId: string;
   shareGroupLabel?: string;
@@ -59,7 +60,12 @@ const IMAGES_COLUMNS = [
 ];
 
 export const SharedImagesTable = (props: Props) => {
-  const { isTableStripingEnabled, shareGroupId, shareGroupLabel } = props;
+  const {
+    isTableStripingEnabled,
+    shareGroupId,
+    shareGroupLabel,
+    handleAddImagesClick,
+  } = props;
   const theme = useTheme();
   const { data: profile } = useProfile();
   const navigate = useNavigate();
@@ -209,6 +215,7 @@ export const SharedImagesTable = (props: Props) => {
         />
         <Button
           data-pendo-id={SHARE_GROUP_DETAILS_PENDO_IDS.addImagesButton}
+          onClick={handleAddImagesClick}
           variant="primary"
         >
           Add Images

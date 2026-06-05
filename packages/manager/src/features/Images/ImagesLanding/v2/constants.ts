@@ -147,3 +147,9 @@ export const EDIT_IMAGE_DETAILS_PENDO_IDS = {
   cancelButton: 'Share Groups Details Edit Image-Cancel Button',
   xButton: 'Share Groups Details Edit Image-X Button',
 };
+
+export const ADD_IMAGES_PENDO_IDS = {
+  landingHeader: 'Share Groups Add Images-Landing Header',
+  searchField: 'Share Groups Add Images-Search Field',
+  addImagesButton: 'Share Groups Add Images-Add Images Button',
+};

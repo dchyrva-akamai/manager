@@ -71,12 +71,16 @@ export const ShareGroupsTabs = () => {
     });
   };
 
-  const handleDelete = (shareGroupId: string) => {
-    handleShareGroupAction(shareGroupId, 'delete');
+  const handleAddImages = (shareGroupId: string) => {
+    handleShareGroupAction(shareGroupId, 'add-images');
   };
 
   const handleAddMembers = (shareGroupId: string) => {
     handleShareGroupAction(shareGroupId, 'add-members');
+  };
+
+  const handleDelete = (shareGroupId: string) => {
+    handleShareGroupAction(shareGroupId, 'delete');
   };
 
   const handleEdit = (shareGroupId: string) => {
@@ -101,8 +105,9 @@ export const ShareGroupsTabs = () => {
     });
 
   const handlers: ShareGroupHandlers = {
-    onDelete: handleDelete,
+    onAddImages: handleAddImages,
     onAddMembers: handleAddMembers,
+    onDelete: handleDelete,
     onEdit: handleEdit,
   };
 

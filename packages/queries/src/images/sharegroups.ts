@@ -1,4 +1,5 @@
 import {
+  addImagesToSharegroup,
   addMembersToSharegroup,
   createSharegroup,
   deleteSharegroup,
@@ -28,6 +29,7 @@ import {
 } from '@tanstack/react-query';
 
 import type {
+  AddSharegroupImagesPayload,
   AddSharegroupMemberPayload,
   APIError,
   CreateSharegroupPayload,
@@ -396,6 +398,40 @@ export const useUpdateShareGroupImageMutation = () => {
       queryClient.invalidateQueries({
         queryKey: shareGroupsQueries.sharegroups._ctx.sharegroup(
           variables.sharegroupId,
+        ).queryKey,
+      });
+    },
+  });
+};
+
+export const useShareGroupsAddImagesMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    Sharegroup,
+    APIError[],
+    { data: AddSharegroupImagesPayload; sharegroupId: number }
+  >({
+    mutationFn: ({ sharegroupId, data }) =>
+      addImagesToSharegroup(sharegroupId, data),
+    onSuccess(shareGroup, variables, context) {
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.paginated._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.all._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.infinite._def,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.sharegroup(
+          String(variables.sharegroupId),
+        ).queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: shareGroupsQueries.sharegroups._ctx.images(
+          String(variables.sharegroupId),
         ).queryKey,
       });
     },

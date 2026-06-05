@@ -2,7 +2,6 @@ import { useCreateShareGroupMutation } from '@linode/queries';
 import {
   Box,
   Button,
-  Checkbox,
   Divider,
   Paper,
   Stack,
@@ -12,33 +11,18 @@ import {
 import { scrollErrorIntoViewV2 } from '@linode/utilities';
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
-import {
-  Controller,
-  FormProvider,
-  useFieldArray,
-  useForm,
-} from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 
 import { IMAGE_SELECT_TABLE_SHARE_GROUP_CREATE_PENDO_IDS } from 'src/components/ImageSelect/constants';
-import { ImageSelectTable } from 'src/components/ImageSelect/ImageSelectTable';
 
 import { CREATE_SHARE_GROUP_PENDO_IDS } from '../../constants';
+import { AddImagesPanel } from '../AddImagesPanel';
 
 import type {
-  CreateSharegroupPayload,
-  Image,
-  SharegroupImagePayload,
-} from '@linode/api-v4';
-
-interface ShareGroupFormImage extends SharegroupImagePayload {
-  imageId: string;
-  useOriginalImageFields: boolean;
-}
-
-interface ShareGroupFormPayload
-  extends Omit<CreateSharegroupPayload, 'images'> {
-  images?: ShareGroupFormImage[];
-}
+  ShareGroupFormImage,
+  ShareGroupFormPayload,
+} from '../AddImagesPanel';
+import type { CreateSharegroupPayload } from '@linode/api-v4';
 
 export const ShareGroupsCreate = () => {
   const navigate = useNavigate();
@@ -53,11 +37,6 @@ export const ShareGroupsCreate = () => {
     setError,
     formState: { isSubmitting },
   } = form;
-
-  const { append, fields, remove, update } = useFieldArray({
-    control,
-    name: 'images',
-  });
 
   const [selectedImages, setSelectedImages] = React.useState<
     ShareGroupFormImage[]
@@ -102,43 +81,6 @@ export const ShareGroupsCreate = () => {
     }
   });
 
-  const handleImagesTableSelect = (image: Image) => {
-    const { id, label, description } = image;
-    const imagePayload = {
-      id,
-      label,
-      ...(description && { description }),
-      imageId: id,
-      useOriginalImageFields: true,
-    };
-
-    const index = selectedImages.findIndex((img) => img.imageId === id);
-    if (index !== -1) {
-      setSelectedImages(selectedImages.filter((img) => img.imageId !== id));
-      remove(index);
-    } else {
-      setSelectedImages([...selectedImages, imagePayload]);
-      append({
-        ...imagePayload,
-      });
-    }
-  };
-
-  const toggleSelectedImageCheckbox = (index: number = 0) => {
-    update(index, {
-      ...fields[index],
-      useOriginalImageFields: !fields[index].useOriginalImageFields,
-    });
-  };
-
-  const shareGroupImagesFilter = (image: Image) => {
-    return (
-      image.status === 'available' &&
-      image.is_public === false &&
-      image.created_by !== null
-    );
-  };
-
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit} ref={formContainerRef}>
@@ -182,82 +124,14 @@ export const ShareGroupsCreate = () => {
             />
           </Stack>
           <Divider sx={{ marginTop: 4, marginBottom: 4 }} />
-          <Stack spacing={2}>
-            <Typography variant="h2">Images</Typography>
-            <ImageSelectTable
-              currentRoute="/images/share-groups/create"
-              filter={shareGroupImagesFilter}
-              onSelect={handleImagesTableSelect}
-              pendoIDs={IMAGE_SELECT_TABLE_SHARE_GROUP_CREATE_PENDO_IDS}
-              selectedImageIds={selectedImages.map((img) => img.id) ?? []}
-              selectionMode="multi"
-            />
-          </Stack>
-          <Divider sx={{ marginTop: 4, marginBottom: 4 }} />
-          <Stack spacing={2}>
-            <Typography variant="h2">
-              Selected images ({selectedImages.length ?? 0})
-            </Typography>
-            {fields.map((image, index) => (
-              <Stack key={image.id} mb={4}>
-                <Stack alignItems="baseline" direction="row" spacing={2}>
-                  <Typography variant="body1">
-                    <b>{index + 1}. Original image: </b>
-                  </Typography>
-                  <Typography variant="body1">
-                    {selectedImages[index].label}
-                  </Typography>
-                </Stack>
-                <Controller
-                  control={control}
-                  name={`images.${index}`}
-                  render={() => (
-                    <Box>
-                      <Checkbox
-                        checked={image.useOriginalImageFields}
-                        onChange={() => toggleSelectedImageCheckbox(index)}
-                        text="Use original label and description"
-                        toolTipText="You can keep the original label and description or set new ones for the shared image. If the original image fields change later, the shared image won't update."
-                      />
-                    </Box>
-                  )}
-                />
-
-                {!image.useOriginalImageFields && (
-                  <Stack spacing={2}>
-                    <Controller
-                      control={control}
-                      name={`images.${index}.label`}
-                      render={({ field, fieldState }) => (
-                        <TextField
-                          data-testid={`selected-image-${index}-label`}
-                          errorText={fieldState.error?.message}
-                          label="Label"
-                          noMarginTop
-                          {...field}
-                        />
-                      )}
-                    />
-                    <Controller
-                      control={control}
-                      name={`images.${index}.description`}
-                      render={({ field, fieldState }) => (
-                        <TextField
-                          data-testid={`selected-image-${index}-description`}
-                          errorText={fieldState.error?.message}
-                          label="Description"
-                          multiline
-                          noMarginTop
-                          {...field}
-                          rows={1}
-                        />
-                      )}
-                    />
-                  </Stack>
-                )}
-              </Stack>
-            ))}
-          </Stack>
+          <AddImagesPanel
+            currentRoute="/images/share-groups/create"
+            formControl={control}
+            pendoIDs={IMAGE_SELECT_TABLE_SHARE_GROUP_CREATE_PENDO_IDS}
+            selectedImages={selectedImages}
+            setSelectedImages={setSelectedImages}
+            title="Images"
+          />
         </Paper>
         <Box display="flex" flexWrap="wrap" justifyContent="flex-end" mt={2}>
           <Button

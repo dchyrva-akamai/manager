@@ -71,6 +71,11 @@ const shareGroupActions = {
   edit: 'edit',
 } as const;
 
+const IMAGE_LIBRARY_REDIRECT_TO = '/images/image-library/$imageType' as const;
+const IMAGE_LIBRARY_REDIRECT_PARAMS = {
+  imageType: 'owned-by-me' as const,
+};
+
 export type ImageAction = (typeof imageActions)[keyof typeof imageActions];
 export type ShareGroupAction =
   (typeof shareGroupActions)[keyof typeof shareGroupActions];
@@ -87,8 +92,8 @@ const imagesIndexRoute = createRoute({
     // When private image sharing is enabled, redirect to Image Library tab with default 'owned-by-me' sub-tab
     if (context.isPrivateImageSharingEnabled) {
       throw redirect({
-        to: '/images/image-library/$imageType',
-        params: { imageType: 'owned-by-me' },
+        to: IMAGE_LIBRARY_REDIRECT_TO,
+        params: IMAGE_LIBRARY_REDIRECT_PARAMS,
       });
     }
   },
@@ -106,8 +111,8 @@ const imageActionRoute = createRoute({
     // Prevent access if private image sharing is enabled
     if (context.isPrivateImageSharingEnabled) {
       throw redirect({
-        to: '/images/image-library/$imageType',
-        params: { imageType: 'owned-by-me' },
+        to: IMAGE_LIBRARY_REDIRECT_TO,
+        params: IMAGE_LIBRARY_REDIRECT_PARAMS,
       });
     }
     if (!(params.action in imageActions)) {
@@ -226,8 +231,8 @@ const imageLibraryTypeRoute = createRoute({
       !imageLibrarySubTabs.map((tab) => tab.type).includes(params.imageType)
     ) {
       throw redirect({
-        to: '/images/image-library/$imageType',
-        params: { imageType: 'owned-by-me' },
+        to: IMAGE_LIBRARY_REDIRECT_TO,
+        params: IMAGE_LIBRARY_REDIRECT_PARAMS,
       });
     }
   },
@@ -431,6 +436,23 @@ const joinedGroupDetailsRoute = createRoute({
   ).then((m) => m.joinedGroupDetailsLazyRoute)
 );
 
+const shareGroupsAddImagesRoute = createRoute({
+  getParentRoute: () => imagesRoute,
+  params: {
+    parse: ({ shareGroupId }: ShareGroupDetailsRouteParams) => ({
+      shareGroupId,
+    }),
+    stringify: ({ shareGroupId }: ShareGroupDetailsRouteParams) => ({
+      shareGroupId,
+    }),
+  },
+  path: 'share-groups/owned-groups/$shareGroupId/add-images',
+}).lazy(() =>
+  import(
+    'src/features/Images/ImagesLanding/v2/ShareGroups/AddImagesLazyRoute'
+  ).then((m) => m.addImagesLazyRoute)
+);
+
 export const imagesRouteTree = imagesRoute.addChildren([
   imagesIndexRoute.addChildren([imageActionRoute]),
   imageLibraryLandingRoute.addChildren([
@@ -443,6 +465,7 @@ export const imagesRouteTree = imagesRoute.addChildren([
       shareGroupsTypeRoute.addChildren([shareGroupsMembershipRequestRoute]),
     ]),
     shareGroupsCreateRoute,
+    shareGroupsAddImagesRoute,
     shareGroupActionRoute,
     shareGroupDetailsRoute,
     joinedGroupDetailsRoute,
