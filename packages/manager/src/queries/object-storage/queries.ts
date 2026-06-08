@@ -4,6 +4,7 @@ import {
   createObjectStorageKeys,
   deleteBucket,
   deleteSSLCert,
+  getBucket,
   getBucketAccess,
   getObjectACL,
   getObjectList,
@@ -84,6 +85,7 @@ export const objectStorageQueries = createQueryKeys('object-storage', {
     queryKey: [id],
   }),
   bucket: (regionId: string, bucketName: string) => ({
+    queryFn: () => getBucket(regionId, bucketName),
     contextQueries: {
       access: {
         queryFn: () => getBucketAccess(regionId, bucketName),
@@ -297,32 +299,39 @@ export const useObjectStorageBuckets = (enabled: boolean = true) => {
   };
 };
 
-// TODO: Optimize to use tanstack cache
-export const useObjectStorageBucket = (
-  region: string | undefined,
-  bucketName: string | undefined
-) => {
+export const useObjectStorageBucket = ({
+  bucketName,
+  enabled = true,
+  regionId,
+}: {
+  bucketName: string;
+  enabled: boolean;
+  regionId: string;
+}) => {
   const queryClient = useQueryClient();
 
-  if (!region || !bucketName) {
-    return {};
-  }
+  return useQuery<ObjectStorageBucket, APIError[]>({
+    ...objectStorageQueries.bucket(regionId, bucketName),
+    enabled,
+    initialData() {
+      const queries = queryClient.getQueriesData({
+        queryKey: objectStorageQueries.buckets.queryKey,
+      });
 
-  const queries = queryClient.getQueriesData({
-    queryKey: objectStorageQueries.buckets.queryKey,
+      for (const [, data] of queries) {
+        const bucket = (
+          data as { buckets: ObjectStorageBucket[]; errors: APIError[] }
+        )?.buckets?.find(
+          (bucket) => bucket.region === regionId && bucket.label === bucketName
+        );
+        if (bucket) {
+          return bucket;
+        }
+      }
+
+      return undefined;
+    },
   });
-
-  for (const [, data] of queries) {
-    const bucket = (data as { buckets: ObjectStorageBucket[] })?.buckets?.find(
-      (bucket) => bucket.region === region && bucket.label === bucketName
-    );
-
-    if (bucket) {
-      return { data: bucket };
-    }
-  }
-
-  return { data: undefined };
 };
 
 export const useBucketAccess = (
